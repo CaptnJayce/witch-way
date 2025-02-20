@@ -35,8 +35,10 @@ int main() {
 	const int gridHeight = SCREEN_HEIGHT / tileSize;
 
 	int grid[gridHeight][gridWidth] = { 0 };
+	
+	// will randomize later 
 	grid[5][5] = 1;
-	grid[10][15] = 1;
+	grid[10][15] = 2;
 
 	while (!WindowShouldClose()) {
 		BeginDrawing();
@@ -75,6 +77,10 @@ int main() {
 				for (int x = 0; x < gridWidth; x++) {
 					if (grid[y][x] == 1) {
 						DrawRectangle(x * tileSize, y * tileSize, tileSize, tileSize, RED);
+					}
+
+					if (grid[y][x] == 2) {
+						DrawRectangle(x * tileSize, y * tileSize, tileSize, tileSize, BLUE);
 					}
 				}
 			}
