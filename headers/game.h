@@ -13,8 +13,8 @@ typedef enum State {
 
 typedef struct GameState {
     State state;
-    int playerHeight;
-    int playerWidth;
+    float playerHeight;
+    float playerWidth;
     Vector2 playerPos;
     float playerSpeed;
 } GameState;

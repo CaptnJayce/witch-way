@@ -73,7 +73,12 @@ int main() {
                                   gameState.playerHeight};
 
           // Define pickup hitbox
-          Rectangle cellRect = {x * tileSize, y * tileSize, tileSize, tileSize};
+          Rectangle cellRect = {
+              static_cast<float>(x * tileSize),
+              static_cast<float>(y * tileSize),
+              static_cast<float>(tileSize),
+              static_cast<float>(tileSize)
+          };
 
           // Collision check
           if (CheckCollisionRecs(playerRect, cellRect)) {
