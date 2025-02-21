@@ -1,5 +1,5 @@
 #pragma once
-#include "./raylib.h"
+#include "../raylib.h"
 
 // Screen dimensions
 #define SCREEN_WIDTH  (1920)

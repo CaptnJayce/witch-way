@@ -1,5 +1,4 @@
-headers/raylib.h
-
+raylib.h
 # Ignore generated files
 # ...
 
