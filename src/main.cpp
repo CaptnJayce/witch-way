@@ -1,4 +1,4 @@
-#include "raylib.h"
+#include "../headers/raylib.h"
 #include "../headers/game.h"
 
 const GameState DefaultState = {
