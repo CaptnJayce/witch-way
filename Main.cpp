@@ -75,10 +75,32 @@ int main() {
 			// Draw grid and objects
 			for (int y = 0; y < gridHeight; y++) {
 				for (int x = 0; x < gridWidth; x++) {
+					// Define player hitbox
+					Rectangle playerRect = {
+						gameState.playerPos.x,
+						gameState.playerPos.y,
+						gameState.playerWidth,
+						gameState.playerHeight
+					};
+
+					// Define pickup hitbox 
+					Rectangle cellRect = {
+						x * tileSize,
+						y * tileSize,
+						tileSize,
+						tileSize
+					};
+
+					// Collision check
+					if (CheckCollisionRecs(playerRect, cellRect)) {
+						grid[y][x] = 0;
+					}
+					if (gameState.playerPos.x && gameState.playerPos.y == grid[y][x]) {
+						grid[x][y] = 0;
+					}
 					if (grid[y][x] == 1) {
 						DrawRectangle(x * tileSize, y * tileSize, tileSize, tileSize, RED);
 					}
-
 					if (grid[y][x] == 2) {
 						DrawRectangle(x * tileSize, y * tileSize, tileSize, tileSize, BLUE);
 					}
@@ -88,7 +110,6 @@ int main() {
 		}
 		EndDrawing();
 	}
-
 	CloseWindow();
 	return 0;
 }
