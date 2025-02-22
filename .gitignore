@@ -1,3 +1,6 @@
+.clangd
+.clang-format
+
 # Ignore generated files
 # ...
 
