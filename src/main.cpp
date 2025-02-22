@@ -1,6 +1,13 @@
 #include "../headers/game.hpp"
 #include <raylib.h>
 
+/*
+Doing:
+  - Items added to inventory when picked up
+  - Right clicking drops one of the stack
+  - Shift right clicking drops entire stack
+*/
+
 #define GRID_SIZE 3
 #define SLOT_SIZE 100
 #define PADDING 10
@@ -13,6 +20,21 @@ typedef struct {
     Rectangle rect;
     int selected;
 } InventorySlot;
+
+typedef struct {
+    Rectangle sqr;
+    int appleWidth;
+    int appleHeight;
+    int appleTotal;
+    int ID;
+} Apple;
+
+Apple apple = {
+    .appleWidth = 10,
+    .appleHeight = 10,
+    .appleTotal = 0,
+    .ID = 1,
+};
 
 const GameState DefaultState = {
     .state = MENU,
@@ -31,11 +53,13 @@ int main() {
     for (int y = 0; y < GRID_SIZE; y++) {
         for (int x = 0; x < GRID_SIZE; x++) {
             inventory[y * GRID_SIZE + x] =
-                (InventorySlot){{(float)(START_X + x * (SLOT_SIZE + PADDING)),
-                                 (float)(START_Y + y * (SLOT_SIZE + PADDING)), (float)SLOT_SIZE, (float)SLOT_SIZE},
+                (InventorySlot){{static_cast<float>(START_X + x * (SLOT_SIZE + PADDING)),
+                                 static_cast<float>(START_Y + y * (SLOT_SIZE + PADDING)),
+                                 static_cast<float>(SLOT_SIZE), static_cast<float>(SLOT_SIZE)},
                                 0};
         }
     }
+
     // Initialize game state
     GameState gameState = DefaultState;
 
@@ -47,8 +71,12 @@ int main() {
     int grid[gridHeight][gridWidth] = {0};
 
     // Place some objects in the grid (will randomize later)
-    grid[5][5] = 1;
+    // Apple = 1
+    grid[5][5] = apple.ID;
     grid[10][15] = 2;
+    grid[20][20] = 2;
+    grid[16][14] = 2;
+    grid[32][30] = apple.ID;
 
     // Main game loop
     while (!WindowShouldClose()) {
@@ -64,7 +92,8 @@ int main() {
         // Handle game state
         switch (gameState.state) {
         case MENU: {
-            DrawText("PRESS ENTER", SCREEN_WIDTH / 2 - MeasureText("PRESS ENTER", 20) / 2, 20, 20, WHITE);
+            DrawText("PRESS ENTER", SCREEN_WIDTH / 2 - MeasureText("PRESS ENTER", 20) / 2, 20, 20,
+                     WHITE);
             if (IsKeyPressed(KEY_ENTER)) {
                 gameState = DefaultState;
                 gameState.state = GAME;
@@ -87,14 +116,13 @@ int main() {
             }
 
             // Draw player
-            DrawRectangle(gameState.playerPos.x, gameState.playerPos.y, gameState.playerWidth, gameState.playerHeight,
-                          WHITE);
+            DrawRectangle(gameState.playerPos.x, gameState.playerPos.y, gameState.playerWidth,
+                          gameState.playerHeight, WHITE);
 
             // Draw inventory grid
             if (IsKeyPressed(KEY_E)) {
                 isInventoryOpen = !isInventoryOpen;
             }
-
             if (isInventoryOpen == true) {
                 for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
                     DrawRectangleRec(inventory[i].rect, LIGHTGRAY);
@@ -102,19 +130,27 @@ int main() {
                 }
             }
 
+            // Draw Apple Count
+            DrawText(TextFormat("Total Apples: %d", apple.appleTotal), SCREEN_WIDTH / 2,
+                     SCREEN_HEIGHT - 30, 20, WHITE);
+
             // Draw grid and objects
             for (int y = 0; y < gridHeight; y++) {
                 for (int x = 0; x < gridWidth; x++) {
                     // Define player hitbox
-                    Rectangle playerRect = {gameState.playerPos.x, gameState.playerPos.y, gameState.playerWidth,
-                                            gameState.playerHeight};
+                    Rectangle playerRect = {gameState.playerPos.x, gameState.playerPos.y,
+                                            gameState.playerWidth, gameState.playerHeight};
 
                     // Define pickup hitbox
-                    Rectangle cellRect = {static_cast<float>(x * tileSize), static_cast<float>(y * tileSize),
-                                          static_cast<float>(tileSize), static_cast<float>(tileSize)};
+                    Rectangle cellRect = {
+                        static_cast<float>(x * tileSize), static_cast<float>(y * tileSize),
+                        static_cast<float>(tileSize), static_cast<float>(tileSize)};
 
                     // Collision check
                     if (CheckCollisionRecs(playerRect, cellRect)) {
+                        if (grid[y][x] == 1) {
+                            apple.appleTotal++;
+                        }
                         grid[y][x] = 0;
                     }
                     if (grid[y][x] == 1) {
