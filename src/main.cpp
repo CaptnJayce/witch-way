@@ -19,6 +19,8 @@ bool isInventoryOpen = false;
 typedef struct {
     Rectangle rect;
     int selected;
+    int itemID;
+    int count;
 } InventorySlot;
 
 typedef struct {
@@ -44,12 +46,32 @@ const GameState DefaultState = {
     .playerSpeed = 500.0f,
 };
 
+InventorySlot inventory[GRID_SIZE * GRID_SIZE];
+
+void AddItemToInventory(int itemID) {
+    for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+        if (inventory[i].itemID == itemID) {
+            // Stack the item if already in inventory
+            inventory[i].count++;
+            return;
+        }
+    }
+
+    // Otherwise, find an empty slot
+    for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+        if (inventory[i].itemID == 0) {
+            inventory[i].itemID = itemID;
+            inventory[i].count = 1;
+            return;
+        }
+    }
+}
+
 int main() {
     // Initialize the window
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Forage Game");
     SetTargetFPS(120);
 
-    InventorySlot inventory[GRID_SIZE * GRID_SIZE];
     for (int y = 0; y < GRID_SIZE; y++) {
         for (int x = 0; x < GRID_SIZE; x++) {
             inventory[y * GRID_SIZE + x] =
@@ -123,10 +145,17 @@ int main() {
             if (IsKeyPressed(KEY_E)) {
                 isInventoryOpen = !isInventoryOpen;
             }
-            if (isInventoryOpen == true) {
+            if (isInventoryOpen) {
                 for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
                     DrawRectangleRec(inventory[i].rect, LIGHTGRAY);
                     DrawRectangleLinesEx(inventory[i].rect, 2, inventory[i].selected ? RED : BLACK);
+
+                    if (inventory[i].itemID == 1) {
+                        DrawRectangle(inventory[i].rect.x + 10, inventory[i].rect.y + 10, 20, 20,
+                                      RED);
+                        DrawText(TextFormat("%d", inventory[i].count), inventory[i].rect.x + 40,
+                                 inventory[i].rect.y + 10, 20, WHITE);
+                    }
                 }
             }
 
@@ -149,7 +178,7 @@ int main() {
                     // Collision check
                     if (CheckCollisionRecs(playerRect, cellRect)) {
                         if (grid[y][x] == 1) {
-                            apple.appleTotal++;
+                            AddItemToInventory(1);
                         }
                         grid[y][x] = 0;
                     }
