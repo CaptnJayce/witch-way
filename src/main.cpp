@@ -4,10 +4,10 @@
 
 const GameState DefaultState = {
     .state = MENU,
-    .playerHeight = 150,
-    .playerWidth = 50,
+    .playerHeight = 75,
+    .playerWidth = 35,
     .playerPos = {SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f},
-    .playerSpeed = 500.0f,
+    .playerSpeed = 400.0f,
 };
 
 int main() {
@@ -26,6 +26,12 @@ int main() {
     const int gridHeight = SCREEN_HEIGHT / tileSize;
 
     int grid[gridHeight][gridWidth] = {0};
+
+    Camera2D camera = {0};
+    camera.target = (Vector2){gameState.playerPos.x + 20.0f, gameState.playerPos.y + 20.0f};
+    camera.offset = (Vector2){SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f};
+    camera.rotation = 0.0f;
+    camera.zoom = 1.0f;
 
     // Place some objects in the grid
     grid[5][5] = apple.ID;
@@ -51,12 +57,8 @@ int main() {
             break;
         }
         case GAME: {
-            if (IsKeyPressed(KEY_E)) {
-                ToggleInventory();
-            }
-            if (isInventoryOpen) {
-                DrawInventory();
-            }
+            camera.target = (Vector2){gameState.playerPos.x + 20, gameState.playerPos.y + 20};
+            BeginMode2D(camera);
 
             // Player Movement
             if (IsKeyDown(KEY_W)) {
@@ -75,6 +77,14 @@ int main() {
             // Draw player
             DrawRectangle(gameState.playerPos.x, gameState.playerPos.y, gameState.playerWidth,
                           gameState.playerHeight, WHITE);
+
+            // Inventory
+            if (IsKeyPressed(KEY_E)) {
+                ToggleInventory();
+            }
+            if (isInventoryOpen) {
+                DrawInventory(camera);
+            }
 
             // Draw grid and objects
             for (int y = 0; y < gridHeight; y++) {

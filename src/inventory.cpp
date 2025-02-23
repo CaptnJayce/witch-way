@@ -41,20 +41,28 @@ void AddItemToInventory(int itemID) {
     }
 }
 
-void DrawInventory() {
+void DrawInventory(Camera2D camera) {
+    if (!isInventoryOpen)
+        return;
+
     Vector2 mousePos = GetMousePosition();
 
+    float xOffset = camera.target.x - SCREEN_WIDTH / 2.0f;
+    float yOffset = camera.target.y - SCREEN_HEIGHT / 2.0f;
+
     for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-        bool isMouseOver = CheckCollisionPointRec(mousePos, inventory[i].rect);
+        float adjustedX = inventory[i].rect.x * camera.zoom + xOffset;
+        float adjustedY = inventory[i].rect.y * camera.zoom + yOffset;
+
+        bool isMouseOver = CheckCollisionPointRec(mousePos, {adjustedX, adjustedY, inventory[i].rect.width, inventory[i].rect.height});
         inventory[i].selected = isMouseOver;
 
-        DrawRectangleRec(inventory[i].rect, LIGHTGRAY);
-        DrawRectangleLinesEx(inventory[i].rect, 2, inventory[i].selected ? RED : BLACK);
+        DrawRectangleRec({adjustedX, adjustedY, inventory[i].rect.width * camera.zoom, inventory[i].rect.height * camera.zoom}, LIGHTGRAY);
+        DrawRectangleLinesEx({adjustedX, adjustedY, inventory[i].rect.width * camera.zoom, inventory[i].rect.height * camera.zoom}, 2, inventory[i].selected ? RED : BLACK);
 
         if (inventory[i].itemID == 1) {
-            DrawRectangle(inventory[i].rect.x + 10, inventory[i].rect.y + 10, 20, 20, RED);
-            DrawText(TextFormat("%d", inventory[i].count), inventory[i].rect.x + 40,
-                     inventory[i].rect.y + 10, 20, WHITE);
+            DrawRectangle(adjustedX + 10, adjustedY + 10, 20 * camera.zoom, 20 * camera.zoom, RED);
+            DrawText(TextFormat("%d", inventory[i].count), adjustedX + 40 * camera.zoom, adjustedY + 10 * camera.zoom, 20, WHITE);
         }
     }
 }

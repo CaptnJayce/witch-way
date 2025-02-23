@@ -21,6 +21,8 @@ typedef struct {
     int ID;
 } Apple;
 
+extern Camera2D camera;
+
 extern InventorySlot inventory[GRID_SIZE * GRID_SIZE];
 extern bool isInventoryOpen;
 extern Apple apple;
@@ -28,5 +30,6 @@ extern Vector2 mousePos;
 
 void InitInventory();
 void AddItemToInventory(int itemID);
-void DrawInventory();
+void DrawInventory(Camera2D camera);
 void ToggleInventory();
+
