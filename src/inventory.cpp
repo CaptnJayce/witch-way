@@ -3,20 +3,6 @@
 InventorySlot inventory[GRID_SIZE * GRID_SIZE];
 bool isInventoryOpen = false;
 
-Apple apple = {
-    .appleWidth = 10,
-    .appleHeight = 10,
-    .appleTotal = 0,
-    .ID = 1,
-};
-
-Blapple blapple = {
-    .blappleWidth = 12,
-    .blappleHeight = 8,
-    .blappleTotal = 0,
-    .ID = 2,
-};
-
 void InitInventory() {
     for (int y = 0; y < GRID_SIZE; y++) {
         for (int x = 0; x < GRID_SIZE; x++) {
@@ -64,19 +50,27 @@ void DrawInventory(Camera2D camera) {
         float adjustedX = inventory[i].rect.x * camera.zoom + xOffset;
         float adjustedY = inventory[i].rect.y * camera.zoom + yOffset;
 
-        bool isMouseOver = CheckCollisionPointRec(mousePos, {adjustedX, adjustedY, inventory[i].rect.width * camera.zoom, inventory[i].rect.height * camera.zoom});
+        bool isMouseOver = CheckCollisionPointRec(
+            mousePos, {adjustedX, adjustedY, inventory[i].rect.width * camera.zoom,
+                       inventory[i].rect.height * camera.zoom});
         inventory[i].selected = isMouseOver;
 
-        DrawRectangleRec({adjustedX, adjustedY, inventory[i].rect.width * camera.zoom, inventory[i].rect.height * camera.zoom}, LIGHTGRAY);
-        DrawRectangleLinesEx({adjustedX, adjustedY, inventory[i].rect.width * camera.zoom, inventory[i].rect.height * camera.zoom}, 2, inventory[i].selected ? RED : BLACK);
+        DrawRectangleRec({adjustedX, adjustedY, inventory[i].rect.width * camera.zoom,
+                          inventory[i].rect.height * camera.zoom},
+                         LIGHTGRAY);
+        DrawRectangleLinesEx({adjustedX, adjustedY, inventory[i].rect.width * camera.zoom,
+                              inventory[i].rect.height * camera.zoom},
+                             2, inventory[i].selected ? RED : BLACK);
 
         if (inventory[i].itemID == 1) {
             DrawRectangle(adjustedX + 10, adjustedY + 10, 20 * camera.zoom, 20 * camera.zoom, RED);
-            DrawText(TextFormat("%d", inventory[i].count), adjustedX + 40 * camera.zoom, adjustedY + 10 * camera.zoom, 20, WHITE);
+            DrawText(TextFormat("%d", inventory[i].count), adjustedX + 40 * camera.zoom,
+                     adjustedY + 10 * camera.zoom, 20, WHITE);
         }
         if (inventory[i].itemID == 2) {
             DrawRectangle(adjustedX + 10, adjustedY + 10, 20 * camera.zoom, 20 * camera.zoom, BLUE);
-            DrawText(TextFormat("%d", inventory[i].count), adjustedX + 40 * camera.zoom, adjustedY + 10 * camera.zoom, 20, WHITE);
+            DrawText(TextFormat("%d", inventory[i].count), adjustedX + 40 * camera.zoom,
+                     adjustedY + 10 * camera.zoom, 20, WHITE);
         }
     }
 }

@@ -1,5 +1,6 @@
-#include <raylib.h>
+#pragma once
 #include "./game.hpp"
+#include <raylib.h>
 
 #define GRID_SIZE 3
 #define SLOT_SIZE 100
@@ -14,30 +15,14 @@ typedef struct {
     int count;
 } InventorySlot;
 
-typedef struct {
-    int appleWidth;
-    int appleHeight;
-    int appleTotal;
-    int ID;
-} Apple;
-
-typedef struct {
-    int blappleWidth;
-    int blappleHeight;
-    int blappleTotal;
-    int ID;
-} Blapple;
-
 extern Camera2D camera;
 
 extern InventorySlot inventory[GRID_SIZE * GRID_SIZE];
 extern bool isInventoryOpen;
-extern Apple apple;
-extern Blapple blapple;
 extern Vector2 mousePos;
 
 void InitInventory();
 void AddItemToInventory(int itemID);
 void DrawInventory(Camera2D camera);
+void DrawItem(int w, int h, int ID, Vector2 pos);
 void ToggleInventory();
-

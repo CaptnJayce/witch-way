@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include "../headers/inventory.hpp"
 
 typedef struct {
     float speed;
@@ -22,7 +23,6 @@ extern Player player;
 extern PlayerTexutre texture;
 extern PlayerHitbox hitbox;
 
-void playerMovement();
-void cameraMovement();
-
-void drawPlayer();
+void PlayerMovement();
+void CameraMovement();
+void DrawPlayer();
