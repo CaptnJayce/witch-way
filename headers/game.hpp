@@ -13,10 +13,6 @@ typedef enum State {
 
 typedef struct GameState {
     State state;
-    float playerHeight;
-    float playerWidth;
-    Vector2 playerPos;
-    float playerSpeed;
 } GameState;
 
 extern const GameState DefaultState;

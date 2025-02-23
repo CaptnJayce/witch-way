@@ -1,24 +1,21 @@
 #include "../headers/game.hpp"
 #include "../headers/inventory.hpp"
+#include "../headers/player.hpp"
 #include <raylib.h>
 
 const GameState DefaultState = {
     .state = MENU,
-    .playerHeight = 75,
-    .playerWidth = 35,
-    .playerPos = {SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f},
-    .playerSpeed = 400.0f,
 };
 
 int main() {
-    // Initialize the window
+    // Initialization
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Forage Game");
     SetTargetFPS(120);
 
     InitInventory();
 
-    // Initialize game state
     GameState gameState = DefaultState;
+    Player player = Player();
 
     // Grid setup
     const int tileSize = 32;
@@ -27,18 +24,19 @@ int main() {
 
     int grid[gridHeight][gridWidth] = {0};
 
-    Camera2D camera = {0};
-    camera.target = (Vector2){gameState.playerPos.x + 20.0f, gameState.playerPos.y + 20.0f};
-    camera.offset = (Vector2){SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f};
-    camera.rotation = 0.0f;
-    camera.zoom = 1.0f;
-
     // Place some objects in the grid
     grid[5][5] = apple.ID;
     grid[10][15] = blapple.ID;
     grid[20][20] = apple.ID;
     grid[16][14] = blapple.ID;
     grid[32][30] = apple.ID;
+
+    // Camera
+    Camera2D camera = {0};
+    camera.target = (Vector2){player.pos.x + 20.0f, player.pos.y + 20.0f};
+    camera.offset = (Vector2){SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f};
+    camera.rotation = 0.0f;
+    camera.zoom = 1.0f;
 
     // Main game loop
     while (!WindowShouldClose()) {
@@ -57,33 +55,31 @@ int main() {
             break;
         }
         case GAME: {
-            camera.target = (Vector2){gameState.playerPos.x + 20, gameState.playerPos.y + 20};
+            camera.target = (Vector2){player.pos.x + 20, player.pos.y + 20};
             BeginMode2D(camera);
 
             // Player Movement
             if (IsKeyDown(KEY_W)) {
-                gameState.playerPos.y -= gameState.playerSpeed * GetFrameTime();
+                player.pos.y -= player.speed * GetFrameTime();
             }
             if (IsKeyDown(KEY_S)) {
-                gameState.playerPos.y += gameState.playerSpeed * GetFrameTime();
+                player.pos.y += player.speed * GetFrameTime();
             }
             if (IsKeyDown(KEY_A)) {
-                gameState.playerPos.x -= gameState.playerSpeed * GetFrameTime();
+                player.pos.x -= player.speed * GetFrameTime();
             }
             if (IsKeyDown(KEY_D)) {
-                gameState.playerPos.x += gameState.playerSpeed * GetFrameTime();
+                player.pos.x += player.speed * GetFrameTime();
             }
 
             // Draw player
-            DrawRectangle(gameState.playerPos.x, gameState.playerPos.y, gameState.playerWidth,
-                          gameState.playerHeight, WHITE);
+            DrawRectangle(player.pos.x, player.pos.y, player.w, player.h, WHITE);
 
             // Draw grid and objects
             for (int y = 0; y < gridHeight; y++) {
                 for (int x = 0; x < gridWidth; x++) {
                     // Define player hitbox
-                    Rectangle playerRect = {gameState.playerPos.x, gameState.playerPos.y,
-                                            gameState.playerWidth, gameState.playerHeight};
+                    Rectangle playerRect = {player.pos.x, player.pos.y, player.w, player.h};
 
                     // Define pickup hitbox
                     Rectangle cellRect = {
@@ -118,7 +114,7 @@ int main() {
             }
 
             break;
-            }
+        }
         }
         EndDrawing();
     }
