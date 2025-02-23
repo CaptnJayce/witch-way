@@ -78,14 +78,6 @@ int main() {
             DrawRectangle(gameState.playerPos.x, gameState.playerPos.y, gameState.playerWidth,
                           gameState.playerHeight, WHITE);
 
-            // Inventory
-            if (IsKeyPressed(KEY_E)) {
-                ToggleInventory();
-            }
-            if (isInventoryOpen) {
-                DrawInventory(camera);
-            }
-
             // Draw grid and objects
             for (int y = 0; y < gridHeight; y++) {
                 for (int x = 0; x < gridWidth; x++) {
@@ -113,8 +105,17 @@ int main() {
                     }
                 }
             }
+
+            // Inventory
+            if (IsKeyPressed(KEY_E)) {
+                ToggleInventory();
+            }
+            if (isInventoryOpen) {
+                DrawInventory(camera);
+            }
+
             break;
-        }
+            }
         }
         EndDrawing();
     }
