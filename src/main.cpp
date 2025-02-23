@@ -1,42 +1,6 @@
 #include "../headers/game.hpp"
+#include "../headers/inventory.hpp"
 #include <raylib.h>
-
-/*
-Doing:
-  - Items added to inventory when picked up
-  - Right clicking drops one of the stack
-  - Shift right clicking drops entire stack
-*/
-
-#define GRID_SIZE 3
-#define SLOT_SIZE 100
-#define PADDING 10
-#define START_X ((SCREEN_WIDTH - (GRID_SIZE * (SLOT_SIZE + PADDING) - PADDING)) / 2.0f)
-#define START_Y ((SCREEN_HEIGHT - (GRID_SIZE * (SLOT_SIZE + PADDING) - PADDING)) / 2.0f)
-
-bool isInventoryOpen = false;
-
-typedef struct {
-    Rectangle rect;
-    int selected;
-    int itemID;
-    int count;
-} InventorySlot;
-
-typedef struct {
-    Rectangle sqr;
-    int appleWidth;
-    int appleHeight;
-    int appleTotal;
-    int ID;
-} Apple;
-
-Apple apple = {
-    .appleWidth = 10,
-    .appleHeight = 10,
-    .appleTotal = 0,
-    .ID = 1,
-};
 
 const GameState DefaultState = {
     .state = MENU,
@@ -46,41 +10,12 @@ const GameState DefaultState = {
     .playerSpeed = 500.0f,
 };
 
-InventorySlot inventory[GRID_SIZE * GRID_SIZE];
-
-void AddItemToInventory(int itemID) {
-    for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-        if (inventory[i].itemID == itemID) {
-            // Stack the item if already in inventory
-            inventory[i].count++;
-            return;
-        }
-    }
-
-    // Otherwise, find an empty slot
-    for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-        if (inventory[i].itemID == 0) {
-            inventory[i].itemID = itemID;
-            inventory[i].count = 1;
-            return;
-        }
-    }
-}
-
 int main() {
     // Initialize the window
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Forage Game");
     SetTargetFPS(120);
 
-    for (int y = 0; y < GRID_SIZE; y++) {
-        for (int x = 0; x < GRID_SIZE; x++) {
-            inventory[y * GRID_SIZE + x] =
-                (InventorySlot){{static_cast<float>(START_X + x * (SLOT_SIZE + PADDING)),
-                                 static_cast<float>(START_Y + y * (SLOT_SIZE + PADDING)),
-                                 static_cast<float>(SLOT_SIZE), static_cast<float>(SLOT_SIZE)},
-                                0};
-        }
-    }
+    InitInventory();
 
     // Initialize game state
     GameState gameState = DefaultState;
@@ -92,8 +27,7 @@ int main() {
 
     int grid[gridHeight][gridWidth] = {0};
 
-    // Place some objects in the grid (will randomize later)
-    // Apple = 1
+    // Place some objects in the grid
     grid[5][5] = apple.ID;
     grid[10][15] = 2;
     grid[20][20] = 2;
@@ -102,12 +36,6 @@ int main() {
 
     // Main game loop
     while (!WindowShouldClose()) {
-        Vector2 mousePos = GetMousePosition();
-
-        for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-            inventory[i].selected = CheckCollisionPointRec(mousePos, inventory[i].rect);
-        }
-
         BeginDrawing();
         ClearBackground(DARKGREEN);
 
@@ -123,6 +51,13 @@ int main() {
             break;
         }
         case GAME: {
+            if (IsKeyPressed(KEY_E)) {
+                ToggleInventory();
+            }
+            if (isInventoryOpen) {
+                DrawInventory();
+            }
+
             // Player Movement
             if (IsKeyDown(KEY_W)) {
                 gameState.playerPos.y -= gameState.playerSpeed * GetFrameTime();
@@ -141,28 +76,6 @@ int main() {
             DrawRectangle(gameState.playerPos.x, gameState.playerPos.y, gameState.playerWidth,
                           gameState.playerHeight, WHITE);
 
-            // Draw inventory grid
-            if (IsKeyPressed(KEY_E)) {
-                isInventoryOpen = !isInventoryOpen;
-            }
-            if (isInventoryOpen) {
-                for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-                    DrawRectangleRec(inventory[i].rect, LIGHTGRAY);
-                    DrawRectangleLinesEx(inventory[i].rect, 2, inventory[i].selected ? RED : BLACK);
-
-                    if (inventory[i].itemID == 1) {
-                        DrawRectangle(inventory[i].rect.x + 10, inventory[i].rect.y + 10, 20, 20,
-                                      RED);
-                        DrawText(TextFormat("%d", inventory[i].count), inventory[i].rect.x + 40,
-                                 inventory[i].rect.y + 10, 20, WHITE);
-                    }
-                }
-            }
-
-            // Draw Apple Count
-            DrawText(TextFormat("Total Apples: %d", apple.appleTotal), SCREEN_WIDTH / 2,
-                     SCREEN_HEIGHT - 30, 20, WHITE);
-
             // Draw grid and objects
             for (int y = 0; y < gridHeight; y++) {
                 for (int x = 0; x < gridWidth; x++) {
@@ -177,12 +90,12 @@ int main() {
 
                     // Collision check
                     if (CheckCollisionRecs(playerRect, cellRect)) {
-                        if (grid[y][x] == 1) {
-                            AddItemToInventory(1);
+                        if (grid[y][x] == apple.ID) {
+                            AddItemToInventory(apple.ID);
                         }
                         grid[y][x] = 0;
                     }
-                    if (grid[y][x] == 1) {
+                    if (grid[y][x] == apple.ID) {
                         DrawRectangle(x * tileSize, y * tileSize, tileSize, tileSize, RED);
                     }
                     if (grid[y][x] == 2) {
