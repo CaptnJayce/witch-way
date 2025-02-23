@@ -3,6 +3,13 @@
 #include "../headers/player.hpp"
 #include <raylib.h>
 
+/*
+TODO:
+Draw and Update methods
+Reimplement item spawning
+*/
+
+
 const GameState DefaultState = {
     .state = MENU,
 };
