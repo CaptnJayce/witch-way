@@ -41,6 +41,7 @@ void AddItemToInventory(int itemID) {
     }
 }
 
+
 void DrawInventory(Camera2D camera) {
     if (!isInventoryOpen)
         return;
@@ -50,11 +51,14 @@ void DrawInventory(Camera2D camera) {
     float xOffset = camera.target.x - SCREEN_WIDTH / 2.0f;
     float yOffset = camera.target.y - SCREEN_HEIGHT / 2.0f;
 
+    mousePos.x = (mousePos.x + xOffset) / camera.zoom;
+    mousePos.y = (mousePos.y + yOffset) / camera.zoom;
+
     for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
         float adjustedX = inventory[i].rect.x * camera.zoom + xOffset;
         float adjustedY = inventory[i].rect.y * camera.zoom + yOffset;
 
-        bool isMouseOver = CheckCollisionPointRec(mousePos, {adjustedX, adjustedY, inventory[i].rect.width, inventory[i].rect.height});
+        bool isMouseOver = CheckCollisionPointRec(mousePos, {adjustedX, adjustedY, inventory[i].rect.width * camera.zoom, inventory[i].rect.height * camera.zoom});
         inventory[i].selected = isMouseOver;
 
         DrawRectangleRec({adjustedX, adjustedY, inventory[i].rect.width * camera.zoom, inventory[i].rect.height * camera.zoom}, LIGHTGRAY);
@@ -66,5 +70,6 @@ void DrawInventory(Camera2D camera) {
         }
     }
 }
+
 
 void ToggleInventory() { isInventoryOpen = !isInventoryOpen; }
