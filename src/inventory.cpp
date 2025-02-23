@@ -1,3 +1,4 @@
+#pragma once
 #include "../headers/inventory.hpp"
 
 InventorySlot inventory[GRID_SIZE * GRID_SIZE];
