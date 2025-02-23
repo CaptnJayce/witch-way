@@ -21,11 +21,19 @@ typedef struct {
     int ID;
 } Apple;
 
+typedef struct {
+    int blappleWidth;
+    int blappleHeight;
+    int blappleTotal;
+    int ID;
+} Blapple;
+
 extern Camera2D camera;
 
 extern InventorySlot inventory[GRID_SIZE * GRID_SIZE];
 extern bool isInventoryOpen;
 extern Apple apple;
+extern Blapple blapple;
 extern Vector2 mousePos;
 
 void InitInventory();

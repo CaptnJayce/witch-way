@@ -35,9 +35,9 @@ int main() {
 
     // Place some objects in the grid
     grid[5][5] = apple.ID;
-    grid[10][15] = 2;
-    grid[20][20] = 2;
-    grid[16][14] = 2;
+    grid[10][15] = blapple.ID;
+    grid[20][20] = apple.ID;
+    grid[16][14] = blapple.ID;
     grid[32][30] = apple.ID;
 
     // Main game loop
@@ -95,9 +95,12 @@ int main() {
                         if (grid[y][x] == apple.ID) {
                             AddItemToInventory(apple.ID);
                         }
+                        if (grid[y][x] == blapple.ID) {
+                            AddItemToInventory(blapple.ID);
+                        }
                         grid[y][x] = 0;
                     }
-                    if (grid[y][x] == apple.ID) {
+                    if (grid[y][x] == 1) {
                         DrawRectangle(x * tileSize, y * tileSize, tileSize, tileSize, RED);
                     }
                     if (grid[y][x] == 2) {

@@ -10,6 +10,13 @@ Apple apple = {
     .ID = 1,
 };
 
+Blapple blapple = {
+    .blappleWidth = 12,
+    .blappleHeight = 8,
+    .blappleTotal = 0,
+    .ID = 2,
+};
+
 void InitInventory() {
     for (int y = 0; y < GRID_SIZE; y++) {
         for (int x = 0; x < GRID_SIZE; x++) {
@@ -41,7 +48,6 @@ void AddItemToInventory(int itemID) {
     }
 }
 
-
 void DrawInventory(Camera2D camera) {
     if (!isInventoryOpen)
         return;
@@ -68,8 +74,11 @@ void DrawInventory(Camera2D camera) {
             DrawRectangle(adjustedX + 10, adjustedY + 10, 20 * camera.zoom, 20 * camera.zoom, RED);
             DrawText(TextFormat("%d", inventory[i].count), adjustedX + 40 * camera.zoom, adjustedY + 10 * camera.zoom, 20, WHITE);
         }
+        if (inventory[i].itemID == 2) {
+            DrawRectangle(adjustedX + 10, adjustedY + 10, 20 * camera.zoom, 20 * camera.zoom, BLUE);
+            DrawText(TextFormat("%d", inventory[i].count), adjustedX + 40 * camera.zoom, adjustedY + 10 * camera.zoom, 20, WHITE);
+        }
     }
 }
-
 
 void ToggleInventory() { isInventoryOpen = !isInventoryOpen; }
