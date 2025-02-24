@@ -1,5 +1,5 @@
+#pragma once
 #include <raylib.h>
-#include "../headers/inventory.hpp"
 
 typedef struct {
     float speed;
@@ -23,6 +23,5 @@ extern Player player;
 extern PlayerTexutre texture;
 extern PlayerHitbox hitbox;
 
-void PlayerMovement();
-void CameraMovement();
-void DrawPlayer();
+void PlayerDraw();
+void PlayerUpdate();

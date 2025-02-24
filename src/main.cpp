@@ -1,14 +1,13 @@
 #include "../headers/game.hpp"
 #include "../headers/inventory.hpp"
+#include "../headers/items.hpp"
 #include "../headers/player.hpp"
 #include <raylib.h>
 
 /*
 TODO:
-Draw and Update methods
 Reimplement item spawning
 */
-
 
 const GameState DefaultState = {
     .state = MENU,
@@ -22,24 +21,14 @@ int main() {
     InitInventory();
 
     GameState gameState = DefaultState;
-    Player player = Player();
-    PlayerTexutre playerTexture = PlayerTexutre();
-    PlayerHitbox playerHitbox = PlayerHitbox();
-
-    // Grid setup
-    const int tileSize = 32;
-    const int gridWidth = SCREEN_WIDTH / tileSize;
-    const int gridHeight = SCREEN_HEIGHT / tileSize;
-
-    int grid[gridHeight][gridWidth] = {0};
 
     // Main game loop
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(DARKGREEN);
 
-        // Handle game state
         switch (gameState.state) {
+        // Main Menu
         case MENU: {
             DrawText("PRESS ENTER", SCREEN_WIDTH / 2 - MeasureText("PRESS ENTER", 20) / 2, 20, 20,
                      WHITE);
@@ -49,21 +38,21 @@ int main() {
             }
             break;
         }
+
+        // Game
         case GAME: {
-            CameraMovement();
-            BeginMode2D(camera);
-
-            PlayerMovement();
-            DrawPlayer();
-
-            // Inventory
+            PlayerUpdate();
             if (IsKeyPressed(KEY_E)) {
                 ToggleInventory();
             }
+            UpdateItem();
+            BeginMode2D(camera);
+
+            PlayerDraw();
             if (isInventoryOpen) {
                 DrawInventory(camera);
             }
-
+            DrawItem();
             break;
         }
         }

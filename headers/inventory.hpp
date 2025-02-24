@@ -24,5 +24,4 @@ extern Vector2 mousePos;
 void InitInventory();
 void AddItemToInventory(int itemID);
 void DrawInventory(Camera2D camera);
-void DrawItem(int w, int h, int ID, Vector2 pos);
 void ToggleInventory();
