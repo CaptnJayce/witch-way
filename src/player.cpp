@@ -12,13 +12,6 @@ PlayerTexutre playerTexture = {
     .colour = {120, 81, 169, 255},
 };
 
-PlayerHitbox playerHitbox = {
-    .rect = {},
-    .w = 30,
-    .h = 75,
-    .colour = {255, 204, 203, 0},
-};
-
 Camera2D camera = {0};
 
 void PlayerUpdate() {
@@ -44,6 +37,4 @@ void PlayerUpdate() {
 void PlayerDraw() {
     DrawRectangle(player.pos.x, player.pos.y, playerTexture.w, playerTexture.h,
                   playerTexture.colour);
-    playerHitbox.rect = {player.pos.x, player.pos.y, playerHitbox.w, playerHitbox.h};
-    DrawRectangleRec(playerHitbox.rect, playerHitbox.colour);
 }

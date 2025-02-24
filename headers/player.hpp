@@ -12,16 +12,8 @@ typedef struct {
     Color colour;
 } PlayerTexutre;
 
-typedef struct {
-    Rectangle rect;
-    float w;
-    float h;
-    Color colour;
-} PlayerHitbox;
-
 extern Player player;
 extern PlayerTexutre texture;
-extern PlayerHitbox hitbox;
 
 void PlayerDraw();
 void PlayerUpdate();

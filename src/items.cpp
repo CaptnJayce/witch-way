@@ -1,5 +1,6 @@
 #include "../headers/items.hpp"
 #include "../headers/game.hpp"
+#include "../headers/player.hpp"
 #include <raylib.h>
 
 Apple apple = {
@@ -40,4 +41,15 @@ void DrawItem() {
         }
     }
 }
-void UpdateItem() {}
+
+void UpdateItem() {
+    int playerGridX = player.pos.x / tileSize;
+    int playerGridY = player.pos.y / tileSize;
+
+    if (grid[playerGridX][playerGridY] == apple.ID) {
+        grid[playerGridX][playerGridY] = 0;
+    }
+    if (grid[playerGridX][playerGridY] == berry.ID) {
+        grid[playerGridX][playerGridY] = 0;
+    }
+}
