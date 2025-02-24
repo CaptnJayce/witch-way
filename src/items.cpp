@@ -3,14 +3,14 @@
 #include <raylib.h>
 
 Apple apple = {
-    .radius = 8,
+    .radius = tileSize,
     .colour = {20, 60, 0, 255},
     .ID = 1,
 };
 
 Berry berry = {
-    .w = 8,
-    .h = 6,
+    .w = tileSize,
+    .h = tileSize,
     .colour = {40, 0, 255, 255},
     .ID = 2,
 };
@@ -32,10 +32,10 @@ void DrawItem() {
     for (int y = 0; y < gridHeight; y++) {
         for (int x = 0; x < gridWidth; x++) {
             if (grid[x][y] == apple.ID) {
-                DrawCircle(x, y, apple.radius, apple.colour);
+                DrawCircle(x * tileSize, y * tileSize, apple.radius, apple.colour);
             }
             if (grid[x][y] == berry.ID) {
-                DrawRectangle(x, y, berry.w, berry.h, berry.colour);
+                DrawRectangle(x * tileSize, y * tileSize, berry.w, berry.h, berry.colour);
             }
         }
     }
