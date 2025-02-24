@@ -16,6 +16,9 @@ typedef struct {
 
 extern Vector2 mousePos;
 
+extern Apple apple;
+extern Berry berry;
+
 extern const float tileSize;
 extern const int gridWidth;
 extern const int gridHeight;

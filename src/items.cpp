@@ -1,5 +1,6 @@
 #include "../headers/items.hpp"
 #include "../headers/game.hpp"
+#include "../headers/inventory.hpp"
 #include "../headers/player.hpp"
 #include <raylib.h>
 
@@ -60,12 +61,14 @@ void UpdateItem() {
                 Vector2 appleCenter = {x * tileSize + apple.radius, y * tileSize + apple.radius};
                 if (CheckCollisionCircleRec(appleCenter, apple.radius, playerRect)) {
                     grid[x][y] = 0;
+                    AddItemToInventory(apple.ID);
                 }
             }
             if (grid[x][y] == berry.ID) {
                 Rectangle berryRect = {x * tileSize, y * tileSize, berry.w, berry.h};
                 if (CheckCollisionRecs(berryRect, playerRect)) {
                     grid[x][y] = 0;
+                    AddItemToInventory(berry.ID);
                 }
             }
         }
