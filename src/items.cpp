@@ -1,7 +1,6 @@
 #include "../headers/items.hpp"
 #include "../headers/game.hpp"
 #include "../headers/player.hpp"
-#include <cstdio>
 #include <raylib.h>
 
 Apple apple = {
@@ -17,7 +16,7 @@ Berry berry = {
     .ID = 2,
 };
 
-const int tileSize = 32;
+const float tileSize = 32;
 const int gridWidth = SCREEN_WIDTH / tileSize;
 const int gridHeight = SCREEN_HEIGHT / tileSize;
 
@@ -45,15 +44,30 @@ void DrawItem() {
 }
 
 void UpdateItem() {
-    int playerGridX = player.pos.x / tileSize;
-    int playerGridY = player.pos.y / tileSize;
+    int playerGridX = playerTexture.w / tileSize;
+    int playerGridY = playerTexture.h / tileSize;
 
-    if (grid[playerGridX][playerGridY] == apple.ID) {
-        grid[playerGridX][playerGridY] = 0;
-        printf("Apple collected at (%d, %d)\n", playerGridX, playerGridY);
-    }
-    if (grid[playerGridX][playerGridY] == berry.ID) {
-        grid[playerGridX][playerGridY] = 0;
-        printf("Berry collected at (%d, %d)\n", playerGridX, playerGridY);
+    Rectangle playerRect = {
+        player.pos.x,
+        player.pos.y,
+        playerTexture.w,
+        playerTexture.h,
+    };
+
+    for (int y = 0; y < gridHeight; y++) {
+        for (int x = 0; x < gridWidth; x++) {
+            if (grid[x][y] == apple.ID) {
+                Vector2 appleCenter = {x * tileSize + apple.radius, y * tileSize + apple.radius};
+                if (CheckCollisionCircleRec(appleCenter, apple.radius, playerRect)) {
+                    grid[x][y] = 0;
+                }
+            }
+            if (grid[x][y] == berry.ID) {
+                Rectangle berryRect = {x * tileSize, y * tileSize, berry.w, berry.h};
+                if (CheckCollisionRecs(berryRect, playerRect)) {
+                    grid[x][y] = 0;
+                }
+            }
+        }
     }
 }

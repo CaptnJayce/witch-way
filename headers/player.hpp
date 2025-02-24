@@ -13,7 +13,7 @@ typedef struct {
 } PlayerTexutre;
 
 extern Player player;
-extern PlayerTexutre texture;
+extern PlayerTexutre playerTexture;
 
 void PlayerDraw();
 void PlayerUpdate();

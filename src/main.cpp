@@ -43,17 +43,17 @@ int main() {
         // Game
         case GAME: {
             PlayerUpdate();
+            UpdateItem();
             if (IsKeyPressed(KEY_E)) {
                 ToggleInventory();
             }
-            UpdateItem();
             BeginMode2D(camera);
 
             PlayerDraw();
+            DrawItem();
             if (isInventoryOpen) {
                 DrawInventory(camera);
             }
-            DrawItem();
             break;
         }
         }
