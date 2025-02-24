@@ -19,6 +19,7 @@ int main() {
     SetTargetFPS(120);
 
     InitInventory();
+    InitializeGrid();
 
     GameState gameState = DefaultState;
 

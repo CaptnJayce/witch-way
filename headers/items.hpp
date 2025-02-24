@@ -21,6 +21,6 @@ extern const int gridWidth;
 extern const int gridHeight;
 extern int grid[][33];
 
+void InitializeGrid();
 void DrawItem();
 void UpdateItem();
-

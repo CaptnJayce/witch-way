@@ -1,10 +1,11 @@
 #include "../headers/items.hpp"
 #include "../headers/game.hpp"
 #include "../headers/player.hpp"
+#include <cstdio>
 #include <raylib.h>
 
 Apple apple = {
-    .radius = tileSize,
+    .radius = tileSize / 2,
     .colour = {20, 60, 0, 255},
     .ID = 1,
 };
@@ -22,14 +23,15 @@ const int gridHeight = SCREEN_HEIGHT / tileSize;
 
 int grid[gridWidth][gridHeight] = {0};
 
-void DrawItem() {
+void InitializeGrid() {
     grid[5][5] = apple.ID;
     grid[10][15] = berry.ID;
     grid[20][20] = apple.ID;
     grid[16][14] = berry.ID;
     grid[32][30] = apple.ID;
+}
 
-    // Loop over array and draw here
+void DrawItem() {
     for (int y = 0; y < gridHeight; y++) {
         for (int x = 0; x < gridWidth; x++) {
             if (grid[x][y] == apple.ID) {
@@ -48,8 +50,10 @@ void UpdateItem() {
 
     if (grid[playerGridX][playerGridY] == apple.ID) {
         grid[playerGridX][playerGridY] = 0;
+        printf("Apple collected at (%d, %d)\n", playerGridX, playerGridY);
     }
     if (grid[playerGridX][playerGridY] == berry.ID) {
         grid[playerGridX][playerGridY] = 0;
+        printf("Berry collected at (%d, %d)\n", playerGridX, playerGridY);
     }
 }
