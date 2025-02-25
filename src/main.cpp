@@ -4,11 +4,6 @@
 #include "../headers/player.hpp"
 #include <raylib.h>
 
-/*
-TODO:
-Reimplement item spawning
-*/
-
 const GameState DefaultState = {
     .state = MENU,
 };
@@ -31,8 +26,7 @@ int main() {
         switch (gameState.state) {
         // Main Menu
         case MENU: {
-            DrawText("PRESS ENTER", SCREEN_WIDTH / 2 - MeasureText("PRESS ENTER", 20) / 2, 20, 20,
-                     WHITE);
+            DrawText("PRESS ENTER", SCREEN_WIDTH / 2 - MeasureText("PRESS ENTER", 20) / 2, 20, 20, WHITE);
             if (IsKeyPressed(KEY_ENTER)) {
                 gameState = DefaultState;
                 gameState.state = GAME;
