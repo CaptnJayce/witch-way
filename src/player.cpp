@@ -4,8 +4,8 @@
 Player player = {
     .pos = {},
     .speed = 350.0f,
-    .w = 30,
-    .h = 75,
+    .w = 60,
+    .h = 150,
     .colour = {120, 81, 169, 255},
     .pickUpRadius = {0, 255, 255, 100},
 };
@@ -35,4 +35,5 @@ void PlayerUpdate() {
 void PlayerDraw() {
     DrawRectangle(player.pos.x, player.pos.y, player.w, player.h,
                   player.colour);
+    DrawCircle(player.pos.x + (player.w / 2), player.pos.y + (player.h / 2), 175, player.pickUpRadius);
 }
