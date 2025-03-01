@@ -31,11 +31,21 @@ void InitializeGrid() {
     grid[32][30] = apple.ID;
 }
 
+void DrawGrid() {
+    for (int x = 0; x <= gridWidth; x++) {
+        DrawLine(x * tileSize, 0, x * tileSize, SCREEN_HEIGHT, BLACK);
+    }
+
+    for (int y = 0; y <= gridHeight; y++) {
+        DrawLine(0, y * tileSize, SCREEN_WIDTH, y * tileSize, BLACK);
+    }
+}
+
 void DrawItem() {
     for (int y = 0; y < gridHeight; y++) {
         for (int x = 0; x < gridWidth; x++) {
             if (grid[x][y] == apple.ID) {
-                DrawCircle(x * tileSize, y * tileSize, apple.radius, apple.colour);
+                DrawCircle(x * tileSize + tileSize / 2, y * tileSize + tileSize / 2, apple.radius, apple.colour);
             }
             if (grid[x][y] == berry.ID) {
                 DrawRectangle(x * tileSize, y * tileSize, berry.w, berry.h, berry.colour);

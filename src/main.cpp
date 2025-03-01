@@ -4,6 +4,17 @@
 #include "../headers/player.hpp"
 #include <raylib.h>
 
+/*
+TODO (most to least): 
+  debugging function, include:
+    - Drawing hitboxes
+    - Drawing grid
+
+  chunk system:
+    - draw chunks of 32x32 grids for infinite generation
+    - draw around 0,0 and go outwards in each direction
+*/
+
 const GameState DefaultState = {
     .state = MENU,
 };
@@ -44,6 +55,7 @@ int main() {
             }
             BeginMode2D(camera);
 
+            DrawGrid();
             PlayerDraw();
             MouseDraw();
             DrawItem();
