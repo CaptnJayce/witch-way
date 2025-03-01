@@ -45,32 +45,26 @@ void DrawItem() {
 }
 
 void UpdateItem() {
-    int playerGridX = player.w / tileSize;
-    int playerGridY = player.h / tileSize;
+    int mouseGridX = mouse.pos.x / tileSize;
+    int mouseGridY = mouse.pos.y / tileSize;
 
-    Rectangle playerRect = {
-        player.pos.x,
-        player.pos.y,
-        player.w,
-        player.h,
-    };
-
-    for (int y = 0; y < gridHeight; y++) {
-        for (int x = 0; x < gridWidth; x++) {
-            if (grid[x][y] == apple.ID) {
-                Vector2 appleCenter = {x * tileSize + apple.radius, y * tileSize + apple.radius};
-                if (CheckCollisionCircleRec(appleCenter, apple.radius, playerRect)) {
-                    grid[x][y] = 0;
+    if (mouseGridX >= 0 && mouseGridX < gridWidth && mouseGridY >= 0 && mouseGridY < gridHeight) {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            if (grid[mouseGridX][mouseGridY] == apple.ID) {
+                Vector2 appleCenter = {mouseGridX * tileSize + apple.radius, mouseGridY * tileSize + apple.radius};
+                if (CheckCollisionPointCircle(mouse.pos, appleCenter, apple.radius)) {
+                    grid[mouseGridX][mouseGridY] = 0;
                     AddItemToInventory(apple.ID);
                 }
             }
-            if (grid[x][y] == berry.ID) {
-                Rectangle berryRect = {x * tileSize, y * tileSize, berry.w, berry.h};
-                if (CheckCollisionRecs(berryRect, playerRect)) {
-                    grid[x][y] = 0;
+            if (grid[mouseGridX][mouseGridY] == berry.ID) {
+                Rectangle berryRect = {mouseGridX * tileSize, mouseGridY * tileSize, berry.w, berry.h};
+                if (CheckCollisionPointRec(mouse.pos, berryRect)) {
+                    grid[mouseGridX][mouseGridY] = 0;
                     AddItemToInventory(berry.ID);
                 }
             }
         }
     }
 }
+
