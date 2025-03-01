@@ -12,7 +12,16 @@ typedef struct {
     Color hitBox;
 } Player;
 
+typedef struct {
+    Vector2 pos;
+    float radius;
+    Color hitbox;
+} Mouse;
+
 extern Player player;
+extern Mouse mouse;
 
 void PlayerDraw();
 void PlayerUpdate();
+void MouseDraw();
+void MouseUpdate();

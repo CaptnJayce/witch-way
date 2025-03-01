@@ -37,6 +37,7 @@ int main() {
         // Game
         case GAME: {
             PlayerUpdate();
+            MouseUpdate();
             UpdateItem();
             if (IsKeyPressed(KEY_E)) {
                 ToggleInventory();
@@ -44,6 +45,7 @@ int main() {
             BeginMode2D(camera);
 
             PlayerDraw();
+            MouseDraw();
             DrawItem();
             if (isInventoryOpen) {
                 DrawInventory(camera);
