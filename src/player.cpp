@@ -2,14 +2,12 @@
 #include "../headers/game.hpp"
 
 Player player = {
-    .speed = 350.0f,
     .pos = {},
-};
-
-PlayerTexutre playerTexture = {
+    .speed = 350.0f,
     .w = 30,
     .h = 75,
     .colour = {120, 81, 169, 255},
+    .pickUpRadius = {0, 255, 255, 100},
 };
 
 Camera2D camera = {0};
@@ -35,6 +33,6 @@ void PlayerUpdate() {
 }
 
 void PlayerDraw() {
-    DrawRectangle(player.pos.x, player.pos.y, playerTexture.w, playerTexture.h,
-                  playerTexture.colour);
+    DrawRectangle(player.pos.x, player.pos.y, player.w, player.h,
+                  player.colour);
 }

@@ -45,14 +45,14 @@ void DrawItem() {
 }
 
 void UpdateItem() {
-    int playerGridX = playerTexture.w / tileSize;
-    int playerGridY = playerTexture.h / tileSize;
+    int playerGridX = player.w / tileSize;
+    int playerGridY = player.h / tileSize;
 
     Rectangle playerRect = {
         player.pos.x,
         player.pos.y,
-        playerTexture.w,
-        playerTexture.h,
+        player.w,
+        player.h,
     };
 
     for (int y = 0; y < gridHeight; y++) {

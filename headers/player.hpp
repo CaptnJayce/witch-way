@@ -2,18 +2,17 @@
 #include <raylib.h>
 
 typedef struct {
-    float speed;
     Vector2 pos;
-} Player;
-
-typedef struct {
+    float speed;
     float w;
     float h;
+
     Color colour;
-} PlayerTexutre;
+    Color pickUpRadius;
+    Color hitBox;
+} Player;
 
 extern Player player;
-extern PlayerTexutre playerTexture;
 
 void PlayerDraw();
 void PlayerUpdate();
