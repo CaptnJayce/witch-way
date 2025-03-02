@@ -7,6 +7,8 @@ Player player = {
     .speed = 350.0f,
     .w = 60,
     .h = 150,
+
+    .pickUp = 200,
     .colour = {120, 81, 169, 255},
     .pickUpRadius = {0, 255, 255, 100},
 };

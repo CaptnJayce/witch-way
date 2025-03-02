@@ -3,6 +3,7 @@
 #include "../headers/inventory.hpp"
 #include "../headers/player.hpp"
 #include <raylib.h>
+#include <raymath.h>
 
 Apple apple = {
     .radius = tileSize / 2,
@@ -54,27 +55,37 @@ void DrawItem() {
     }
 }
 
+bool CanPickupItem(const Player& player, const Vector2& itemPosition, float itemRadius) {
+    float distance = Vector2Distance(player.pos, itemPosition);
+    return distance <= player.pickUp;
+}
+
 void UpdateItem() {
     int mouseGridX = mouse.pos.x / tileSize;
     int mouseGridY = mouse.pos.y / tileSize;
 
     if (mouseGridX >= 0 && mouseGridX < gridWidth && mouseGridY >= 0 && mouseGridY < gridHeight) {
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            if (grid[mouseGridX][mouseGridY] == apple.ID) {
-                Vector2 appleCenter = {mouseGridX * tileSize + apple.radius, mouseGridY * tileSize + apple.radius};
-                if (CheckCollisionPointCircle(mouse.pos, appleCenter, apple.radius)) {
-                    grid[mouseGridX][mouseGridY] = 0;
-                    AddItemToInventory(apple.ID);
+        Vector2 mouseWorldPos = {mouse.pos.x, mouse.pos.y};
+        float distanceToMouse = Vector2Distance(player.pos, mouseWorldPos);
+
+        if (distanceToMouse <= player.pickUp) {
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                if (grid[mouseGridX][mouseGridY] == apple.ID) {
+                    Vector2 appleCenter = {mouseGridX * tileSize + apple.radius, mouseGridY * tileSize + apple.radius};
+                    if (CheckCollisionPointCircle(mouse.pos, appleCenter, apple.radius)) {
+                        grid[mouseGridX][mouseGridY] = 0;
+                        AddItemToInventory(apple.ID);
+                    }
                 }
-            }
-            if (grid[mouseGridX][mouseGridY] == berry.ID) {
-                Rectangle berryRect = {mouseGridX * tileSize, mouseGridY * tileSize, berry.w, berry.h};
-                if (CheckCollisionPointRec(mouse.pos, berryRect)) {
-                    grid[mouseGridX][mouseGridY] = 0;
-                    AddItemToInventory(berry.ID);
+
+                if (grid[mouseGridX][mouseGridY] == berry.ID) {
+                    Rectangle berryRect = {mouseGridX * tileSize, mouseGridY * tileSize, berry.w, berry.h};
+                    if (CheckCollisionPointRec(mouse.pos, berryRect)) {
+                        grid[mouseGridX][mouseGridY] = 0;
+                        AddItemToInventory(berry.ID);
+                    }
                 }
             }
         }
     }
 }
-

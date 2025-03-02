@@ -7,6 +7,7 @@ typedef struct {
     float w;
     float h;
 
+    float pickUp; 
     Color colour;
     Color pickUpRadius;
     Color hitBox;
