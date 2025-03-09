@@ -25,7 +25,7 @@ main :: proc() {
     p: Player
     p.position = {20, 20}
     p.size = {20, 40}
-    p.speed = 5.0
+    p.speed = 500.0
     p.color = {177, 156, 217, 255}
 
     berryColour := rl.Color{144, 213, 255, 255}
@@ -39,10 +39,10 @@ main :: proc() {
     for !rl.WindowShouldClose() {
         rl.BeginDrawing()
 
-        if rl.IsKeyDown(.W) { p.position.y -= p.speed }
-        if rl.IsKeyDown(.S) { p.position.y += p.speed }
-        if rl.IsKeyDown(.A) { p.position.x -= p.speed }
-        if rl.IsKeyDown(.D) { p.position.x += p.speed }
+        if rl.IsKeyDown(.W) { p.position.y -= p.speed * rl.GetFrameTime() }
+        if rl.IsKeyDown(.S) { p.position.y += p.speed * rl.GetFrameTime() }
+        if rl.IsKeyDown(.A) { p.position.x -= p.speed * rl.GetFrameTime() }
+        if rl.IsKeyDown(.D) { p.position.x += p.speed * rl.GetFrameTime() }
 
         camera := rl.Camera2D {
             zoom = 1,
