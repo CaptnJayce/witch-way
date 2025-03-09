@@ -24,13 +24,14 @@ main :: proc() {
     screen_width :i32 = 1280
     screen_height :i32 = 720
 
-    rl.InitWindow(screen_width, screen_height, "game")
+    rl.InitWindow(screen_width, screen_height, "Witch Way")
+    defer rl.CloseWindow()
+
     rl.SetTargetFPS(120)
 
     p: Player
-    p.position = {20, 20}
     p.size = {20, 40}
-    p.speed = 500.0
+    p.speed = 250.0
     p.color = {177, 156, 217, 255}
 
     berry_colour := rl.Color{144, 213, 255, 255}
@@ -47,18 +48,14 @@ main :: proc() {
 
     for !rl.WindowShouldClose() {
         rl.BeginDrawing()
+        defer rl.EndDrawing()
 
+        // player movement 
+        prev_pos := p.position // used for rock collision
         if rl.IsKeyDown(.W) { p.position.y -= p.speed * rl.GetFrameTime() }
         if rl.IsKeyDown(.S) { p.position.y += p.speed * rl.GetFrameTime() }
         if rl.IsKeyDown(.A) { p.position.x -= p.speed * rl.GetFrameTime() }
         if rl.IsKeyDown(.D) { p.position.x += p.speed * rl.GetFrameTime() }
-
-        camera := rl.Camera2D {
-            zoom = 1,
-            offset = {f32(screen_width / 2), f32(screen_height / 2)},
-            target = p.position,
-        }   
-        rl.BeginMode2D(camera)
 
         player_rect := rl.Rectangle {
             x = p.position.x,
@@ -67,9 +64,24 @@ main :: proc() {
             height = p.size.y,
         }
 
+        // camera
+        camera := rl.Camera2D {
+            zoom = 2,
+            offset = {f32(screen_width / 2), f32(screen_height / 2)},
+            target = p.position,
+        }   
+        rl.BeginMode2D(camera)
+        defer rl.EndMode2D()
+
+        // drawing
         for berry in pickups {
             rl.DrawRectangleRec(berry.size, berry_colour)
         }
+        for rock in obstacles {
+            rl.DrawRectangleRec(rock.size, rock_colour)
+        }
+ 
+        // collision
         for i, idx in pickups {
             if rl.CheckCollisionRecs(player_rect, pickups[idx].size) {
                 unordered_remove(&pickups, idx)
@@ -77,22 +89,14 @@ main :: proc() {
                 break
             }
         }
-
-       for rock in obstacles {
-            rl.DrawRectangleRec(rock.size, rock_colour)
-        }
         for i, idx in obstacles {
             if rl.CheckCollisionRecs(player_rect, obstacles[idx].size) {
-                fmt.println("bonk") 
+                p.position = prev_pos
+                // fmt.println("bonk") 
             }
         }
 
-
         rl.DrawRectangleV(p.position, p.size, p.color)
         rl.ClearBackground(rl.DARKGREEN)
-        rl.EndMode2D()
-        rl.EndDrawing()
     }
-
-    rl.CloseWindow()
 }
