@@ -1,0 +1,22 @@
+#### day 1
+Basic movement 
+Player, Berry and Rock structs
+Basic collision detection
+Basic camera
+basic basic basic
+
+#### day 2
+Setup game state enum to manage:
+    - main
+    - pause 
+    - game states
+Added some very basic UI
+
+
+#### TODO:
+Basic editor
+- place/remove items and obstacles
+
+
+
+Basic textures
