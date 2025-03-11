@@ -124,6 +124,22 @@ main :: proc() {
                     p.level_editor = !p.level_editor 
                 }
                 if p.level_editor == true {
+                    if rl.IsMouseButtonPressed(.RIGHT) {
+                        for p, idx in pickups {
+                            if rl.CheckCollisionPointRec(mp, pickups[idx].size) {
+                                unordered_remove(&pickups, idx)
+                                break
+                            }
+                        }
+                    }
+                    if rl.IsMouseButtonPressed(.RIGHT) {
+                        for p, idx in obstacles {
+                            if rl.CheckCollisionPointRec(mp, obstacles[idx].size) {
+                                unordered_remove(&obstacles, idx)
+                                break
+                            }
+                        }
+                    }
                     if rl.IsKeyPressed(.ONE) {
                         append(&pickups, Berry{rl.Rectangle{mp.x, mp.y, 15, 15}, berry_colour})
                     }
