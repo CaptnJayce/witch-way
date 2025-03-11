@@ -23,6 +23,7 @@ Player :: struct {
     color: rl.Color,
     health: f32,
     damage: f32,
+    level_editor: bool,
 }
 
 Berry :: struct {
@@ -50,18 +51,13 @@ main :: proc() {
     p.color = {177, 156, 217, 255}
     p.health = 10
     p.damage = 5
+    p.level_editor = false
 
     berry_colour := rl.Color{144, 213, 255, 255}
     rock_colour := rl.Color{65, 66, 65, 255}
 
     pickups: [dynamic]Berry
-    append(&pickups, Berry{rl.Rectangle{150, 150, 15, 15}, berry_colour})
-    append(&pickups, Berry{rl.Rectangle{100, 100, 15, 15}, berry_colour})
-    append(&pickups, Berry{rl.Rectangle{175, 175, 15, 15}, berry_colour})
-    append(&pickups, Berry{rl.Rectangle{125, 125, 15, 15}, berry_colour})
-
     obstacles: [dynamic]Rock
-    append(&obstacles, Rock{rl.Rectangle{200, 200, 20, 20}, rock_colour})
 
     state := GameState.MainMenu
     slot := InventorySlot.One
@@ -98,10 +94,10 @@ main :: proc() {
                 if rl.IsKeyDown(.S) { p.position.y += p.speed * rl.GetFrameTime() }
                 if rl.IsKeyDown(.A) { p.position.x -= p.speed * rl.GetFrameTime() }
                 if rl.IsKeyDown(.D) { p.position.x += p.speed * rl.GetFrameTime() }
-
+                    
                 player_rect := rl.Rectangle {
-                    x = p.position.x,
-                    y = p.position.y,
+                    x = p.position.x - p.size.x / 2,
+                    y = p.position.y - p.size.x / 2,
                     width = p.size.x,
                     height = p.size.y,
                 }
@@ -120,6 +116,20 @@ main :: proc() {
                 }
                 for rock in obstacles {
                     rl.DrawRectangleRec(rock.size, rock_colour)
+                }
+
+                // level editor
+                mp := rl.GetScreenToWorld2D(rl.GetMousePosition(), camera)
+                if rl.IsKeyPressed(.T) {
+                    p.level_editor = !p.level_editor 
+                }
+                if p.level_editor == true {
+                    if rl.IsKeyPressed(.ONE) {
+                        append(&pickups, Berry{rl.Rectangle{mp.x, mp.y, 15, 15}, berry_colour})
+                    }
+                    if rl.IsKeyPressed(.TWO) {
+                        append(&obstacles, Rock{rl.Rectangle{mp.x, mp.y, 20, 20}, rock_colour})
+                    }
                 }
         
                 // collision
@@ -148,6 +158,7 @@ main :: proc() {
             rl.DrawFPS(20, 20)
             rl.DrawText(rl.TextFormat("Health: %f", p.health), 20, 50, 20, rl.RAYWHITE)
             rl.DrawText(rl.TextFormat("Damage: %f", p.damage), 20, 75, 20, rl.RAYWHITE)
+            rl.DrawText(rl.TextFormat("Editor Enabled: %t", p.level_editor), 20, 100, 20, rl.RAYWHITE)
 
             // temporary inventory UI, will do proper implementation tomorrow 
             // highlight selected slot
