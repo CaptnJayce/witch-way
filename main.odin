@@ -16,9 +16,15 @@ InventorySlot :: enum {
     Four,
 }
 
+LevelEditor :: enum {
+    Berry,
+    Rock,
+}
+
 Player :: struct {
     position: rl.Vector2,
     size: rl.Vector2,
+    scale: rl.Vector2,
     speed: f32,
     color: rl.Color,
     health: f32,
@@ -36,31 +42,42 @@ Rock :: struct {
     color: rl.Color,
 }
 
+Texture :: struct {
+    player_sprite: rl.Texture2D,
+}
+
+Level :: struct {
+    pickups: [dynamic]Berry,
+    obstacles: [dynamic]Rock,
+}
+
 main :: proc() {
     screen_width :i32 = 1280
     screen_height :i32 = 720
 
     rl.InitWindow(screen_width, screen_height, "Witch Way")
     defer rl.CloseWindow()
-
     rl.SetTargetFPS(120)
 
+    l: Level
     p: Player
-    p.size = {20, 40}
+    p.size = {60, 120}
+    p.scale = {1, 1}
     p.speed = 250.0
     p.color = {177, 156, 217, 255}
     p.health = 10
     p.damage = 5
     p.level_editor = false
 
+    player_sprite := rl.LoadTexture("textures/player_sprite.png")
+    defer rl.UnloadTexture(player_sprite)
+
     berry_colour := rl.Color{144, 213, 255, 255}
     rock_colour := rl.Color{65, 66, 65, 255}
 
-    pickups: [dynamic]Berry
-    obstacles: [dynamic]Rock
-
     state := GameState.MainMenu
     slot := InventorySlot.One
+    editor := LevelEditor.Berry
     quit := 0
                 
     for !rl.WindowShouldClose() {
@@ -92,8 +109,14 @@ main :: proc() {
                 prev_pos := p.position // used for rock collision
                 if rl.IsKeyDown(.W) { p.position.y -= p.speed * rl.GetFrameTime() }
                 if rl.IsKeyDown(.S) { p.position.y += p.speed * rl.GetFrameTime() }
-                if rl.IsKeyDown(.A) { p.position.x -= p.speed * rl.GetFrameTime() }
-                if rl.IsKeyDown(.D) { p.position.x += p.speed * rl.GetFrameTime() }
+                if rl.IsKeyDown(.A) {
+                    p.scale = -1.0
+                    p.position.x -= p.speed * rl.GetFrameTime() 
+                }
+                if rl.IsKeyDown(.D) { 
+                    p.scale = 1.0
+                    p.position.x += p.speed * rl.GetFrameTime() 
+                }
                     
                 player_rect := rl.Rectangle {
                     x = p.position.x - p.size.x / 2,
@@ -104,17 +127,17 @@ main :: proc() {
 
                 // camera
                 camera := rl.Camera2D {
-                    zoom = 2,
+                    zoom = 1,
                     offset = {f32(screen_width / 2), f32(screen_height / 2)},
                     target = p.position,
                 }   
                 rl.BeginMode2D(camera)
 
                 // drawing
-               for berry in pickups {
+               for berry in l.pickups {
                     rl.DrawRectangleRec(berry.size, berry_colour)
                 }
-                for rock in obstacles {
+                for rock in l.obstacles {
                     rl.DrawRectangleRec(rock.size, rock_colour)
                 }
 
@@ -125,45 +148,49 @@ main :: proc() {
                 }
                 if p.level_editor == true {
                     if rl.IsMouseButtonPressed(.RIGHT) {
-                        for p, idx in pickups {
-                            if rl.CheckCollisionPointRec(mp, pickups[idx].size) {
-                                unordered_remove(&pickups, idx)
+                        for p, idx in l.pickups {
+                            if rl.CheckCollisionPointRec(mp, l.pickups[idx].size) {
+                                unordered_remove(&l.pickups, idx)
+                                break
+                            }
+                        }
+
+                        for p, idx in l.obstacles {
+                            if rl.CheckCollisionPointRec(mp, l.obstacles[idx].size) {
+                                unordered_remove(&l.obstacles, idx)
                                 break
                             }
                         }
                     }
-                    if rl.IsMouseButtonPressed(.RIGHT) {
-                        for p, idx in obstacles {
-                            if rl.CheckCollisionPointRec(mp, obstacles[idx].size) {
-                                unordered_remove(&obstacles, idx)
-                                break
-                            }
-                        }
+
+                    if rl.IsKeyPressed(.ONE) { editor = .Berry }
+                    if rl.IsKeyPressed(.TWO) { editor = .Rock }
+
+                    if editor == .Berry && rl.IsMouseButtonPressed(.LEFT) {
+                        append(&l.pickups, Berry{rl.Rectangle{mp.x, mp.y, 15, 15}, berry_colour})
                     }
-                    if rl.IsKeyPressed(.ONE) {
-                        append(&pickups, Berry{rl.Rectangle{mp.x, mp.y, 15, 15}, berry_colour})
-                    }
-                    if rl.IsKeyPressed(.TWO) {
-                        append(&obstacles, Rock{rl.Rectangle{mp.x, mp.y, 20, 20}, rock_colour})
+                    if editor == .Rock && rl.IsMouseButtonPressed(.LEFT) {
+                        append(&l.obstacles, Rock{rl.Rectangle{mp.x, mp.y, 20, 20}, rock_colour})
                     }
                 }
         
                 // collision
-                for i, idx in pickups {
-                    if rl.CheckCollisionRecs(player_rect, pickups[idx].size) {
-                        unordered_remove(&pickups, idx)
+                for i, idx in l.pickups {
+                    if rl.CheckCollisionRecs(player_rect, l.pickups[idx].size) {
+                        unordered_remove(&l.pickups, idx)
                         //fmt.println(&pickups)
                         break
                     }
                 }
-                for i, idx in obstacles {
-                    if rl.CheckCollisionRecs(player_rect, obstacles[idx].size) {
+                for i, idx in l.obstacles {
+                    if rl.CheckCollisionRecs(player_rect, l.obstacles[idx].size) {
                         p.position = prev_pos
                         // fmt.println("bonk") 
                     }
                 }
 
             rl.DrawRectangleV(p.position - p.size.x / 2, p.size, p.color)
+            rl.DrawTextureV(player_sprite, p.position - p.size.x / 2, rl.WHITE)
             rl.ClearBackground(rl.DARKGREEN)
         }
 

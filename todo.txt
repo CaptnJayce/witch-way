@@ -14,7 +14,12 @@ Added some very basic UI
 
 #### day 3
 Simple editor, able to place and destroy entities
-
+Added a player, rock, and berry, texture. Only implemented the player texture.
 
 TODO:
-Basic textures
+Flip player sprite when moving left/right
+Implement remaining textures
+Refactor code as much as possible
+    - hotbar, player handling, camera, etc
+Start work in inventory system
+Saving/loading
