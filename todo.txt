@@ -13,9 +13,8 @@ Setup game state enum to manage:
 Added some very basic UI
 
 #### day 3
-You can now place down pickups and obstacles
+Simple editor, able to place and destroy entities
 
 
 TODO:
-Merge obstacles and pickups array or put them in a struct
 Basic textures
