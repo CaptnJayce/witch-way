@@ -16,10 +16,12 @@ Added some very basic UI
 Simple editor, able to place and destroy entities
 Added a player, rock, and berry, texture. Only implemented the player texture.
 
+#### day 4
+player_sprite will now flip when moving left/right
+
 TODO:
-Flip player sprite when moving left/right
 Implement remaining textures
 Refactor code as much as possible
     - hotbar, player handling, camera, etc
-Start work in inventory system
+Start work on inventory system
 Saving/loading

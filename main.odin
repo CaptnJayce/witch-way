@@ -24,12 +24,12 @@ LevelEditor :: enum {
 Player :: struct {
     position: rl.Vector2,
     size: rl.Vector2,
-    scale: rl.Vector2,
+    texture: rl.Texture2D,
+    flipped: bool,
     speed: f32,
     color: rl.Color,
     health: f32,
     damage: f32,
-    level_editor: bool,
 }
 
 Berry :: struct {
@@ -42,82 +42,109 @@ Rock :: struct {
     color: rl.Color,
 }
 
-Texture :: struct {
-    player_sprite: rl.Texture2D,
-}
-
 Level :: struct {
     pickups: [dynamic]Berry,
     obstacles: [dynamic]Rock,
 }
 
-main :: proc() {
-    screen_width :i32 = 1280
-    screen_height :i32 = 720
+// global definitions
+sw :i32 = 1280
+sh :i32 = 720
+sw_half :i32 = sw / 2
+sh_half :i32 = sh / 2
 
-    rl.InitWindow(screen_width, screen_height, "Witch Way")
-    defer rl.CloseWindow()
-    rl.SetTargetFPS(120)
+berry_colour := rl.Color{144, 213, 255, 255}
+rock_colour := rl.Color{65, 66, 65, 255}
 
-    l: Level
-    p: Player
+state := GameState.MainMenu
+slot := InventorySlot.One
+editor := LevelEditor.Berry
+quit := 0
+
+flip_texture :: proc(p: Player, pos: rl.Vector2, flip: bool) {
+    width := f32(p.texture.width)
+    height := f32(p.texture.height)
+
+    source := rl.Rectangle {
+        x = 0,
+        y = 0,
+        width = p.size.x,
+        height = p.size.y,
+    }
+
+    if flip {
+        source.width = -source.width
+    }
+
+    rl.DrawTextureRec(p.texture, source, p.position - p.size.x / 2, rl.WHITE)
+}
+
+player_init :: proc(p: ^Player) {
     p.size = {60, 120}
-    p.scale = {1, 1}
+    p.texture = rl.LoadTexture("textures/player_sprite.png")
+    p.flipped = false
     p.speed = 250.0
     p.color = {177, 156, 217, 255}
     p.health = 10
     p.damage = 5
-    p.level_editor = false
+}
 
-    player_sprite := rl.LoadTexture("textures/player_sprite.png")
-    defer rl.UnloadTexture(player_sprite)
+player_handler :: proc(p: ^Player) {
+    if rl.IsKeyDown(.W) { p.position.y -= p.speed * rl.GetFrameTime() }
+    if rl.IsKeyDown(.S) { p.position.y += p.speed * rl.GetFrameTime() }
+    if rl.IsKeyDown(.A) {
+        p.flipped = true
+        p.position.x -= p.speed * rl.GetFrameTime() 
+    }
+    if rl.IsKeyDown(.D) { 
+        p.flipped = false
+        p.position.x += p.speed * rl.GetFrameTime() 
+    }
+}
 
-    berry_colour := rl.Color{144, 213, 255, 255}
-    rock_colour := rl.Color{65, 66, 65, 255}
+game_handler :: proc() {
+    // state handling
+    if rl.IsKeyPressed(.ESCAPE) && state == .Pause {
+        state = GameState.Game // If paused, switch to game
+    }
+    else if rl.IsKeyPressed(.ESCAPE) && state == .Game {
+        state = GameState.Pause // if game, switch to pause
+    }
+    if rl.IsKeyPressed(.ENTER) && state == .MainMenu {
+        state = GameState.Game // If menu, switch to game
+    }
+}
 
-    state := GameState.MainMenu
-    slot := InventorySlot.One
-    editor := LevelEditor.Berry
-    quit := 0
-                
+main :: proc() {
+    rl.InitWindow(sw, sh, "Witch Way")
+    defer rl.CloseWindow()
+    rl.SetTargetFPS(120)
+
+    p: Player
+    player_init(&p)
+
+    l: Level
+    level_editor := false
+
     for !rl.WindowShouldClose() {
         rl.SetExitKey(.KEY_NULL)
         rl.BeginDrawing()
         defer rl.EndDrawing()
 
-        // state handling
-        if rl.IsKeyPressed(.ESCAPE) && state == .Pause {
-            state = GameState.Game // If paused, switch to game
-        }
-        else if rl.IsKeyPressed(.ESCAPE) && state == .Game {
-            state = GameState.Pause // if game, switch to pause
-        }
-        if rl.IsKeyPressed(.ENTER) && state == .MainMenu {
-            state = GameState.Game // If menu, switch to game
-        }
+        game_handler()
 
         switch state {
             case .MainMenu:
-                rl.DrawText("Main Menu", screen_width / 2 - rl.MeasureText("Main Menu", 20) / 2, screen_height / 2, 20, rl.PURPLE)
-                rl.DrawText("Press Enter to play", screen_width / 2 - rl.MeasureText("Press Enter to play", 20) / 2, screen_height / 2 + 40, 20, rl.PURPLE)
+                rl.DrawText("Main Menu", sw_half - rl.MeasureText("Main Menu", 20) / 2, sh_half, 20, rl.PURPLE)
+                rl.DrawText("Press Enter to play", sw_half - rl.MeasureText("Press Enter to play", 20) / 2, sh_half + 40, 20, rl.PURPLE)
                 rl.ClearBackground(rl.BLACK)
             case .Pause:
-                rl.DrawText("Game Paused", screen_width / 2 - rl.MeasureText("Game Paused", 20) / 2, screen_height / 2, 20, rl.PURPLE)
+                rl.DrawText("Game Paused", sw_half - rl.MeasureText("Game Paused", 20) / 2, sh_half, 20, rl.PURPLE)
                 rl.ClearBackground(rl.BLACK)
             case .Game:
-                // player movement 
                 prev_pos := p.position // used for rock collision
-                if rl.IsKeyDown(.W) { p.position.y -= p.speed * rl.GetFrameTime() }
-                if rl.IsKeyDown(.S) { p.position.y += p.speed * rl.GetFrameTime() }
-                if rl.IsKeyDown(.A) {
-                    p.scale = -1.0
-                    p.position.x -= p.speed * rl.GetFrameTime() 
-                }
-                if rl.IsKeyDown(.D) { 
-                    p.scale = 1.0
-                    p.position.x += p.speed * rl.GetFrameTime() 
-                }
-                    
+                player_handler(&p)
+
                 player_rect := rl.Rectangle {
                     x = p.position.x - p.size.x / 2,
                     y = p.position.y - p.size.x / 2,
@@ -125,16 +152,16 @@ main :: proc() {
                     height = p.size.y,
                 }
 
-                // camera
-                camera := rl.Camera2D {
+                c := rl.Camera2D {
                     zoom = 1,
-                    offset = {f32(screen_width / 2), f32(screen_height / 2)},
+                    offset = {f32(sw_half), f32(sh_half)},
                     target = p.position,
                 }   
-                rl.BeginMode2D(camera)
+
+                rl.BeginMode2D(c)
 
                 // drawing
-               for berry in l.pickups {
+                for berry in l.pickups {
                     rl.DrawRectangleRec(berry.size, berry_colour)
                 }
                 for rock in l.obstacles {
@@ -142,11 +169,11 @@ main :: proc() {
                 }
 
                 // level editor
-                mp := rl.GetScreenToWorld2D(rl.GetMousePosition(), camera)
+                mp := rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
                 if rl.IsKeyPressed(.T) {
-                    p.level_editor = !p.level_editor 
+                    level_editor = !level_editor 
                 }
-                if p.level_editor == true {
+                if level_editor == true {
                     if rl.IsMouseButtonPressed(.RIGHT) {
                         for p, idx in l.pickups {
                             if rl.CheckCollisionPointRec(mp, l.pickups[idx].size) {
@@ -190,7 +217,7 @@ main :: proc() {
                 }
 
             rl.DrawRectangleV(p.position - p.size.x / 2, p.size, p.color)
-            rl.DrawTextureV(player_sprite, p.position - p.size.x / 2, rl.WHITE)
+            flip_texture(p, p.position, p.flipped)
             rl.ClearBackground(rl.DARKGREEN)
         }
 
@@ -201,7 +228,7 @@ main :: proc() {
             rl.DrawFPS(20, 20)
             rl.DrawText(rl.TextFormat("Health: %f", p.health), 20, 50, 20, rl.RAYWHITE)
             rl.DrawText(rl.TextFormat("Damage: %f", p.damage), 20, 75, 20, rl.RAYWHITE)
-            rl.DrawText(rl.TextFormat("Editor Enabled: %t", p.level_editor), 20, 100, 20, rl.RAYWHITE)
+            rl.DrawText(rl.TextFormat("Editor Enabled: %t", level_editor), 20, 100, 20, rl.RAYWHITE)
 
             // temporary inventory UI, will do proper implementation tomorrow 
             // highlight selected slot
@@ -212,20 +239,20 @@ main :: proc() {
             
             switch slot {
                 case .One:
-                    rl.DrawRectangle(screen_width / 2 - 175, screen_height - 80, 80, 80, {255, 255, 255, 150})
+                    rl.DrawRectangle(sw_half - 175, sh - 80, 80, 80, {255, 255, 255, 150})
                 case .Two:
-                    rl.DrawRectangle(screen_width / 2 - 85, screen_height - 80, 80, 80, {255, 255, 255, 150})
+                    rl.DrawRectangle(sw_half - 85, sh - 80, 80, 80, {255, 255, 255, 150})
                 case .Three:
-                    rl.DrawRectangle(screen_width / 2 + 5, screen_height - 80, 80, 80, {255, 255, 255, 150})
+                    rl.DrawRectangle(sw_half + 5, sh - 80, 80, 80, {255, 255, 255, 150})
                 case .Four:
-                    rl.DrawRectangle(screen_width / 2 + 95, screen_height - 80, 80, 80, {255, 255, 255, 150})
+                    rl.DrawRectangle(sw_half + 95, sh - 80, 80, 80, {255, 255, 255, 150})
             }
             // right
-            rl.DrawRectangleLines(screen_width / 2 + 5, screen_height - 80, 80, 80, rl.WHITE)
-            rl.DrawRectangleLines(screen_width / 2 + 95, screen_height - 80, 80, 80, rl.WHITE)
+            rl.DrawRectangleLines(sw_half + 5, sh - 80, 80, 80, rl.WHITE)
+            rl.DrawRectangleLines(sw_half + 95, sh - 80, 80, 80, rl.WHITE)
             // left
-            rl.DrawRectangleLines(screen_width / 2 - 85, screen_height - 80, 80, 80, rl.WHITE)
-            rl.DrawRectangleLines(screen_width / 2 - 175, screen_height - 80, 80, 80, rl.WHITE)
+            rl.DrawRectangleLines(sw_half - 85, sh - 80, 80, 80, rl.WHITE)
+            rl.DrawRectangleLines(sw_half - 175, sh - 80, 80, 80, rl.WHITE)
         }
     }
 }
