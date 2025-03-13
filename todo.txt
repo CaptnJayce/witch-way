@@ -18,10 +18,9 @@ Added a player, rock, and berry, texture. Only implemented the player texture.
 
 #### day 4
 player_sprite will now flip when moving left/right
+lots of refactoring (thats what we like to see)
 
 TODO:
 Implement remaining textures
-Refactor code as much as possible
-    - hotbar, player handling, camera, etc
 Start work on inventory system
 Saving/loading
