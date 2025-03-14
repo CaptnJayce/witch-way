@@ -20,7 +20,10 @@ Added a player, rock, and berry, texture. Only implemented the player texture.
 player_sprite will now flip when moving left/right
 lots of refactoring (thats what we like to see)
 
+#### day 5
+implemented remaining textures and spritesheets
+
 TODO:
-Implement remaining textures
 Start work on inventory system
 Saving/loading
+Radial pickup for objects

@@ -34,12 +34,12 @@ Player :: struct {
 
 Berry :: struct {
     size: rl.Rectangle,
-    color: rl.Color,
+    sprite: rl.Texture2D,
 }
 
 Rock :: struct {
     size: rl.Rectangle,
-    color: rl.Color,
+    sprite: rl.Texture2D,
 }
 
 Level :: struct {
@@ -53,9 +53,6 @@ sw :i32 = 1280
 sh :i32 = 720
 sw_half :i32 = sw / 2
 sh_half :i32 = sh / 2
-
-berry_colour := rl.Color{144, 213, 255, 255}
-rock_colour := rl.Color{65, 66, 65, 255}
 
 state := GameState.MainMenu
 slot := InventorySlot.One
@@ -82,7 +79,7 @@ flip_texture :: proc(p: Player, pos: rl.Vector2, flip: bool) {
     rl.DrawTextureRec(p.texture, source, p.position - p.size.x / 2, rl.WHITE)
 }
 
-player_init :: proc(p: ^Player) {
+object_init:: proc(p: ^Player, b: ^Berry, r: ^Rock) {
     p.size = {60, 120}
     p.texture = rl.LoadTexture("textures/player_sprite.png")
     p.flipped = false
@@ -90,8 +87,11 @@ player_init :: proc(p: ^Player) {
     p.color = {177, 156, 217, 255}
     p.health = 10
     p.damage = 5
-}
 
+    b.sprite = rl.LoadTexture("textures/sprite_sheet_pickups-export.png")
+
+    r.sprite = rl.LoadTexture("textures/sprite_sheet_rocks-export.png")
+}
 player_handler :: proc(p: ^Player) {
     // store pos from a frame before for collisions
     prev_pos = p.position
@@ -142,11 +142,25 @@ collision :: proc(p: ^Player, l: ^Level) {
 }
 
 draw :: proc(l: Level) {
+    // ensure xy & wh is multiplied by three as i export the sprites with 300% scaling in aseprite
+    berry_source := rl.Rectangle {
+        x = 0,
+        y = 0,
+        width = 48,
+        height = 48,
+    }
+    rock_source := rl.Rectangle {
+        x = 0,
+        y = 0,
+        width = 48,
+        height = 48,
+    }
+
     for berry in l.pickups {
-        rl.DrawRectangleRec(berry.size, berry_colour)
+        rl.DrawTextureRec(berry.sprite, berry_source, {berry.size.x, berry.size.y}, rl.WHITE)
     }
     for rock in l.obstacles {
-        rl.DrawRectangleRec(rock.size, rock_colour)
+        rl.DrawTextureRec(rock.sprite, rock_source, {rock.size.x, rock.size.y}, rl.WHITE)
     }
 }
 
@@ -184,7 +198,7 @@ ui :: proc(p: Player, l: Level) {
     }
 }
 
-level_editor :: proc(l: ^Level, c: rl.Camera2D) {
+level_editor :: proc(l: ^Level, c: rl.Camera2D, berry_sprite: rl.Texture2D, rock_sprite: rl.Texture2D) {
     mp := rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
 
     if rl.IsKeyPressed(.T) {
@@ -212,10 +226,10 @@ level_editor :: proc(l: ^Level, c: rl.Camera2D) {
         if rl.IsKeyPressed(.TWO) { editor = .Rock }
 
         if editor == .Berry && rl.IsMouseButtonPressed(.LEFT) {
-            append(&l.pickups, Berry{rl.Rectangle{mp.x, mp.y, 15, 15}, berry_colour})
+            append(&l.pickups, Berry{rl.Rectangle{mp.x, mp.y, 48, 48}, berry_sprite})
         }
         if editor == .Rock && rl.IsMouseButtonPressed(.LEFT) {
-            append(&l.obstacles, Rock{rl.Rectangle{mp.x, mp.y, 20, 20}, rock_colour})
+            append(&l.obstacles, Rock{rl.Rectangle{mp.x, mp.y, 48, 48}, rock_sprite})
         }
     }
 }
@@ -226,7 +240,9 @@ main :: proc() {
     rl.SetTargetFPS(120)
 
     p: Player
-    player_init(&p)
+    b: Berry
+    r: Rock
+    object_init(&p, &b, &r)
 
     l: Level
 
@@ -239,29 +255,32 @@ main :: proc() {
 
         switch state {
             case .MainMenu:
-                rl.DrawText("Main Menu", sw_half - rl.MeasureText("Main Menu", 20) / 2, sh_half, 20, rl.PURPLE)
-                rl.DrawText("Press Enter to play", sw_half - rl.MeasureText("Press Enter to play", 20) / 2, sh_half + 40, 20, rl.PURPLE)
-                rl.ClearBackground(rl.BLACK)
+            rl.DrawText("Main Menu", sw_half - rl.MeasureText("Main Menu", 20) / 2, sh_half, 20, rl.PURPLE)
+            rl.DrawText("Press Enter to play", sw_half - rl.MeasureText("Press Enter to play", 20) / 2, sh_half + 40, 20, rl.PURPLE)
+            rl.ClearBackground(rl.BLACK)
+
             case .Pause:
-                rl.DrawText("Game Paused", sw_half - rl.MeasureText("Game Paused", 20) / 2, sh_half, 20, rl.PURPLE)
-                rl.ClearBackground(rl.BLACK)
+            rl.DrawText("Game Paused", sw_half - rl.MeasureText("Game Paused", 20) / 2, sh_half, 20, rl.PURPLE)
+            rl.ClearBackground(rl.BLACK)
+
             case .Game:
-                player_handler(&p)
+            player_handler(&p)
 
-                c := rl.Camera2D {
-                    zoom = 1,
-                    offset = {f32(sw_half), f32(sh_half)},
-                    target = p.position,
-                }   
-                rl.BeginMode2D(c)
+            c := rl.Camera2D {
+                zoom = 1,
+                offset = {f32(sw_half), f32(sh_half)},
+                target = p.position,
+            }   
+            rl.BeginMode2D(c)
 
-                draw(l)
-                collision(&p, &l)
+            draw(l)
             
-                // rl.DrawRectangleV(p.position - p.size.x / 2, p.size, p.color) // hitbox
-                flip_texture(p, p.position, p.flipped)
-                rl.ClearBackground(rl.DARKGREEN)
-                level_editor(&l, c)
+           collision(&p, &l)
+        
+            // rl.DrawRectangleV(p.position - p.size.x / 2, p.size, p.color) // hitbox
+            flip_texture(p, p.position, p.flipped)
+            rl.ClearBackground(rl.DARKGREEN)
+            level_editor(&l, c, b.sprite, r.sprite)
         }
 
         rl.EndMode2D()
