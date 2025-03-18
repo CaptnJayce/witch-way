@@ -98,52 +98,6 @@ game_handler :: proc() {
         state = GameState.Game // If menu, switch to game
     }
 }
-
-prev_pos : rl.Vector2
-collision :: proc(p: ^Player, l: ^Level) {
-    player_rect := rl.Rectangle {
-        x = p.position.x - p.size.x / 2,
-        y = p.position.y - p.size.x / 2,
-        width = p.size.x,
-        height = p.size.y,
-    }
-
-    for i, idx in l.pickups {
-        if rl.CheckCollisionRecs(player_rect, l.pickups[idx].size) {
-            unordered_remove(&l.pickups, idx)
-            break
-        }
-    }
-    for i, idx in l.obstacles {
-        if rl.CheckCollisionRecs(player_rect, l.obstacles[idx].size) {
-            p.position = prev_pos
-        }
-    }
-}
-
-draw :: proc(l: Level) {
-    // ensure xy & wh is multiplied by three as i export the sprites with 300% scaling in aseprite
-    berry_source := rl.Rectangle {
-        x = 0,
-        y = 0,
-        width = 48,
-        height = 48,
-    }
-    rock_source := rl.Rectangle {
-        x = 0,
-        y = 0,
-        width = 48,
-        height = 48,
-    }
-
-    for berry in l.pickups {
-        rl.DrawTextureRec(berry.sprite, berry_source, {berry.size.x, berry.size.y}, rl.WHITE)
-    }
-    for rock in l.obstacles {
-        rl.DrawTextureRec(rock.sprite, rock_source, {rock.size.x, rock.size.y}, rl.WHITE)
-    }
-}
-
 // ----- UI ----- //
 // inventory
 ItemType :: enum {
@@ -165,7 +119,14 @@ i: Inventory
 init_inventory :: proc() {
     i.slots[0] = ItemStack{.Berry, 0}
 }
-draw_inventory :: proc() {
+draw_inventory :: proc(berry_sprite: rl.Texture2D, open: bool) {
+    berry_source := rl.Rectangle {
+            x = 0,
+            y = 0,
+            width = 48,
+            height = 48,
+    }
+
     total_length : i32  = INVENTORY_COLUMNS * SLOT_SIZE 
     offset_x : i32 = (SW / 2) - (total_length / 2)
     offset_y : i32 = 40 
@@ -173,23 +134,27 @@ draw_inventory :: proc() {
     draw_at_x : i32 = offset_x 
     draw_at_y : i32 = offset_y
 
-    for idx in 0..<TOTAL_SLOTS {
-        rl.DrawRectangleLines(draw_at_x, draw_at_y, SLOT_SIZE, SLOT_SIZE, rl.WHITE)
+    if open {
+        for idx in 0..<TOTAL_SLOTS {
+            rl.DrawRectangleLines(draw_at_x, draw_at_y, SLOT_SIZE, SLOT_SIZE, rl.WHITE)
 
-        item_stack := i.slots[idx]
-        if item_stack.item != .None {
-            #partial switch item_stack.item {
-            case .Berry:
-                rl.DrawRectangle(draw_at_x, draw_at_y, 20, 20, rl.RED)
-                rl.DrawText(rl.TextFormat("%d", item_stack.count), draw_at_x, draw_at_y, 20, rl.WHITE)
+            item_stack := i.slots[idx]
+            if item_stack.item != .None {
+                #partial switch item_stack.item {
+                case .Berry:
+                    rl.DrawTextureRec(berry_sprite, berry_source, {f32(draw_at_x), f32(draw_at_y)}, rl.WHITE)
+
+                    // rl.DrawRectangle(draw_at_x, draw_at_y, 20, 20, rl.RED)
+                    rl.DrawText(rl.TextFormat("%d", item_stack.count), draw_at_x, draw_at_y, 20, rl.WHITE)
+                }
             }
-        }
 
-        draw_at_x += SLOT_SIZE 
+            draw_at_x += SLOT_SIZE 
 
-        if draw_at_x == (offset_x + (INVENTORY_COLUMNS * SLOT_SIZE)) {
-            draw_at_x = offset_x
-            draw_at_y += SLOT_SIZE 
+            if draw_at_x == (offset_x + (INVENTORY_COLUMNS * SLOT_SIZE)) {
+                draw_at_x = offset_x
+                draw_at_y += SLOT_SIZE 
+            }
         }
     }
 }
@@ -253,6 +218,53 @@ level_editor :: proc(l: ^Level, c: rl.Camera2D, berry_sprite: rl.Texture2D, rock
     }
 }
 
+prev_pos : rl.Vector2
+collision :: proc(p: ^Player, l: ^Level) {
+    player_rect := rl.Rectangle {
+        x = p.position.x - p.size.x / 2,
+        y = p.position.y - p.size.x / 2,
+        width = p.size.x,
+        height = p.size.y,
+    }
+
+    for j, idx in l.pickups {
+        if rl.CheckCollisionRecs(player_rect, l.pickups[idx].size) {
+            unordered_remove(&l.pickups, idx)
+            i.slots[0].count += 1
+            break
+        }
+    }
+    for j, idx in l.obstacles {
+        if rl.CheckCollisionRecs(player_rect, l.obstacles[idx].size) {
+            p.position = prev_pos
+        }
+    }
+}
+
+draw :: proc(l: Level) {
+    // ensure xy & wh is multiplied by three as i export the sprites with 300% scaling in aseprite
+    berry_source := rl.Rectangle {
+        x = 0,
+        y = 0,
+        width = 48,
+        height = 48,
+    }
+    rock_source := rl.Rectangle {
+        x = 0,
+        y = 0,
+        width = 48,
+        height = 48,
+    }
+
+    for berry in l.pickups {
+        rl.DrawTextureRec(berry.sprite, berry_source, {berry.size.x, berry.size.y}, rl.WHITE)
+    }
+    for rock in l.obstacles {
+        rl.DrawTextureRec(rock.sprite, rock_source, {rock.size.x, rock.size.y}, rl.WHITE)
+    }
+}
+
+
 main :: proc() {
     rl.InitWindow(SW, SH, "Witch Way")
     defer rl.CloseWindow()
@@ -263,6 +275,7 @@ main :: proc() {
     r: Rock
     object_init(&p, &b, &r)
     init_inventory()
+    open := false
 
     l: Level
 
@@ -293,9 +306,10 @@ main :: proc() {
             }   
             rl.BeginMode2D(c)
 
-            add_item() 
             draw(l)
-
+            if rl.IsKeyPressed(.E) {
+                open = !open
+            }
             collision(&p, &l)
         
             // rl.DrawRectangleV(p.position - p.size.x / 2, p.size, p.color) // hitbox
@@ -305,7 +319,9 @@ main :: proc() {
         }
 
         rl.EndMode2D()
-        draw_inventory()
+
+        
+        draw_inventory(b.sprite, open)
         // debug_menu(&p, &l)
     }
 }
