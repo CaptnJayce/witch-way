@@ -25,6 +25,7 @@ implemented remaining textures and spritesheets
 began work on hotbar, started with dynamic drawing logic
 moved structs above relevant proc
 
+
 TODO:
 Start work on inventory system
 Saving/loading

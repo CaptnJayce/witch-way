@@ -4,10 +4,15 @@ import rl "vendor:raylib"
 import "core:fmt"
 
 // global definitions
-sw :i32 = 1280
-sh :i32 = 720
-sw_half :i32 = sw / 2
-sh_half :i32 = sh / 2
+SW :i32 = 1280
+SH :i32 = 720
+SWH :i32 = SW / 2
+SHH :i32 = SH / 2
+
+SLOT_SIZE :: 60
+INVENTORY_COLUMNS :: 5
+INVENTORY_ROWS :: 10 
+TOTAL_SLOTS :: INVENTORY_ROWS * INVENTORY_COLUMNS
 
 state := GameState.MainMenu
 quit := 0
@@ -95,7 +100,7 @@ game_handler :: proc() {
 }
 
 prev_pos : rl.Vector2
-collision :: proc(p: ^Player, l: ^Level, h: ^Hotbar) {
+collision :: proc(p: ^Player, l: ^Level) {
     player_rect := rl.Rectangle {
         x = p.position.x - p.size.x / 2,
         y = p.position.y - p.size.x / 2,
@@ -106,11 +111,6 @@ collision :: proc(p: ^Player, l: ^Level, h: ^Hotbar) {
     for i, idx in l.pickups {
         if rl.CheckCollisionRecs(player_rect, l.pickups[idx].size) {
             unordered_remove(&l.pickups, idx)
-            for i in h.slots {
-                if h.slots[i] == 0 {
-                    h.slots[i] += 1
-                }
-            }
             break
         }
     }
@@ -145,58 +145,61 @@ draw :: proc(l: Level) {
 }
 
 // ----- UI ----- //
-HotbarSlot :: enum {
-    Zero,
-    One,
-    Two,
-    Three,
-    Four,
+// inventory
+ItemType :: enum {
+    None,
+    Berry,
 }
-Hotbar :: struct {
-    slots: []i32,
-    current_slot: i32,
-    total_in_slot: i32,
+
+ItemStack :: struct {
+    item: ItemType,
+    count: int,
 }
-slot := HotbarSlot.Zero
-hotbar :: proc(h: ^Hotbar) {
-    h := Hotbar {
-        slots = []i32{1, 2, 3, 4}
-    }
 
-    size_of_slot := i32(60)
-    length_of_bar := i32(len(h.slots)) * size_of_slot 
-    draw_at_x := sw_half - i32((length_of_bar / 2))
-    draw_at_y := sh - size_of_slot 
+Inventory :: struct {
+    slots:[TOTAL_SLOTS]ItemStack, 
+}
 
-    for i in h.slots {
-        rl.DrawRectangleLines(draw_at_x, draw_at_y, size_of_slot, size_of_slot, rl.BLACK)
-        draw_at_x += size_of_slot 
-    }
+i: Inventory
 
-    // enum doesn't need to be handled manually but a more dynamic 
-    // implementation won't be necessary unless slot number changes throughout the game 
-    if rl.IsKeyPressed(.ONE) {slot = HotbarSlot.One} 
-    if rl.IsKeyPressed(.TWO) {slot = HotbarSlot.Two} 
-    if rl.IsKeyPressed(.THREE) {slot = HotbarSlot.Three} 
-    if rl.IsKeyPressed(.FOUR) {slot = HotbarSlot.Four} 
+init_inventory :: proc() {
+    i.slots[0] = ItemStack{.Berry, 0}
+}
+draw_inventory :: proc() {
+    total_length : i32  = INVENTORY_COLUMNS * SLOT_SIZE 
+    offset_x : i32 = (SW / 2) - (total_length / 2)
+    offset_y : i32 = 40 
 
-    switch slot {
-    case .Zero:
-    rl.DrawRectangle(0, 0, 0, 0, {0, 0, 0, 0})
-    case .One:
-    rl.DrawRectangle(draw_at_x - length_of_bar, draw_at_y, size_of_slot, size_of_slot, {255, 255, 255, 150})
-    rl.DrawText(rl.TextFormat("Berries: %d", h.total_in_slot), draw_at_x - length_of_bar, draw_at_y, 20, rl.RAYWHITE)
-    case .Two:
-    rl.DrawRectangle(draw_at_x - length_of_bar + size_of_slot, draw_at_y, size_of_slot, size_of_slot, {255, 255, 255, 150})
-    case .Three:
-    rl.DrawRectangle(draw_at_x - length_of_bar + (size_of_slot * 2), draw_at_y, size_of_slot, size_of_slot, {255, 255, 255, 150})
-    case .Four:
-    rl.DrawRectangle(draw_at_x - length_of_bar + (size_of_slot * 3), draw_at_y, size_of_slot, size_of_slot, {255, 255, 255, 150})
+    draw_at_x : i32 = offset_x 
+    draw_at_y : i32 = offset_y
+
+    for idx in 0..<TOTAL_SLOTS {
+        rl.DrawRectangleLines(draw_at_x, draw_at_y, SLOT_SIZE, SLOT_SIZE, rl.WHITE)
+
+        item_stack := i.slots[idx]
+        if item_stack.item != .None {
+            #partial switch item_stack.item {
+            case .Berry:
+                rl.DrawRectangle(draw_at_x, draw_at_y, 20, 20, rl.RED)
+                rl.DrawText(rl.TextFormat("%d", item_stack.count), draw_at_x, draw_at_y, 20, rl.WHITE)
+            }
+        }
+
+        draw_at_x += SLOT_SIZE 
+
+        if draw_at_x == (offset_x + (INVENTORY_COLUMNS * SLOT_SIZE)) {
+            draw_at_x = offset_x
+            draw_at_y += SLOT_SIZE 
+        }
     }
 }
+add_item :: proc() {
+    // replace IsKeyPressed with collisions in actual game
+    if rl.IsKeyPressed(.B) { i.slots[0].count += 1 }    
+}
+
 debug_menu :: proc(p: ^Player, l: ^Level) {
     if state == GameState.Game {
-        // UI
         rl.DrawFPS(20, 20)
         rl.DrawText(rl.TextFormat("Health: %f", p.health), 20, 50, 20, rl.RAYWHITE)
         rl.DrawText(rl.TextFormat("Damage: %f", p.damage), 20, 75, 20, rl.RAYWHITE)
@@ -251,15 +254,15 @@ level_editor :: proc(l: ^Level, c: rl.Camera2D, berry_sprite: rl.Texture2D, rock
 }
 
 main :: proc() {
-    rl.InitWindow(sw, sh, "Witch Way")
+    rl.InitWindow(SW, SH, "Witch Way")
     defer rl.CloseWindow()
     rl.SetTargetFPS(120)
 
     p: Player
     b: Berry
     r: Rock
-    h: Hotbar
     object_init(&p, &b, &r)
+    init_inventory()
 
     l: Level
 
@@ -272,12 +275,12 @@ main :: proc() {
 
         switch state {
             case .MainMenu:
-            rl.DrawText("Main Menu", sw_half - rl.MeasureText("Main Menu", 20) / 2, sh_half, 20, rl.PURPLE)
-            rl.DrawText("Press Enter to play", sw_half - rl.MeasureText("Press Enter to play", 20) / 2, sh_half + 40, 20, rl.PURPLE)
+            rl.DrawText("Main Menu", SWH- rl.MeasureText("Main Menu", 20) / 2, SHH, 20, rl.PURPLE)
+            rl.DrawText("Press Enter to play", SWH - rl.MeasureText("Press Enter to play", 20) / 2, SHH + 40, 20, rl.PURPLE)
             rl.ClearBackground(rl.BLACK)
 
             case .Pause:
-            rl.DrawText("Game Paused", sw_half - rl.MeasureText("Game Paused", 20) / 2, sh_half, 20, rl.PURPLE)
+            rl.DrawText("Game Paused", SWH - rl.MeasureText("Game Paused", 20) / 2, SHH, 20, rl.PURPLE)
             rl.ClearBackground(rl.BLACK)
 
             case .Game:
@@ -285,14 +288,15 @@ main :: proc() {
 
             c := rl.Camera2D {
                 zoom = 1,
-                offset = {f32(sw_half), f32(sh_half)},
+                offset = {f32(SWH), f32(SHH)},
                 target = p.position,
             }   
             rl.BeginMode2D(c)
 
+            add_item() 
             draw(l)
-            
-            collision(&p, &l, &h)
+
+            collision(&p, &l)
         
             // rl.DrawRectangleV(p.position - p.size.x / 2, p.size, p.color) // hitbox
             flip_texture(p, p.position, p.flipped)
@@ -301,6 +305,7 @@ main :: proc() {
         }
 
         rl.EndMode2D()
+        draw_inventory()
         // debug_menu(&p, &l)
     }
 }
