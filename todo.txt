@@ -25,8 +25,16 @@ implemented remaining textures and spritesheets
 began work on hotbar, started with dynamic drawing logic
 moved structs above relevant proc
 
+### day 6
+removed previous hotbar iterations
+implemented inventory-prototype
 
-TODO:
-Start work on inventory system
-Saving/loading
+
+TODO (order of priority):
 Radial pickup for objects
+Make project more modular
+Basic JSON save/load
+More objects
+Rename some variables
+    - "pickups" and "objects" array
+    - whatever else i feel needs changing as i come across it
