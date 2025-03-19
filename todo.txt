@@ -25,13 +25,15 @@ implemented remaining textures and spritesheets
 began work on hotbar, started with dynamic drawing logic
 moved structs above relevant proc
 
-### day 6
+#### day 6
 removed previous hotbar iterations
 implemented inventory-prototype
 
+#### day 7 
+Radial pickup for objects
 
 TODO (order of priority):
-Radial pickup for objects
+Allow player to move against object they're colliding with
 Make project more modular
 Basic JSON save/load
 More objects

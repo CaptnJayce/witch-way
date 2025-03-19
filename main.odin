@@ -33,6 +33,7 @@ object_init:: proc(p: ^Player, b: ^Berry, r: ^Rock) {
     p.color = {177, 156, 217, 255}
     p.health = 10
     p.damage = 5
+    p.pickup = 50.0
 
     b.sprite = rl.LoadTexture("textures/sprite_sheet_pickups-export.png")
 
@@ -48,6 +49,7 @@ Player :: struct {
     color: rl.Color,
     health: f32,
     damage: f32,
+    pickup: f32,
 }
 player_handler :: proc(p: ^Player) {
     // store pos from a frame before for collisions
@@ -89,13 +91,13 @@ GameState :: enum {
 }
 game_handler :: proc() {
     if rl.IsKeyPressed(.ESCAPE) && state == .Pause {
-        state = GameState.Game // If paused, switch to game
+        state = GameState.Game // if paused, switch to game
     }
     else if rl.IsKeyPressed(.ESCAPE) && state == .Game {
         state = GameState.Pause // if game, switch to pause
     }
     if rl.IsKeyPressed(.ENTER) && state == .MainMenu {
-        state = GameState.Game // If menu, switch to game
+        state = GameState.Game // if menu, switch to game
     }
 }
 // ----- UI ----- //
@@ -157,10 +159,6 @@ draw_inventory :: proc(berry_sprite: rl.Texture2D, open: bool) {
             }
         }
     }
-}
-add_item :: proc() {
-    // replace IsKeyPressed with collisions in actual game
-    if rl.IsKeyPressed(.B) { i.slots[0].count += 1 }    
 }
 
 debug_menu :: proc(p: ^Player, l: ^Level) {
@@ -228,12 +226,13 @@ collision :: proc(p: ^Player, l: ^Level) {
     }
 
     for j, idx in l.pickups {
-        if rl.CheckCollisionRecs(player_rect, l.pickups[idx].size) {
+        if rl.Vector2Distance(p.position, {l.pickups[idx].size.x, l.pickups[idx].size.y}) <= p.pickup {
             unordered_remove(&l.pickups, idx)
             i.slots[0].count += 1
             break
         }
     }
+
     for j, idx in l.obstacles {
         if rl.CheckCollisionRecs(player_rect, l.obstacles[idx].size) {
             p.position = prev_pos
