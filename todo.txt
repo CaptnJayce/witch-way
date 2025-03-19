@@ -31,10 +31,11 @@ implemented inventory-prototype
 
 #### day 7 
 Radial pickup for objects
+Press F to pickup object
+Made significant project optimisations
 
 TODO (order of priority):
 Allow player to move against object they're colliding with
-Make project more modular
 Basic JSON save/load
 More objects
 Rename some variables
