@@ -20,7 +20,7 @@ GameState :: enum {
 }
 
 Level :: struct {
-    pickups: [dynamic]Berry,
+    pickups: [dynamic]Krushem,
     obstacles: [dynamic]Rock,
     editor: bool
 }
@@ -29,11 +29,11 @@ state := GameState.MainMenu
 quit := 0
 
 p: Player
-b: Berry
+k: Krushem 
 r: Rock
 l: Level 
 
-object_init:: proc() {
+init_player :: proc() {
     p.size = {60, 120}
     p.texture = rl.LoadTexture("textures/player_sprite.png")
     p.flipped = false
@@ -42,13 +42,14 @@ object_init:: proc() {
     p.health = 10
     p.damage = 5
     p.pickup = 75.0
+}
 
-    b.sprite = rl.LoadTexture("textures/sprite_sheet_pickups-export.png")
-
+init_sprite :: proc() {
+    k.sprite = rl.LoadTexture("textures/sprite_sheet_pickups-export.png")
     r.sprite = rl.LoadTexture("textures/sprite_sheet_rocks-export.png")
 }
 
-game_handler :: proc() {
+state_handler :: proc() {
     if rl.IsKeyPressed(.ESCAPE) && state == .Pause {
         state = GameState.Game // if paused, switch to game
     }

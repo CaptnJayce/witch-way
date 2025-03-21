@@ -8,17 +8,17 @@ main :: proc() {
     defer rl.CloseWindow()
     rl.SetTargetFPS(120)
 
-    object_init()
+    // initialise everything
+    init_player()
+    init_sprite()
     init_inventory()
-
-    open := false
     
     for !rl.WindowShouldClose() {
         rl.SetExitKey(.KEY_NULL)
         rl.BeginDrawing()
         defer rl.EndDrawing()
         
-        game_handler()
+        state_handler()
 
         switch state {
             case .MainMenu:
@@ -34,30 +34,20 @@ main :: proc() {
             }
 
             player_handler()
-
-            c := rl.Camera2D {
-                zoom = 1,
-                offset = {f32(SWH), f32(SHH)},
-                target = p.position,
-            }   
-
-            rl.BeginMode2D(c)
+            camera()
 
             draw()
-
-            if rl.IsKeyPressed(.E) {
-                open = !open
-            }
+            flip_texture(p.flipped)
 
             collision()
         
-            flip_texture(p, p.position, p.flipped)
             rl.ClearBackground(rl.DARKGREEN)
-            level_editor(c, b.sprite, r.sprite)
+            level_editor()
         }
-        rl.EndMode2D()
+
+        camera_end()
         
-        draw_inventory(b.sprite, open)
+        draw_inventory()
         debug_menu()
     }
 }

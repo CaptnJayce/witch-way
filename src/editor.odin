@@ -10,7 +10,7 @@ LevelEditor :: enum {
 
 editor := LevelEditor.Berry
 
-level_editor :: proc(c: rl.Camera2D, berry_sprite: rl.Texture2D, rock_sprite: rl.Texture2D) {
+level_editor :: proc() {
     mp := rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
 
     if rl.IsKeyPressed(.T) {
@@ -38,10 +38,10 @@ level_editor :: proc(c: rl.Camera2D, berry_sprite: rl.Texture2D, rock_sprite: rl
         if rl.IsKeyPressed(.TWO) { editor = .Rock }
 
         if editor == .Berry && rl.IsMouseButtonPressed(.LEFT) {
-            append(&l.pickups, Berry{rl.Rectangle{mp.x, mp.y, 48, 48}, berry_sprite})
+            append(&l.pickups, Krushem{rl.Rectangle{mp.x, mp.y, 48, 48}, k.sprite})
         }
         if editor == .Rock && rl.IsMouseButtonPressed(.LEFT) {
-            append(&l.obstacles, Rock{rl.Rectangle{mp.x, mp.y, 48, 48}, rock_sprite})
+            append(&l.obstacles, Rock{rl.Rectangle{mp.x, mp.y, 48, 48}, r.sprite})
         }
     }
 }

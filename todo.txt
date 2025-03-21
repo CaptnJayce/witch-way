@@ -40,12 +40,17 @@ Discovered misaligned hitbox during collision rework - fixed
 Added more information to the debug menu
 Added ability to save/load the player's position
 Removed abhorrent abuse of pointers lamao
+Moved camera into own file
+Renamed some variables and procedures, decomposed object_init
+Inventory background 
+Item will be greyed out until quantity is over 0
 
 TODO (order of priority):
 More objects
-Inventory background 
 Pause should actually pause and be transparent
 Rename some variables
     - "pickups" and "objects" array
     - whatever else i feel needs changing as i come across it
 More sprites
+Make Krushem more square
+

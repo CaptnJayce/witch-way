@@ -26,7 +26,7 @@ draw :: proc() {
     }
 }
 
-flip_texture :: proc(p: Player, pos: rl.Vector2, flip: bool) {
+flip_texture :: proc(flip: bool) {
     width := f32(p.texture.width)
     height := f32(p.texture.height)
 

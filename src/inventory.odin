@@ -16,12 +16,17 @@ Inventory :: struct {
 }
 
 i: Inventory
+open := false
 
 init_inventory :: proc() {
     i.slots[0] = ItemStack{.Berry, 0}
 }
 
-draw_inventory :: proc(berry_sprite: rl.Texture2D, open: bool) {
+draw_inventory :: proc() {
+    if rl.IsKeyPressed(.E) {
+        open = !open
+    }
+
     berry_source := rl.Rectangle {
             x = 0,
             y = 0,
@@ -30,6 +35,7 @@ draw_inventory :: proc(berry_sprite: rl.Texture2D, open: bool) {
     }
 
     total_length : i32  = INVENTORY_COLUMNS * SLOT_SIZE 
+    total_height : i32 = INVENTORY_ROWS * SLOT_SIZE
     offset_x : i32 = (SW / 2) - (total_length / 2)
     offset_y : i32 = 40 
 
@@ -37,6 +43,8 @@ draw_inventory :: proc(berry_sprite: rl.Texture2D, open: bool) {
     draw_at_y : i32 = offset_y
 
     if open {
+        rl.DrawRectangle(draw_at_x, draw_at_y, total_length, total_height, {100, 100, 100, 200})
+
         for idx in 0..<TOTAL_SLOTS {
             rl.DrawRectangleLines(draw_at_x, draw_at_y, SLOT_SIZE, SLOT_SIZE, rl.WHITE)
 
@@ -44,7 +52,11 @@ draw_inventory :: proc(berry_sprite: rl.Texture2D, open: bool) {
             if item_stack.item != .None {
                 #partial switch item_stack.item {
                 case .Berry:
-                    rl.DrawTextureRec(berry_sprite, berry_source, {f32(draw_at_x), f32(draw_at_y)}, rl.WHITE)
+                    if item_stack.count <= 0 {
+                        rl.DrawTextureRec(k.sprite, berry_source, {f32(draw_at_x + 5), f32(draw_at_y + 5)}, {50, 50, 50, 100})
+                    } else {
+                        rl.DrawTextureRec(k.sprite, berry_source, {f32(draw_at_x + 5), f32(draw_at_y + 5)}, rl.WHITE)
+                    }
 
                     // rl.DrawRectangle(draw_at_x, draw_at_y, 20, 20, rl.RED)
                     rl.DrawText(rl.TextFormat("%d", item_stack.count), draw_at_x, draw_at_y, 20, rl.WHITE)

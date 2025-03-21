@@ -3,7 +3,7 @@ package game
 import rl "vendor:raylib"
 import "core:fmt"
 
-Berry :: struct {
+Krushem :: struct {
     size: rl.Rectangle,
     sprite: rl.Texture2D,
 }
