@@ -5,12 +5,31 @@ import "core:fmt"
 
 prev_pos : rl.Vector2
 
+LastDirection :: enum {
+    x,
+    y,
+    xy,
+} 
+
+last_dir := LastDirection.x
 collision :: proc(p: ^Player, l: ^Level) {
     player_rect := rl.Rectangle {
         x = p.position.x - p.size.x / 2,
-        y = p.position.y - p.size.y / 2,
+        y = p.position.y - p.size.y / 2, // FIX THIS
         width = p.size.x,
         height = p.size.y,
+    }
+
+    if rl.IsKeyDown(.D) || rl.IsKeyDown(.A) {
+        last_dir = .x
+    }
+    if rl.IsKeyDown(.W) || rl.IsKeyDown(.S) {
+        last_dir = .y
+    }
+
+    if (rl.IsKeyDown(.W) || rl.IsKeyDown(.S)) && (rl.IsKeyDown(.D) || rl.IsKeyDown(.A)) {
+        fmt.println("s;lkjdffjdk;ls")
+        last_dir = .xy
     }
 
     for j, idx in l.pickups {
@@ -25,23 +44,10 @@ collision :: proc(p: ^Player, l: ^Level) {
 
     for j, idx in l.obstacles {
         if rl.CheckCollisionRecs(player_rect, l.obstacles[idx].size) {
-            player_rect_x := rl.Rectangle {
-                x = p.position.x - p.size.x / 2,
-                y = prev_pos.y - p.size.y / 2,
-                width = p.size.x,
-                height = p.size.y,
-            }
-            if rl.CheckCollisionRecs(player_rect_x, l.obstacles[idx].size) {
+            if last_dir == .x {
                 p.position.x = prev_pos.x
             }
-
-            player_rect_y := rl.Rectangle {
-                x = prev_pos.x - p.size.x / 2,
-                y = p.position.y - p.size.y / 2,
-                width = p.size.x,
-                height = p.size.y,
-            }
-            if rl.CheckCollisionRecs(player_rect_y, l.obstacles[idx].size) {
+            if last_dir == .y {
                 p.position.y = prev_pos.y
             }
         }

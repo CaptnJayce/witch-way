@@ -34,10 +34,16 @@ Radial pickup for objects
 Press F to pickup object
 Made significant project optimisations
 
+#### day 8
+player can now move along the axis they are not colliding with when colliding
+discovered misaligned hitbox during collision rework - fixed
+
 TODO (order of priority):
-Allow player to move against object they're colliding with
 Basic JSON save/load
 More objects
+Inventory background 
+Pause should actually pause and be transparent
 Rename some variables
     - "pickups" and "objects" array
     - whatever else i feel needs changing as i come across it
+More sprites

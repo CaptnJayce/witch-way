@@ -17,7 +17,7 @@ main :: proc() {
         rl.SetExitKey(.KEY_NULL)
         rl.BeginDrawing()
         defer rl.EndDrawing()
-
+        
         game_handler()
 
         switch state {
@@ -51,6 +51,6 @@ main :: proc() {
         rl.EndMode2D()
         
         draw_inventory(b.sprite, open)
-        // debug_menu(&p, &l)
+        debug_menu(&p, &l)
     }
 }

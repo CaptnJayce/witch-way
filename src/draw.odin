@@ -41,6 +41,6 @@ flip_texture :: proc(p: Player, pos: rl.Vector2, flip: bool) {
         source.width = -source.width
     }
 
-    rl.DrawTextureRec(p.texture, source, p.position - p.size.x / 2, rl.WHITE)
+    rl.DrawTextureRec(p.texture, source, p.position - p.size / 2, rl.WHITE)
 }
 
