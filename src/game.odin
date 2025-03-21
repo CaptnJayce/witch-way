@@ -33,7 +33,7 @@ b: Berry
 r: Rock
 l: Level 
 
-object_init:: proc(p: ^Player, b: ^Berry, r: ^Rock) {
+object_init:: proc() {
     p.size = {60, 120}
     p.texture = rl.LoadTexture("textures/player_sprite.png")
     p.flipped = false

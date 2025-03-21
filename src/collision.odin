@@ -5,7 +5,7 @@ import "core:fmt"
 
 prev_pos : rl.Vector2
 
-collision :: proc(p: ^Player, l: ^Level) {
+collision :: proc() {
     player_rect := rl.Rectangle {
         x = p.position.x - p.size.x / 2,
         y = p.position.y - p.size.y / 2,

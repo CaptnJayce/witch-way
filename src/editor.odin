@@ -10,7 +10,7 @@ LevelEditor :: enum {
 
 editor := LevelEditor.Berry
 
-level_editor :: proc(l: ^Level, c: rl.Camera2D, berry_sprite: rl.Texture2D, rock_sprite: rl.Texture2D) {
+level_editor :: proc(c: rl.Camera2D, berry_sprite: rl.Texture2D, rock_sprite: rl.Texture2D) {
     mp := rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
 
     if rl.IsKeyPressed(.T) {

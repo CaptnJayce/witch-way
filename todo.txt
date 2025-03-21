@@ -17,17 +17,17 @@ Simple editor, able to place and destroy entities
 Added a player, rock, and berry, texture. Only implemented the player texture.
 
 #### day 4
-player_sprite will now flip when moving left/right
-lots of refactoring (thats what we like to see)
+Player_sprite will now flip when moving left/right
+Lots of refactoring (thats what we like to see)
 
 #### day 5
-implemented remaining textures and spritesheets
-began work on hotbar, started with dynamic drawing logic
-moved structs above relevant proc
+Implemented remaining textures and spritesheets
+Began work on hotbar, started with dynamic drawing logic
+Moved structs above relevant proc
 
 #### day 6
-removed previous hotbar iterations
-implemented inventory-prototype
+Removed previous hotbar iterations
+Implemented inventory-prototype
 
 #### day 7 
 Radial pickup for objects
@@ -35,11 +35,13 @@ Press F to pickup object
 Made significant project optimisations
 
 #### day 8
-player can now move along the axis they are not colliding with when colliding
-discovered misaligned hitbox during collision rework - fixed
+Player can now move along the axis they are not colliding with when colliding
+Discovered misaligned hitbox during collision rework - fixed
+Added more information to the debug menu
+Added ability to save/load the player's position
+Removed abhorrent abuse of pointers lamao
 
 TODO (order of priority):
-Basic JSON save/load
 More objects
 Inventory background 
 Pause should actually pause and be transparent

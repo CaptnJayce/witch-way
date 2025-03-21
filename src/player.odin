@@ -15,7 +15,7 @@ Player :: struct {
     pickup: f32,
 }
 
-player_handler :: proc(p: ^Player) {
+player_handler :: proc() {
     // store pos from a frame before for collisions
     prev_pos = p.position
 

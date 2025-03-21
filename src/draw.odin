@@ -3,7 +3,7 @@ package game
 import rl "vendor:raylib"
 import "core:fmt"
 
-draw :: proc(l: Level) {
+draw :: proc() {
     // ensure xy & wh is multiplied by three as i export the sprites with 300% scaling in aseprite
     berry_source := rl.Rectangle {
         x = 0,

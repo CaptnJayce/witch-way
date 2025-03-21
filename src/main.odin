@@ -8,7 +8,7 @@ main :: proc() {
     defer rl.CloseWindow()
     rl.SetTargetFPS(120)
 
-    object_init(&p, &b, &r)
+    object_init()
     init_inventory()
 
     open := false
@@ -25,8 +25,15 @@ main :: proc() {
             draw_main_menu()
             case .Pause:
             draw_pause_menu()
+            if rl.IsKeyPressed(.S) {
+                save()
+            }
             case .Game:
-            player_handler(&p)
+            if rl.IsKeyPressed(.L) {
+                load()
+            }
+
+            player_handler()
 
             c := rl.Camera2D {
                 zoom = 1,
@@ -36,21 +43,21 @@ main :: proc() {
 
             rl.BeginMode2D(c)
 
-            draw(l)
+            draw()
 
             if rl.IsKeyPressed(.E) {
                 open = !open
             }
 
-            collision(&p, &l)
+            collision()
         
             flip_texture(p, p.position, p.flipped)
             rl.ClearBackground(rl.DARKGREEN)
-            level_editor(&l, c, b.sprite, r.sprite)
+            level_editor(c, b.sprite, r.sprite)
         }
         rl.EndMode2D()
         
         draw_inventory(b.sprite, open)
-        debug_menu(&p, &l)
+        debug_menu()
     }
 }
