@@ -46,6 +46,16 @@ Inventory background
 Item will be greyed out until quantity is over 0
 
 TODO (order of priority):
+Add a basic enemy
+    - When within certain range, enemy will track player
+    - Contact damage to begin with
+Death screen
+Add wand with basic spell
+    - Player has wand
+    - It shoots a basic projectile
+Implement a world grid for spawning and farming
+
+Start gameplay loop mechanics
 More objects
 Pause should actually pause and be transparent
 Rename some variables

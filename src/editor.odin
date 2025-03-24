@@ -4,11 +4,11 @@ import rl "vendor:raylib"
 import "core:fmt"
 
 LevelEditor :: enum {
-    Berry,
+    Krushem,
     Rock,
 }
 
-editor := LevelEditor.Berry
+editor := LevelEditor.Krushem
 
 level_editor :: proc() {
     mp := rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
@@ -34,14 +34,20 @@ level_editor :: proc() {
             }
         }
 
-        if rl.IsKeyPressed(.ONE) { editor = .Berry }
+        if rl.IsKeyPressed(.ONE) { editor = .Krushem }
         if rl.IsKeyPressed(.TWO) { editor = .Rock }
 
-        if editor == .Berry && rl.IsMouseButtonPressed(.LEFT) {
-            append(&l.pickups, Krushem{rl.Rectangle{mp.x, mp.y, 48, 48}, k.sprite})
+        // spawn enemy
+        if rl.IsKeyPressed(.H) {
+            append(&l.enemies, Enemy{rl.Rectangle{mp.x, mp.y, 24, 24}, e.texture, e.flipped, e.speed, e.health, e.damage})
+            fmt.println("spanwinafg")
+        }
+ 
+        if editor == .Krushem && rl.IsMouseButtonPressed(.LEFT) {
+            append(&l.pickups, Krushem{rl.Rectangle{mp.x, mp.y, 48, 48}, k.texture})
         }
         if editor == .Rock && rl.IsMouseButtonPressed(.LEFT) {
-            append(&l.obstacles, Rock{rl.Rectangle{mp.x, mp.y, 48, 48}, r.sprite})
+            append(&l.obstacles, Rock{rl.Rectangle{mp.x, mp.y, 48, 48}, r.texture})
         }
     }
 }

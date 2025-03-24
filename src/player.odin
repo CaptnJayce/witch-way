@@ -9,7 +9,6 @@ Player :: struct {
     texture: rl.Texture2D,
     flipped: bool,
     speed: f32,
-    color: rl.Color,
     health: f32,
     damage: f32,
     pickup: f32,

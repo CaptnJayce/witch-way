@@ -22,6 +22,7 @@ GameState :: enum {
 Level :: struct {
     pickups: [dynamic]Krushem,
     obstacles: [dynamic]Rock,
+    enemies: [dynamic]Enemy,
     editor: bool
 }
 
@@ -29,24 +30,32 @@ state := GameState.MainMenu
 quit := 0
 
 p: Player
+e: Enemy
 k: Krushem 
 r: Rock
 l: Level 
 
 init_player :: proc() {
-    p.size = {60, 120}
-    p.texture = rl.LoadTexture("textures/player_sprite.png")
+    p.size = {36, 84}
+    p.texture = rl.LoadTexture("textures/sprite_player.png")
     p.flipped = false
     p.speed = 250.0
-    p.color = {177, 156, 217, 255}
     p.health = 10
     p.damage = 5
     p.pickup = 75.0
 }
 
+init_enemy :: proc() {
+    e.texture = rl.LoadTexture("textures/sprite_enemy.png")
+    e.flipped = false
+    e.speed = 150.0
+    e.health = 4
+    e.damage = 2
+}
+
 init_sprite :: proc() {
-    k.sprite = rl.LoadTexture("textures/sprite_sheet_pickups-export.png")
-    r.sprite = rl.LoadTexture("textures/sprite_sheet_rocks-export.png")
+    k.texture = rl.LoadTexture("textures/sprite_sheet_pickups-export.png")
+    r.texture = rl.LoadTexture("textures/sprite_sheet_rocks-export.png")
 }
 
 state_handler :: proc() {

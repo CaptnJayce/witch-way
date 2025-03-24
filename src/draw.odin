@@ -17,12 +17,21 @@ draw :: proc() {
         width = 48,
         height = 48,
     }
+    enemy_sorce := rl.Rectangle {
+        x = 0,
+        y = 0,
+        width = 24,
+        height = 24,
+    }
 
     for berry in l.pickups {
-        rl.DrawTextureRec(berry.sprite, berry_source, {berry.size.x, berry.size.y}, rl.WHITE)
+        rl.DrawTextureRec(berry.texture, berry_source, {berry.size.x, berry.size.y}, rl.WHITE)
     }
     for rock in l.obstacles {
-        rl.DrawTextureRec(rock.sprite, rock_source, {rock.size.x, rock.size.y}, rl.WHITE)
+        rl.DrawTextureRec(rock.texture, rock_source, {rock.size.x, rock.size.y}, rl.WHITE)
+    }
+    for enemy in l.enemies {
+        rl.DrawTextureRec(enemy.texture, enemy_sorce, {enemy.size.x, enemy.size.y}, rl.WHITE)
     }
 }
 

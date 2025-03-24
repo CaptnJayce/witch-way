@@ -10,6 +10,7 @@ main :: proc() {
 
     // initialise everything
     init_player()
+    init_enemy()
     init_sprite()
     init_inventory()
     

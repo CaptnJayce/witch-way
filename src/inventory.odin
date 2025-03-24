@@ -53,9 +53,9 @@ draw_inventory :: proc() {
                 #partial switch item_stack.item {
                 case .Berry:
                     if item_stack.count <= 0 {
-                        rl.DrawTextureRec(k.sprite, berry_source, {f32(draw_at_x + 5), f32(draw_at_y + 5)}, {50, 50, 50, 100})
+                        rl.DrawTextureRec(k.texture, berry_source, {f32(draw_at_x + 5), f32(draw_at_y + 5)}, {50, 50, 50, 100})
                     } else {
-                        rl.DrawTextureRec(k.sprite, berry_source, {f32(draw_at_x + 5), f32(draw_at_y + 5)}, rl.WHITE)
+                        rl.DrawTextureRec(k.texture, berry_source, {f32(draw_at_x + 5), f32(draw_at_y + 5)}, rl.WHITE)
                     }
 
                     // rl.DrawRectangle(draw_at_x, draw_at_y, 20, 20, rl.RED)
