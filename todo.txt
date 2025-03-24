@@ -45,6 +45,9 @@ Renamed some variables and procedures, decomposed object_init
 Inventory background 
 Item will be greyed out until quantity is over 0
 
+#### day 9
+
+
 TODO (order of priority):
 Add a basic enemy
     - When within certain range, enemy will track player

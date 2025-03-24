@@ -48,9 +48,12 @@ init_player :: proc() {
 init_enemy :: proc() {
     e.texture = rl.LoadTexture("textures/sprite_enemy.png")
     e.flipped = false
-    e.speed = 150.0
+    e.speed = 50.0
     e.health = 4
     e.damage = 2
+    e.sight = 100
+    e.action_timer = 0
+    e.direction = 0
 }
 
 init_sprite :: proc() {

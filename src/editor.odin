@@ -39,8 +39,7 @@ level_editor :: proc() {
 
         // spawn enemy
         if rl.IsKeyPressed(.H) {
-            append(&l.enemies, Enemy{rl.Rectangle{mp.x, mp.y, 24, 24}, e.texture, e.flipped, e.speed, e.health, e.damage})
-            fmt.println("spanwinafg")
+            append(&l.enemies, Enemy{rl.Rectangle{mp.x, mp.y, 24, 24}, e.texture, e.flipped, e.speed, e.health, e.damage, e.sight, e.action_timer, e.direction})
         }
  
         if editor == .Krushem && rl.IsMouseButtonPressed(.LEFT) {
