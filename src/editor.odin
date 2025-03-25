@@ -37,9 +37,8 @@ level_editor :: proc() {
         if rl.IsKeyPressed(.ONE) { editor = .Krushem }
         if rl.IsKeyPressed(.TWO) { editor = .Rock }
 
-        // spawn enemy
         if rl.IsKeyPressed(.H) {
-            append(&l.enemies, Enemy{rl.Rectangle{mp.x, mp.y, 24, 24}, e.texture, e.flipped, e.speed, e.health, e.damage, e.sight, e.action_timer, e.direction})
+            append(&l.enemies, Enemy{{mp.x, mp.y, 24, 24}, e.texture, e.flipped, e.speed, e.health, e.damage, e.sight, e.action_timer, e.direction})
         }
  
         if editor == .Krushem && rl.IsMouseButtonPressed(.LEFT) {

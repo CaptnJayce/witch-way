@@ -46,9 +46,17 @@ Inventory background
 Item will be greyed out until quantity is over 0
 
 #### day 9
-
+Added a basic enemy with:
+    - sprite
+    - collision
+    - random movement
+    - setup for interaction with player
+Fixed enemy not spawning at mouse xy
+Fixed enemy logic in general
+Kinda added contact damage
 
 TODO (order of priority):
+Iframes
 Add a basic enemy
     - When within certain range, enemy will track player
     - Contact damage to begin with

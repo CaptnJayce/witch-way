@@ -16,7 +16,7 @@ Player :: struct {
 
 player_handler :: proc() {
     // store pos from a frame before for collisions
-    prev_pos = p.position
+    player_prev_pos = p.position
 
     if rl.IsKeyDown(.W) { p.position.y -= p.speed * rl.GetFrameTime() }
     if rl.IsKeyDown(.S) { p.position.y += p.speed * rl.GetFrameTime() }

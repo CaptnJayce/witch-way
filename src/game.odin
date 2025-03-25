@@ -51,7 +51,7 @@ init_enemy :: proc() {
     e.speed = 50.0
     e.health = 4
     e.damage = 2
-    e.sight = 100
+    e.sight = 150.0 
     e.action_timer = 0
     e.direction = 0
 }

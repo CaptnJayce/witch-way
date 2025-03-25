@@ -17,33 +17,41 @@ Enemy :: struct {
     direction: int,
 }
 
-change_direction :: proc() {
-    directions: [4]int = {0, 1, 2, 3}
-    e.direction = rand.choice(directions[:])
+move :: proc(enemy: ^Enemy) {
+    dist_to_player := rl.Vector2Distance(p.position, {enemy.size.x, enemy.size.y})
+
+    if dist_to_player <= enemy.sight {
+        // pass
+    } else {
+        if enemy.direction == 0 {
+            enemy.size.x += enemy.speed * rl.GetFrameTime() // right
+        }
+        if enemy.direction == 1 {
+            enemy.size.x -= enemy.speed * rl.GetFrameTime() // left
+        }
+        if enemy.direction == 2 {
+            enemy.size.y += enemy.speed * rl.GetFrameTime() // down
+        }
+        if enemy.direction == 3 {
+            enemy.size.y -= enemy.speed * rl.GetFrameTime() // up
+        }
+    }
 }
 
-move :: proc() {
-    if e.direction == 0 {
-        e.size.x += e.speed * rl.GetFrameTime() // right
-    }
-    if e.direction == 1 {
-        e.size.x -= e.speed * rl.GetFrameTime() // left
-    }
-    if e.direction == 2 {
-        e.size.y += e.speed * rl.GetFrameTime() // down
-    }
-    if e.direction == 3 {
-        e.size.y -= e.speed * rl.GetFrameTime() // up
-    }
+change_direction :: proc(enemy: ^Enemy) {
+    directions: [4]int = {0, 1, 2, 3}
+    enemy.direction = rand.choice(directions[:])
 }
 
 enemy_handler :: proc(delta: f32) {
-    if len(l.enemies) != 0 {
-        move()
-        e.action_timer += delta
-        if e.action_timer >= 2.0 { 
-            change_direction()
-            e.action_timer = 0
+    for &enemy in l.enemies { 
+        enemy_prev_pos = {enemy.size.x, enemy.size.y}
+        move(&enemy)
+        enemy.action_timer += delta
+
+        if enemy.action_timer >= 2.0 { 
+            change_direction(&enemy)
+            enemy.action_timer = 0
         }
     }
 }
