@@ -21,7 +21,7 @@ move :: proc(enemy: ^Enemy) {
     dist_to_player := rl.Vector2Distance(p.position, {enemy.size.x, enemy.size.y})
 
     if dist_to_player <= enemy.sight {
-        // pass
+        // add pathing to player here
     } else {
         if enemy.direction == 0 {
             enemy.size.x += enemy.speed * rl.GetFrameTime() // right

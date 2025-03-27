@@ -28,6 +28,7 @@ Level :: struct {
 
 state := GameState.MainMenu
 quit := 0
+delta : f32
 
 p: Player
 e: Enemy

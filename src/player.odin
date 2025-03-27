@@ -12,14 +12,34 @@ Player :: struct {
     health: f32,
     damage: f32,
     can_take_damage: bool,
+    iframe_timer: f32,
     pickup: f32,
 }
 
-iframes :: proc () {
-
+// take in enemy type when more enemies are added
+damage_recieved :: proc() {
+    if p.can_take_damage == true {
+        p.health -= e.damage 
+        p.iframe_timer = 0
+        iframes(delta)
+    }
 }
 
-player_handler :: proc() {
+// wait 1.3 seconds before taking damage again
+iframes :: proc (delta: f32) {
+    p.can_take_damage = false
+
+    if !p.can_take_damage {
+        p.iframe_timer += delta
+
+        if p.iframe_timer >= 1.3 {
+            p.can_take_damage = true
+        }
+    } 
+}
+
+
+player_movement :: proc() {
     // store pos from a frame before for collisions
     player_prev_pos = p.position
 

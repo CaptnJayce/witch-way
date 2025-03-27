@@ -12,5 +12,6 @@ debug_menu :: proc() {
         rl.DrawText(rl.TextFormat("Coords: %f", p.position), 10, 100, 20, rl.RAYWHITE)
         rl.DrawText(rl.TextFormat("Speed: %f", p.speed), 10, 120, 20, rl.RAYWHITE)
         rl.DrawText(rl.TextFormat("Pickup range: %f", p.pickup), 10, 140, 20, rl.RAYWHITE)
+        rl.DrawText(rl.TextFormat("Delta : %f", delta), 10, 160, 20, rl.RAYWHITE)
     }
 }

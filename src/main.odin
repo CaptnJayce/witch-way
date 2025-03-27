@@ -18,7 +18,7 @@ main :: proc() {
         rl.SetExitKey(.KEY_NULL)
         rl.BeginDrawing()
         defer rl.EndDrawing()
-        delta := rl.GetFrameTime()
+        delta = rl.GetFrameTime()
         
         state_handler()
 
@@ -35,7 +35,8 @@ main :: proc() {
                 load()
             }
 
-            player_handler()
+            player_movement()
+            iframes(delta)
             enemy_handler(delta)
             camera()
 

@@ -50,9 +50,7 @@ collision :: proc() {
 
     for j, idx in l.enemies {
         if rl.CheckCollisionRecs(player_rect, l.enemies[idx].size) {
-            fmt.println("damage")
-            p.health -= e.damage
-            fmt.println(p.health)
+            damage_recieved()
         }
     }
 
