@@ -16,17 +16,19 @@ Inventory :: struct {
 }
 
 i: Inventory
-open := false
+toggled := false 
 
 init_inventory :: proc() {
     i.slots[0] = ItemStack{.Berry, 0}
 }
 
-draw_inventory :: proc() {
+toggle_inventory :: proc() {
     if rl.IsKeyPressed(.E) {
-        open = !open
+        toggled = !toggled
     }
+}
 
+draw_inventory :: proc() {
     berry_source := rl.Rectangle {
             x = 0,
             y = 0,
@@ -42,7 +44,7 @@ draw_inventory :: proc() {
     draw_at_x : i32 = offset_x 
     draw_at_y : i32 = offset_y
 
-    if open {
+    if toggled {
         rl.DrawRectangle(draw_at_x, draw_at_y, total_length, total_height, {100, 100, 100, 200})
 
         for idx in 0..<TOTAL_SLOTS {

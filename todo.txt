@@ -59,6 +59,8 @@ Kinda added contact damage
 Added a way to return to MainMenu and quit
 Implemented iframe system
 Added a death screen
+Inventory can no longer be toggled in the pause menu
+    - Still need to make it disappear when changing game state
 
 TODO (order of priority):
 Add a basic enemy
@@ -71,10 +73,6 @@ Implement a world grid for spawning and farming
 
 Start gameplay loop mechanics
 More objects
-Pause should actually pause and be transparent
-Rename some variables
-    - "pickups" and "objects" array
-    - whatever else i feel needs changing as i come across it
+Inventory should disappear when switching game state 
 More sprites
 Make Krushem more square
-

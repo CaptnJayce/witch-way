@@ -67,10 +67,10 @@ init_sprite :: proc() {
 
 state_handler :: proc() {
     if state == GameState.MainMenu && rl.IsKeyPressed(.Q) {
-        rl.CloseWindow() // if in main menu and press q, quit game
+        rl.CloseWindow() // if main menu, quit game
     }
-    if state == GameState.Pause && rl.IsKeyPressed(.ESCAPE) {
-        state = GameState.MainMenu // if in pause menu and press escape again, go to main menu
+    if state == GameState.Pause && rl.IsKeyPressed(.Q) {
+        state = GameState.MainMenu // if paused, go to main menu
     }
 
     if rl.IsKeyPressed(.ESCAPE) && state == .Pause {

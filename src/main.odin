@@ -19,7 +19,7 @@ main :: proc() {
         rl.BeginDrawing()
         defer rl.EndDrawing()
         delta = rl.GetFrameTime()
-        
+ 
         state_handler()
 
         switch state {
@@ -38,6 +38,7 @@ main :: proc() {
             }
 
             player_movement()
+            toggle_inventory()
             iframes(delta)
             enemy_handler(delta)
             camera()
@@ -52,8 +53,9 @@ main :: proc() {
         }
 
         camera_end()
-        
+
         draw_inventory()
+
         debug_menu()
     }
 }
