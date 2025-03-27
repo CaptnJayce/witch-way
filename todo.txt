@@ -55,8 +55,12 @@ Fixed enemy not spawning at mouse xy
 Fixed enemy logic in general
 Kinda added contact damage
 
+#### day 10
+Added a way to return to MainMenu and quit
+
 TODO (order of priority):
 Iframes
+Add a way to quit the game
 Add a basic enemy
     - When within certain range, enemy will track player
     - Contact damage to begin with

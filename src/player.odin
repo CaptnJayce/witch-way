@@ -11,7 +11,12 @@ Player :: struct {
     speed: f32,
     health: f32,
     damage: f32,
+    can_take_damage: bool,
     pickup: f32,
+}
+
+iframes :: proc () {
+
 }
 
 player_handler :: proc() {

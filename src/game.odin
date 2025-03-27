@@ -42,6 +42,7 @@ init_player :: proc() {
     p.speed = 250.0
     p.health = 10
     p.damage = 5
+    p.can_take_damage = true
     p.pickup = 75.0
 }
 
@@ -62,6 +63,13 @@ init_sprite :: proc() {
 }
 
 state_handler :: proc() {
+    if state == GameState.MainMenu && rl.IsKeyPressed(.Q) {
+        rl.CloseWindow()
+    }
+    if state == GameState.Pause && rl.IsKeyPressed(.ESCAPE) {
+        state = GameState.MainMenu
+    }
+
     if rl.IsKeyPressed(.ESCAPE) && state == .Pause {
         state = GameState.Game // if paused, switch to game
     }
