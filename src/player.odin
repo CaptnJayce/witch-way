@@ -9,6 +9,7 @@ Player :: struct {
     texture: rl.Texture2D,
     flipped: bool,
     speed: f32,
+    max_health: f32,
     health: f32,
     damage: f32,
     can_take_damage: bool,

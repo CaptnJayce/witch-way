@@ -25,6 +25,8 @@ main :: proc() {
         switch state {
             case .MainMenu:
             draw_main_menu()
+            case .DeathScreen:
+            draw_death_screen_menu()
             case .Pause:
             draw_pause_menu()
             if rl.IsKeyPressed(.S) {

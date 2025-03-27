@@ -17,6 +17,7 @@ GameState :: enum {
     MainMenu,
     Pause,
     Game,    
+    DeathScreen,
 }
 
 Level :: struct {
@@ -41,7 +42,8 @@ init_player :: proc() {
     p.texture = rl.LoadTexture("textures/sprite_player.png")
     p.flipped = false
     p.speed = 250.0
-    p.health = 10
+    p.max_health = 10
+    p.health = p.max_health
     p.damage = 5
     p.can_take_damage = true
     p.pickup = 75.0
@@ -65,10 +67,10 @@ init_sprite :: proc() {
 
 state_handler :: proc() {
     if state == GameState.MainMenu && rl.IsKeyPressed(.Q) {
-        rl.CloseWindow()
+        rl.CloseWindow() // if in main menu and press q, quit game
     }
     if state == GameState.Pause && rl.IsKeyPressed(.ESCAPE) {
-        state = GameState.MainMenu
+        state = GameState.MainMenu // if in pause menu and press escape again, go to main menu
     }
 
     if rl.IsKeyPressed(.ESCAPE) && state == .Pause {
@@ -79,5 +81,20 @@ state_handler :: proc() {
     }
     if rl.IsKeyPressed(.ENTER) && state == .MainMenu {
         state = GameState.Game // if menu, switch to game
+    }
+
+    if p.health <= 0 {
+        state = GameState.DeathScreen // if no health left, switch to deathscreen
+    }
+
+    // death screen logic 
+    if state == GameState.DeathScreen && rl.IsKeyPressed(.ENTER) {
+        p.health = p.max_health
+        state = GameState.Game 
+        load()
+    }
+    if state == GameState.DeathScreen && rl.IsKeyPressed(.ESCAPE) {
+        p.health = p.max_health
+        state = GameState.MainMenu
     }
 }
