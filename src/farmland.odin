@@ -1,7 +1,11 @@
 package game
 
-import "core:fmt"
 import rl "vendor:raylib"
+
+TILE_SIZE :: 48
+TILE_GRID_COLUMNS :: 8
+TILE_GRID_ROWS :: 8
+TOTAL_TILES :: TILE_GRID_ROWS * TILE_GRID_COLUMNS
 
 TileState :: enum {
 	Dry,

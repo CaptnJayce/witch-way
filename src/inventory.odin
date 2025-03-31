@@ -1,7 +1,11 @@
 package game
 
-import "core:fmt"
 import rl "vendor:raylib"
+
+SLOT_SIZE :: 60
+INVENTORY_COLUMNS :: 5
+INVENTORY_ROWS :: 10
+TOTAL_SLOTS :: INVENTORY_ROWS * INVENTORY_COLUMNS
 
 ItemType :: enum {
 	None,

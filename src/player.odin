@@ -1,6 +1,5 @@
 package game
 
-import "core:fmt"
 import rl "vendor:raylib"
 
 Player :: struct {
@@ -15,6 +14,20 @@ Player :: struct {
 	can_take_damage: bool,
 	iframe_timer:    f32,
 	pickup:          f32,
+}
+
+p: Player
+
+init_player :: proc() {
+	p.size = {36, 84}
+	p.texture = rl.LoadTexture("textures/sprite_player.png")
+	p.flipped = false
+	p.speed = 250.0
+	p.max_health = 10
+	p.health = p.max_health
+	p.damage = 5
+	p.can_take_damage = true
+	p.pickup = 75.0
 }
 
 // take in enemy type when more enemies are added

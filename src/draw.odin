@@ -1,7 +1,16 @@
 package game
 
-import "core:fmt"
 import rl "vendor:raylib"
+
+SW: i32 = 1280
+SH: i32 = 720
+SWH: i32 = SW / 2
+SHH: i32 = SH / 2
+
+init_sprite :: proc() {
+	k.texture = rl.LoadTexture("textures/sprite_sheet_pickups-export.png")
+	r.texture = rl.LoadTexture("textures/sprite_sheet_rocks-export.png")
+}
 
 draw :: proc() {
 	// ensure xy & wh is multiplied by three as i export the sprites with 300% scaling in aseprite
@@ -25,7 +34,6 @@ draw :: proc() {
 	}
 
 	for berry in l.pickups {
-		fmt.println(berry)
 		rl.DrawTextureRec(berry.texture, berry_source, {berry.size.x, berry.size.y}, rl.WHITE)
 	}
 	for rock in l.obstacles {

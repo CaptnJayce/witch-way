@@ -1,8 +1,6 @@
 package game
 
-import "core:fmt"
 import "core:math/rand"
-import "core:time"
 import rl "vendor:raylib"
 
 Enemy :: struct {
@@ -15,6 +13,19 @@ Enemy :: struct {
 	sight:        f32,
 	action_timer: f32,
 	direction:    int,
+}
+
+e: Enemy
+
+init_enemy :: proc() {
+	e.texture = rl.LoadTexture("textures/sprite_enemy.png")
+	e.flipped = false
+	e.speed = 50.0
+	e.health = 4
+	e.damage = 2
+	e.sight = 150.0
+	e.action_timer = 0
+	e.direction = 0
 }
 
 move :: proc(enemy: ^Enemy) {
