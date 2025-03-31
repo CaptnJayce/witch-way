@@ -33,13 +33,6 @@ toggle_inventory :: proc() {
 }
 
 draw_inventory :: proc() {
-	berry_source := rl.Rectangle {
-		x      = 0,
-		y      = 0,
-		width  = 48,
-		height = 48,
-	}
-
 	total_length: i32 = INVENTORY_COLUMNS * SLOT_SIZE
 	total_height: i32 = INVENTORY_ROWS * SLOT_SIZE
 	offset_x: i32 = (SW / 2) - (total_length / 2)

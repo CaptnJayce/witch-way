@@ -7,6 +7,25 @@ SH: i32 = 720
 SWH: i32 = SW / 2
 SHH: i32 = SH / 2
 
+berry_source := rl.Rectangle {
+	x      = 0,
+	y      = 0,
+	width  = 48,
+	height = 48,
+}
+rock_source := rl.Rectangle {
+	x      = 0,
+	y      = 0,
+	width  = 48,
+	height = 48,
+}
+enemy_source := rl.Rectangle {
+	x      = 0,
+	y      = 0,
+	width  = 24,
+	height = 24,
+}
+
 init_sprite :: proc() {
 	k.texture = rl.LoadTexture("textures/sprite_sheet_pickups-export.png")
 	r.texture = rl.LoadTexture("textures/sprite_sheet_rocks-export.png")
@@ -14,25 +33,6 @@ init_sprite :: proc() {
 
 draw :: proc() {
 	// ensure xy & wh is multiplied by three as i export the sprites with 300% scaling in aseprite
-	berry_source := rl.Rectangle {
-		x      = 0,
-		y      = 0,
-		width  = 48,
-		height = 48,
-	}
-	rock_source := rl.Rectangle {
-		x      = 0,
-		y      = 0,
-		width  = 48,
-		height = 48,
-	}
-	enemy_source := rl.Rectangle {
-		x      = 0,
-		y      = 0,
-		width  = 24,
-		height = 24,
-	}
-
 	for berry in l.pickups {
 		rl.DrawTextureRec(berry.texture, berry_source, {berry.size.x, berry.size.y}, rl.WHITE)
 	}
