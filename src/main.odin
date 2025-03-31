@@ -43,6 +43,7 @@ main :: proc() {
             enemy_handler(delta)
             camera()
 
+            draw_grid()
             draw()
             flip_texture(p.flipped)
 

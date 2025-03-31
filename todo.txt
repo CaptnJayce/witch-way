@@ -62,17 +62,6 @@ Added a death screen
 Inventory can no longer be toggled in the pause menu
     - Still need to make it disappear when changing game state
 
-TODO (order of priority):
-Add a basic enemy
-    - When within certain range, enemy will track player
-    - Contact damage to begin with
-Add wand with basic spell
-    - Player has wand
-    - It shoots a basic projectile
-Implement a world grid for spawning and farming
-
-Start gameplay loop mechanics
-More objects
-Inventory should disappear when switching game state 
-More sprites
-Make Krushem more square
+#### day 11
+Setup an actual trello pad - may revert later 
+TileGrid with mouse highlighting

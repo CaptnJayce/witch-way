@@ -25,6 +25,7 @@ draw :: proc() {
     }
 
     for berry in l.pickups {
+        fmt.println(berry)
         rl.DrawTextureRec(berry.texture, berry_source, {berry.size.x, berry.size.y}, rl.WHITE)
     }
     for rock in l.obstacles {
