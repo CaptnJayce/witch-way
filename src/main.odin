@@ -13,6 +13,7 @@ main :: proc() {
 	init_enemy()
 	init_sprite()
 	init_inventory()
+	init_grid()
 
 	for !rl.WindowShouldClose() {
 		rl.SetExitKey(.KEY_NULL)

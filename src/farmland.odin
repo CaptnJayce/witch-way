@@ -19,8 +19,9 @@ Grid :: struct {
 }
 
 grid: Grid
+action: bool
 
-init_grid :: proc() -> Grid {
+init_grid :: proc() {
 	for row in 0 ..< TILE_GRID_ROWS {
 		for col in 0 ..< TILE_GRID_COLUMNS {
 			grid.tiles[row][col] = Tile {
@@ -29,8 +30,24 @@ init_grid :: proc() -> Grid {
 			}
 		}
 	}
+}
 
-	return grid
+till_tile :: proc(row: int, col: int) {
+	if rl.IsMouseButtonPressed(.LEFT) && grid.tiles[row][col].state == .Dry {
+		grid.tiles[row][col] = Tile {
+			state = .Tilled,
+			item  = ItemStack{.None, 0},
+		}
+	}
+}
+
+water_tile :: proc(row: int, col: int) {
+	if rl.IsMouseButtonPressed(.LEFT) && grid.tiles[row][col].state == .Tilled {
+		grid.tiles[row][col] = Tile {
+			state = .Watered,
+			item  = ItemStack{.None, 0},
+		}
+	}
 }
 
 draw_grid :: proc() {
@@ -73,29 +90,22 @@ draw_grid :: proc() {
 					TILE_SIZE,
 					rl.Color{255, 255, 255, 128},
 				)
-				if rl.IsMouseButtonPressed(.LEFT) && grid.tiles[row][col].state == .Tilled {
-					grid.tiles[row][col].state = .Watered
-				}
-				if rl.IsMouseButtonPressed(.LEFT) && grid.tiles[row][col].state == .Dry {
-					grid.tiles[row][col].state = .Tilled
-				}
 
-
+				water_tile(row, col)
+				till_tile(row, col)
 			}
 
 			if grid.tiles[row][col].state == .Dry {
 				rl.DrawRectangle(draw_at_x, draw_at_y, TILE_SIZE, TILE_SIZE, rl.BROWN)
 			}
-
 			if grid.tiles[row][col].state == .Tilled {
 				rl.DrawRectangle(draw_at_x, draw_at_y, TILE_SIZE, TILE_SIZE, rl.DARKBROWN)
 			}
-
 			if grid.tiles[row][col].state == .Watered {
 				rl.DrawRectangle(draw_at_x, draw_at_y, TILE_SIZE, TILE_SIZE, rl.BLUE)
 			}
 
-			rl.DrawRectangleLines(draw_at_x, draw_at_y, TILE_SIZE, TILE_SIZE, rl.WHITE)
+			// rl.DrawRectangleLines(draw_at_x, draw_at_y, TILE_SIZE, TILE_SIZE, rl.WHITE)
 
 			draw_at_x += TILE_SIZE
 
