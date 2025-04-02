@@ -10,7 +10,7 @@ save :: proc() {
 		enemy:     type_of(l.enemies),
 		krushem:   type_of(l.pickups),
 		rock:      type_of(l.obstacles),
-		tiles:     type_of(grid.tiles),
+		tiles:     type_of(g.tiles),
 	}
 
 	save_data := SaveData {
@@ -19,7 +19,7 @@ save :: proc() {
 		enemy     = l.enemies,
 		krushem   = l.pickups,
 		rock      = l.obstacles,
-		tiles     = grid.tiles,
+		tiles     = g.tiles,
 	}
 
 	if data, err := json.marshal(save_data, allocator = context.temp_allocator); err == nil {
@@ -34,7 +34,7 @@ load :: proc() {
 		enemy:     type_of(l.enemies),
 		krushem:   type_of(l.pickups),
 		rock:      type_of(l.obstacles),
-		tiles:     type_of(grid.tiles),
+		tiles:     type_of(g.tiles),
 	}
 
 	save_data: SaveData
@@ -49,7 +49,7 @@ load :: proc() {
 			l.pickups = save_data.krushem
 			l.obstacles = save_data.rock
 
-			grid.tiles = save_data.tiles
+			g.tiles = save_data.tiles
 		}
 	}
 }
