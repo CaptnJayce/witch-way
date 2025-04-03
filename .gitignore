@@ -1,4 +1,6 @@
 ols.json
+save.json
+witch-way
 
 # Ignore generated files
 # ...
@@ -115,3 +117,5 @@ docgen_tmp/
 
 # Parser stuff
 parser/raylib_parser
+witch-way
+save.json

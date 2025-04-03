@@ -31,6 +31,13 @@ level_editor :: proc() {
 					break
 				}
 			}
+
+			for p, idx in l.enemies {
+				if rl.CheckCollisionPointRec(mp, l.enemies[idx].size) {
+					unordered_remove(&l.enemies, idx)
+					break
+				}
+			}
 		}
 
 		if rl.IsKeyPressed(.ONE) {editor = .Krushem}

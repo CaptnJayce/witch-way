@@ -64,5 +64,16 @@ enemy_handler :: proc(delta: f32) {
 			change_direction(&enemy)
 			enemy.action_timer = 0
 		}
+
+		enemy_collision(&enemy)
+	}
+}
+
+enemy_collision :: proc(enemy: ^Enemy) {
+	for j, idx in l.obstacles {
+		if rl.CheckCollisionRecs(enemy.size, l.obstacles[idx].size) {
+			enemy.size.x = enemy_prev_pos.x
+			enemy.size.y = enemy_prev_pos.y
+		}
 	}
 }

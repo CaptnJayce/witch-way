@@ -53,11 +53,4 @@ collision :: proc() {
 			damage_recieved()
 		}
 	}
-
-	for j, idx in l.obstacles {
-		if rl.CheckCollisionRecs(e.size, l.obstacles[idx].size) {
-			e.size.x = enemy_prev_pos.x
-			e.size.y = enemy_prev_pos.y
-		}
-	}
 }
