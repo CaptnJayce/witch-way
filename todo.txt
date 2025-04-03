@@ -65,3 +65,8 @@ Inventory can no longer be toggled in the pause menu
 #### day 11
 Setup an actual trello pad - may revert later 
 TileGrid with mouse highlighting
+
+#### day 12
+Implemented enemy collision with objects
+Refactored collision.odin
+Refactored init_ calls in main.odin
