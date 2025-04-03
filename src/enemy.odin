@@ -16,6 +16,7 @@ Enemy :: struct {
 }
 
 e: Enemy
+enemy_prev_pos: rl.Vector2
 
 init_enemy :: proc() {
 	e.texture = rl.LoadTexture("textures/sprite_enemy.png")

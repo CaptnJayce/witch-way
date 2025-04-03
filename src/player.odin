@@ -17,6 +17,7 @@ Player :: struct {
 }
 
 p: Player
+player_prev_pos: rl.Vector2
 
 init_player :: proc() {
 	p.size = {36, 84}
@@ -28,15 +29,6 @@ init_player :: proc() {
 	p.damage = 5
 	p.can_take_damage = true
 	p.pickup = 75.0
-}
-
-// take in enemy type when more enemies are added
-damage_recieved :: proc() {
-	if p.can_take_damage == true {
-		p.health -= e.damage
-		p.iframe_timer = 0
-		iframes(delta)
-	}
 }
 
 // wait 1.3 seconds before taking damage again
@@ -52,6 +44,14 @@ iframes :: proc(delta: f32) {
 	}
 }
 
+// take in enemy type when more enemies are added
+damage_recieved :: proc() {
+	if p.can_take_damage == true {
+		p.health -= e.damage
+		p.iframe_timer = 0
+		iframes(delta)
+	}
+}
 
 player_movement :: proc() {
 	// store pos from a frame before for collisions
@@ -67,4 +67,59 @@ player_movement :: proc() {
 		p.flipped = false
 		p.position.x += p.speed * rl.GetFrameTime()
 	}
+}
+
+player_collision :: proc() {
+	for j, idx in l.pickups {
+		if rl.Vector2Distance(p.position, {l.pickups[idx].size.x, l.pickups[idx].size.y}) <=
+		   p.pickup {
+			if rl.IsKeyPressed(.F) {
+				unordered_remove(&l.pickups, idx)
+				i.slots[0].count += 1
+				break
+			}
+		}
+	}
+
+	player_rect := rl.Rectangle {
+		x      = p.position.x - p.size.x / 2,
+		y      = p.position.y - p.size.y / 2,
+		width  = p.size.x,
+		height = p.size.y,
+	}
+
+	for j, idx in l.obstacles {
+		if rl.CheckCollisionRecs(player_rect, l.obstacles[idx].size) {
+			player_rect_x := rl.Rectangle {
+				x      = p.position.x - p.size.x / 2,
+				y      = player_prev_pos.y - p.size.y / 2,
+				width  = p.size.x,
+				height = p.size.y,
+			}
+			if rl.CheckCollisionRecs(player_rect_x, l.obstacles[idx].size) {
+				p.position.x = player_prev_pos.x
+			}
+
+			player_rect_y := rl.Rectangle {
+				x      = player_prev_pos.x - p.size.x / 2,
+				y      = p.position.y - p.size.y / 2,
+				width  = p.size.x,
+				height = p.size.y,
+			}
+			if rl.CheckCollisionRecs(player_rect_y, l.obstacles[idx].size) {
+				p.position.y = player_prev_pos.y
+			}
+		}
+	}
+
+	for j, idx in l.enemies {
+		if rl.CheckCollisionRecs(player_rect, l.enemies[idx].size) {
+			damage_recieved()
+		}
+	}
+}
+
+player_handler :: proc() {
+	player_movement()
+	player_collision()
 }

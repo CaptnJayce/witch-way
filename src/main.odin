@@ -7,12 +7,7 @@ main :: proc() {
 	defer rl.CloseWindow()
 	rl.SetTargetFPS(120)
 
-	// initialise everything
-	init_player()
-	init_enemy()
-	init_sprite()
-	init_inventory()
-	init_grid()
+	init_all()
 
 	for !rl.WindowShouldClose() {
 		rl.SetExitKey(.KEY_NULL)
@@ -37,17 +32,19 @@ main :: proc() {
 				load()
 			}
 
-			player_movement()
-			toggle_inventory()
+			// player stuff
+			player_handler()
 			iframes(delta)
+			toggle_inventory()
+
 			enemy_handler(delta)
+
 			camera()
 
+			// draw 
 			draw_grid()
 			draw()
 			flip_texture(p.flipped)
-
-			collision()
 
 			rl.ClearBackground(rl.DARKGREEN)
 			level_editor()
@@ -55,8 +52,8 @@ main :: proc() {
 
 		camera_end()
 
+		// ui
 		draw_inventory()
-
 		debug_menu()
 	}
 }
