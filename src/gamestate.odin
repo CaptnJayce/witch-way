@@ -11,6 +11,17 @@ GameState :: enum {
 
 state := GameState.MainMenu
 
+init_all :: proc() {
+	init_sprite()
+
+	init_player()
+	init_inventory()
+
+	init_grid()
+
+	init_enemy()
+}
+
 state_handler :: proc() {
 	if state == GameState.MainMenu && rl.IsKeyPressed(.Q) {
 		rl.CloseWindow() // if main menu, quit game
