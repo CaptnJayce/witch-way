@@ -4,7 +4,7 @@ import rl "vendor:raylib"
 
 Player :: struct {
 	position:        rl.Vector2,
-	size:            rl.Vector2,
+	size:            rl.Rectangle,
 	texture:         rl.Texture2D,
 	flipped:         bool,
 	speed:           f32,
@@ -14,13 +14,15 @@ Player :: struct {
 	can_take_damage: bool,
 	iframe_timer:    f32,
 	pickup:          f32,
+	source:          rl.Rectangle,
 }
 
 p: Player
 player_prev_pos: rl.Vector2
 
 init_player :: proc() {
-	p.size = {36, 84}
+	p.position = {50, 50}
+	p.size = {36, 84, 36, 84}
 	p.texture = rl.LoadTexture("textures/sprite_player.png")
 	p.flipped = false
 	p.speed = 250.0
@@ -29,6 +31,7 @@ init_player :: proc() {
 	p.damage = 5
 	p.can_take_damage = true
 	p.pickup = 75.0
+	p.source = {0, 0, e.size.width, e.size.height}
 }
 
 // wait 1.3 seconds before taking damage again
@@ -117,6 +120,11 @@ player_collision :: proc() {
 			damage_recieved()
 		}
 	}
+}
+
+draw_player :: proc() {
+	p.source = flip_texture(p.flipped, p.texture, p.size)
+	rl.DrawTextureRec(p.texture, p.source, p.position - {p.size.x / 2, p.size.y / 2}, rl.WHITE)
 }
 
 player_handler :: proc() {

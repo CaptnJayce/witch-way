@@ -10,6 +10,8 @@ GameState :: enum {
 }
 
 state := GameState.MainMenu
+entity_counter: int
+mp: rl.Vector2
 
 init_all :: proc() {
 	init_sprite()
@@ -20,6 +22,10 @@ init_all :: proc() {
 	init_grid()
 
 	init_enemy()
+}
+
+entity_count :: proc() {
+	entity_counter = len(l.pickups) + len(l.enemies) + len(l.obstacles)
 }
 
 state_handler :: proc() {

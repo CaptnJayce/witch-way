@@ -32,6 +32,9 @@ main :: proc() {
 				load()
 			}
 
+			mp = rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
+			entity_count()
+
 			// player stuff
 			player_handler()
 			iframes(delta)
@@ -44,7 +47,6 @@ main :: proc() {
 			// draw 
 			draw_grid()
 			draw()
-			flip_texture(p.flipped)
 
 			rl.ClearBackground(rl.DARKGREEN)
 			level_editor()

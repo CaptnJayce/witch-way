@@ -10,8 +10,6 @@ LevelEditor :: enum {
 editor := LevelEditor.Krushem
 
 level_editor :: proc() {
-	mp := rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
-
 	if rl.IsKeyPressed(.T) {
 		l.editor = !l.editor
 	}
@@ -47,6 +45,7 @@ level_editor :: proc() {
 			append(
 				&l.enemies,
 				Enemy {
+					{mp.x, mp.y},
 					{mp.x, mp.y, 24, 24},
 					e.texture,
 					e.flipped,
@@ -56,6 +55,7 @@ level_editor :: proc() {
 					e.sight,
 					e.action_timer,
 					e.direction,
+					e.source,
 				},
 			)
 		}

@@ -70,3 +70,9 @@ TileGrid with mouse highlighting
 Implemented enemy collision with objects
 Refactored collision.odin
 Refactored init_ calls in main.odin
+
+#### day 13
+Added entity_counter to debug menu
+Debug menu can now be toggled on/off
+Reworked flip_texture to accept any sprite - not just players
+Enemy sprite will now flip

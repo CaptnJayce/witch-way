@@ -55,8 +55,6 @@ water_tile :: proc(row: int, col: int) {
 }
 
 draw_grid :: proc() {
-	mp := rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
-
 	total_length: i32 = TILE_GRID_COLUMNS * TILE_SIZE
 	total_height: i32 = TILE_GRID_ROWS * TILE_SIZE
 
