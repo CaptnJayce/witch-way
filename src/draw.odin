@@ -33,6 +33,9 @@ draw :: proc() {
 	for rock in l.obstacles {
 		rl.DrawTextureRec(rock.texture, rock_source, {rock.size.x, rock.size.y}, rl.WHITE)
 	}
+	for spell in l.projectiles {
+		rl.DrawTextureRec(spell.texture, spell.source, spell.position, rl.WHITE)
+	}
 
 	for &enemy in l.enemies {
 		draw_enemy(&enemy)
