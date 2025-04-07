@@ -17,6 +17,7 @@ init_all :: proc() {
 	init_sprite()
 
 	init_player()
+	init_wand()
 	init_inventory()
 
 	init_grid()

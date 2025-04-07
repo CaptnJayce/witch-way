@@ -76,3 +76,6 @@ Added entity_counter to debug menu
 Debug menu can now be toggled on/off
 Reworked flip_texture to accept any sprite - not just players
 Enemy sprite will now flip
+Refactored multiple mouse position variables into one global one
+
+#### day 14

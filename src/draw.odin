@@ -39,6 +39,7 @@ draw :: proc() {
 	}
 
 	draw_player()
+	draw_wand()
 }
 
 flip_texture :: proc(flip: bool, texture: rl.Texture2D, size: rl.Rectangle) -> rl.Rectangle {
