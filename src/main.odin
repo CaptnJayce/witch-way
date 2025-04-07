@@ -37,6 +37,10 @@ main :: proc() {
 
 			// player stuff
 			player_handler()
+
+			spell_handler(delta)
+			wand_handler()
+
 			iframes(delta)
 			toggle_inventory()
 
