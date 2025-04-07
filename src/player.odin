@@ -31,7 +31,7 @@ init_player :: proc() {
 	p.damage = 5
 	p.can_take_damage = true
 	p.pickup = 75.0
-	p.source = {0, 0, e.size.width, e.size.height}
+	p.source = {0, 0, p.size.width, p.size.height}
 }
 
 // wait 1.3 seconds before taking damage again
@@ -64,10 +64,12 @@ player_movement :: proc() {
 	if rl.IsKeyDown(.S) {p.position.y += p.speed * rl.GetFrameTime()}
 	if rl.IsKeyDown(.A) {
 		p.flipped = true
+		w.flipped = true
 		p.position.x -= p.speed * rl.GetFrameTime()
 	}
 	if rl.IsKeyDown(.D) {
 		p.flipped = false
+		w.flipped = false
 		p.position.x += p.speed * rl.GetFrameTime()
 	}
 }
