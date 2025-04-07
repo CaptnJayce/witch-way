@@ -79,3 +79,15 @@ Enemy sprite will now flip
 Refactored multiple mouse position variables into one global one
 
 #### day 14
+Added wand & fireball programmer art
+Corrected error with player source using e. instead of p.
+Added wand to player
+You can now spawn a projectile with the wand 
+Added waterbolt/sparking programmer art
+
+TODO:
+Spells:
+    - Add fire delay
+    - Make the projectile travel from the wand
+    - Projectile hitbox
+    - Status affects
