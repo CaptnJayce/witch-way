@@ -1,5 +1,6 @@
 package game
 
+import "core:fmt"
 import rl "vendor:raylib"
 
 draw_debug := false
@@ -11,7 +12,7 @@ debug_menu :: proc() {
 		}
 
 		if draw_debug {
-			rl.DrawFPS(20, 20)
+			rl.DrawFPS(SW - 100, 20)
 			rl.DrawText(rl.TextFormat("iframes: %t", p.can_take_damage), 10, 20, 20, rl.RAYWHITE)
 			rl.DrawText(rl.TextFormat("Health: %f", p.health), 10, 40, 20, rl.RAYWHITE)
 			rl.DrawText(rl.TextFormat("Damage: %f", p.damage), 10, 60, 20, rl.RAYWHITE)
@@ -21,6 +22,20 @@ debug_menu :: proc() {
 			rl.DrawText(rl.TextFormat("Pickup range: %f", p.pickup), 10, 140, 20, rl.RAYWHITE)
 			rl.DrawText(rl.TextFormat("Delta: %f", delta), 10, 160, 20, rl.RAYWHITE)
 			rl.DrawText(rl.TextFormat("Entities: %d", entity_counter), 10, 180, 20, rl.RAYWHITE)
+		}
+	}
+}
+
+hitbox :: proc(enemy: ^Enemy) {
+	if state == GameState.Game {
+		if draw_debug {
+			for &enemy in l.enemies {
+				rl.DrawRectangleRec(enemy.size, {100, 100, 255, 100})
+			}
+
+			for &spell in l.projectiles {
+				rl.DrawRectangleRec(spell.size, {100, 100, 255, 100})
+			}
 		}
 	}
 }
