@@ -84,10 +84,18 @@ Corrected error with player source using e. instead of p.
 Added wand to player
 You can now spawn a projectile with the wand 
 Added waterbolt/sparking programmer art
+Added fire rate
+Made the projectile travel from the wand
 
-TODO:
+#### day 15
+Added hitboxes to debug menu
+Fixed misaligned spell hitbox
+Enemies now get removed from l.enemies in correct order
+Enemy death con
+
 Spells:
-    - Add fire delay
-    - Make the projectile travel from the wand
-    - Projectile hitbox
     - Status affects
+    - Piercing
+
+Debug Menu Overhaul
+    - Implement raygui

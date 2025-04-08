@@ -1,6 +1,5 @@
 package game
 
-import "core:fmt"
 import rl "vendor:raylib"
 
 draw_debug := false

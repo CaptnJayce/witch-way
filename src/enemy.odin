@@ -78,6 +78,32 @@ enemy_collision :: proc(enemy: ^Enemy) {
 			enemy.position.y = enemy_prev_pos.y
 		}
 	}
+
+	// goodness gracious
+	// iterates backwards to avoid panic with unordered_remove
+	for i := len(l.enemies) - 1; i >= 0; i -= 1 {
+		for j := len(l.projectiles) - 1; j >= 0; j -= 1 {
+			if rl.CheckCollisionRecs(l.enemies[i].size, l.projectiles[j].size) {
+				l.enemies[i].health -= l.projectiles[j].damage
+				kill_enemy(&e)
+
+				// for piercing effect
+				if l.projectiles[j].type != .Fireball {
+					unordered_remove(&l.projectiles, j)
+				}
+
+				break
+			}
+		}
+	}
+}
+
+kill_enemy :: proc(enemy: ^Enemy) {
+	for j, idx in l.enemies {
+		if l.enemies[idx].health <= 0 {
+			unordered_remove(&l.enemies, idx)
+		}
+	}
 }
 
 draw_enemy :: proc(enemy: ^Enemy) {

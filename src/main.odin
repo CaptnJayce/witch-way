@@ -52,6 +52,7 @@ main :: proc() {
 			draw_grid()
 			draw()
 
+			hitbox(&e)
 			rl.ClearBackground(rl.DARKGREEN)
 			level_editor()
 		}
