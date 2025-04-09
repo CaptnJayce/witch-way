@@ -90,24 +90,19 @@ enemy_collision :: proc(enemy: ^Enemy) {
 			if rl.CheckCollisionRecs(l.enemies[i].size, l.projectiles[j].size) {
 				l.enemies[i].health -= l.projectiles[j].damage
 
-				if l.projectiles[j].type == .Fireball {
-					l.enemies[i].status_effect = 1
-				}
-				if l.projectiles[j].type == .Waterbolt {
-					l.enemies[i].status_effect = 2
-				}
-				if l.projectiles[j].type == .Sparking {
-					l.enemies[i].status_effect = 3
-				}
-
 				kill_enemy(&e)
 
 				// for piercing effect
 				if l.projectiles[j].type != .Fireball {
 					unordered_remove(&l.projectiles, j)
 				}
+			}
 
-				break
+			if rl.CheckCollisionRecs(l.enemies[i].size, l.projectiles[j].size) {
+				if l.enemies[i].status_effect == 0 {
+					spell_status(&e)
+					fmt.println(l.enemies[i].status_effect)
+				}
 			}
 		}
 	}

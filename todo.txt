@@ -92,9 +92,11 @@ Added hitboxes to debug menu
 Fixed misaligned spell hitbox
 Enemies now get removed from l.enemies in correct order
 Enemy death con
+Split spell code into its own file
+Basic status affect logic
 
 Spells:
-    - Status affects
+    - Spells don't tick damage every frame
     - Piercing
 
 Debug Menu Overhaul

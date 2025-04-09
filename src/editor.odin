@@ -53,6 +53,7 @@ level_editor :: proc() {
 						e.speed,
 						e.health,
 						e.damage,
+						e.status_effect,
 						e.sight,
 						e.action_timer,
 						e.direction,
