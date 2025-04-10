@@ -94,10 +94,16 @@ Enemies now get removed from l.enemies in correct order
 Enemy death con
 Split spell code into its own file
 Basic status affect logic
+Moved status effect logic in status_handler
 
-Spells:
-    - Spells don't tick damage every frame
-    - Piercing
+#### day 16
+Re-designed enemy code because it was causing headaches
+Added two new enemies w/programmer art
+Implemented enemy iframes
+Simplified editor calls for enemy placement
+Organised code for Enemy & Spell structs
+Removed pointer in hitbox call
+Added piercing to spells
 
 Debug Menu Overhaul
     - Implement raygui

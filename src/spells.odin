@@ -1,8 +1,9 @@
 package game
 
-import "core:fmt"
 import rl "vendor:raylib"
 
+// i manage spells with enum to make as it makes it easier to apply status affects to enemies
+// may change later
 CurrentSpell :: enum {
 	None,
 	Fireball,
@@ -17,16 +18,22 @@ SpellTextures :: struct {
 }
 
 Spell :: struct {
+	// data
 	type:      CurrentSpell,
-	texture:   rl.Texture2D,
 	position:  rl.Vector2,
 	size:      rl.Rectangle,
+	direction: rl.Vector2,
+
+	// texture
+	texture:   rl.Texture2D,
 	source:    rl.Rectangle,
+
+	// stats
 	damage:    f32,
 	speed:     f32,
 	delay:     f32,
 	fire_rate: f32,
-	direction: rl.Vector2,
+	pierce:    int,
 }
 
 s: Spell
@@ -48,6 +55,7 @@ spell_select :: proc() {
 	}
 }
 
+// add one to actual amount of pierce wanted, no pierce == 1
 spell_change :: proc() {
 	if cs == .Fireball {
 		s.type = .Fireball
@@ -56,6 +64,7 @@ spell_change :: proc() {
 		s.damage = 10.0
 		s.speed = 100.0
 		s.fire_rate = 2.0
+		s.pierce = 5
 	}
 
 	if cs == .Waterbolt {
@@ -65,6 +74,7 @@ spell_change :: proc() {
 		s.damage = 5.0
 		s.speed = 200.0
 		s.fire_rate = 1.0
+		s.pierce = 2
 	}
 
 	if cs == .Sparking {
@@ -74,6 +84,7 @@ spell_change :: proc() {
 		s.damage = 1.0
 		s.speed = 500.0
 		s.fire_rate = 1.5
+		s.pierce = 1
 	}
 }
 
@@ -92,15 +103,16 @@ spell_fire :: proc(spell: ^Spell) {
 		&l.projectiles,
 		Spell {
 			spell.type,
-			s.texture,
 			spell.position,
 			s.size,
+			direction,
+			s.texture,
 			s.source,
 			s.damage,
 			s.speed,
 			s.delay,
 			s.fire_rate,
-			direction,
+			s.pierce,
 		},
 	)
 }
@@ -126,6 +138,20 @@ spell_handler :: proc(delta: f32) {
 
 		if spell.delay >= 2.0 {
 			ordered_remove(&l.projectiles, 0)
+		}
+	}
+}
+
+status_handler :: proc(i: int, j: int) {
+	if l.enemies[i].affect_recieved == 0 {
+		if l.projectiles[j].type == .Fireball {
+			l.enemies[i].affect_recieved = 1
+		}
+		if l.projectiles[j].type == .Waterbolt {
+			l.enemies[i].affect_recieved = 2
+		}
+		if l.projectiles[j].type == .Sparking {
+			l.enemies[i].affect_recieved = 3
 		}
 	}
 }

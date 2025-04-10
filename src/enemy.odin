@@ -1,6 +1,5 @@
 package game
 
-import "core:fmt"
 import "core:math/rand"
 import rl "vendor:raylib"
 
@@ -203,7 +202,6 @@ enemy_handler :: proc(delta: f32) {
 		// iframes
 		if enemy.is_invincible {
 			enemy.iframes -= delta
-			fmt.println(enemy.is_invincible)
 		}
 		if enemy.iframes <= 0 {
 			enemy.is_invincible = false
