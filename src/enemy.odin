@@ -5,40 +5,106 @@ import "core:math/rand"
 import rl "vendor:raylib"
 
 Enemy :: struct {
-	position:      rl.Vector2,
-	size:          rl.Rectangle,
-	texture:       rl.Texture2D,
-	flipped:       bool,
-	speed:         f32,
-	health:        f32,
-	damage:        f32,
-	status_effect: int,
-	sight:         f32,
-	action_timer:  f32,
-	direction:     int,
-	source:        rl.Rectangle,
+	// enemy data
+	position:        rl.Vector2,
+	size:            rl.Rectangle,
+	source:          rl.Rectangle,
+	sight:           f32,
+	action_timer:    f32,
+
+	// texture
+	texture:         rl.Texture2D,
+	flipped:         bool,
+	direction:       int,
+
+	// stats
+	speed:           f32,
+	health:          f32,
+	damage:          f32,
+	affect_attack:   int,
+	affect_recieved: int,
+
+	// iframes
+	iframes:         f32,
+	iframe_duration: f32,
+	is_invincible:   bool,
 }
 
-e: Enemy
+red_guy: Enemy
+tall_guy: Enemy
+snake_guy: Enemy
 enemy_prev_pos: rl.Vector2
 
 init_enemy :: proc() {
-	e.size = {0, 0, 24, 24}
-	e.texture = rl.LoadTexture("textures/sprite_enemy.png")
-	e.flipped = false
-	e.speed = 50.0
-	e.health = 40
-	e.damage = 2
-	e.sight = 150.0
-	e.action_timer = 0
-	e.direction = 0
-	e.source = {0, 0, e.source.width, e.source.height}
+	// red_guy.position
+	red_guy.size = {0, 0, 24, 24}
+	red_guy.source = {0, 0, red_guy.source.width, red_guy.source.height}
+	red_guy.sight = 150.0
+	red_guy.action_timer = 0
+
+	red_guy.texture = rl.LoadTexture("textures/sprite_enemy.png")
+	// red_guy.flipped
+	red_guy.direction = 0
+
+	red_guy.speed = 50.0
+	red_guy.health = 40.0
+	red_guy.damage = 5.0
+	red_guy.affect_attack = 0
+	red_guy.affect_recieved = 0
+
+	// red_guy.iframes
+	red_guy.iframe_duration = 1.0
+
+	// tall_guy.position
+	tall_guy.size = {0, 0, 24, 48}
+	tall_guy.source = {0, 0, tall_guy.source.width, tall_guy.source.height}
+	tall_guy.sight = 200.0
+	tall_guy.action_timer = 0
+
+	tall_guy.texture = rl.LoadTexture("textures/sprite_enemy_two.png")
+	// tall_guy.flipped
+	tall_guy.direction = 0
+
+	tall_guy.speed = 25.0
+	tall_guy.health = 80.0
+	tall_guy.damage = 10.0
+	tall_guy.affect_attack = 0
+	tall_guy.affect_recieved = 0
+
+	// tall_guy.iframes
+	tall_guy.iframe_duration = 1.0
+	tall_guy.is_invincible = false
+
+	// snake_guy.position
+	snake_guy.size = {0, 0, 48, 24}
+	snake_guy.source = {0, 0, snake_guy.source.width, snake_guy.source.height}
+	snake_guy.sight = 200.0
+	snake_guy.action_timer = 0
+
+	snake_guy.texture = rl.LoadTexture("textures/sprite_enemy_three.png")
+	// snake_guy.flipped
+	snake_guy.direction = 0
+
+	snake_guy.speed = 25.0
+	snake_guy.health = 80.0
+	snake_guy.damage = 10.0
+	snake_guy.affect_attack = 0
+	snake_guy.affect_recieved = 0
+
+	// snake_guy.iframes
+	snake_guy.iframe_duration = 1.0
+	snake_guy.is_invincible = false
 }
 
-move :: proc(enemy: ^Enemy) {
+draw_enemy :: proc(enemy: ^Enemy) {
+	enemy.source = flip_texture(enemy.flipped, enemy.texture, enemy.size)
+	rl.DrawTextureRec(enemy.texture, enemy.source, enemy.position, rl.WHITE)
+}
+
+move_enemy :: proc(enemy: ^Enemy) {
 	dist_to_player := rl.Vector2Distance(p.position, {enemy.size.x, enemy.size.y})
 
-	if enemy.status_effect != 3 {
+	if enemy.affect_recieved != 3 {
 		if dist_to_player <= enemy.sight {
 			// add pathing to player here
 		} else {
@@ -88,22 +154,9 @@ enemy_collision :: proc(enemy: ^Enemy) {
 	for i := len(l.enemies) - 1; i >= 0; i -= 1 {
 		for j := len(l.projectiles) - 1; j >= 0; j -= 1 {
 			if rl.CheckCollisionRecs(l.enemies[i].size, l.projectiles[j].size) {
-				l.enemies[i].health -= l.projectiles[j].damage
+				damage_enemy(i, j)
 
-				if l.projectiles[j].type == .Fireball {
-					l.enemies[i].status_effect = 1
-				}
-				if l.projectiles[j].type == .Waterbolt {
-					l.enemies[i].status_effect = 2
-				}
-				if l.projectiles[j].type == .Sparking {
-					l.enemies[i].status_effect = 3
-				}
-
-				kill_enemy(&e)
-
-				// for piercing effect
-				if l.projectiles[j].type != .Fireball {
+				if l.projectiles[j].pierce == 0 {
 					unordered_remove(&l.projectiles, j)
 				}
 
@@ -113,28 +166,48 @@ enemy_collision :: proc(enemy: ^Enemy) {
 	}
 }
 
-kill_enemy :: proc(enemy: ^Enemy) {
-	for j, idx in l.enemies {
-		if l.enemies[idx].health <= 0 {
-			unordered_remove(&l.enemies, idx)
-		}
+damage_enemy :: proc(i: int, j: int) {
+	if l.enemies[i].is_invincible == false {
+		l.enemies[i].health -= l.projectiles[j].damage
+		enemy_iframes(i)
+		l.projectiles[j].pierce -= 1
 	}
+
+	if l.enemies[i].health <= 0 {
+		unordered_remove(&l.enemies, i)
+	} else {
+		status_handler(i, j)
+	}
+
 }
 
-draw_enemy :: proc(enemy: ^Enemy) {
-	enemy.source = flip_texture(enemy.flipped, enemy.texture, enemy.size)
-	rl.DrawTextureRec(enemy.texture, enemy.source, enemy.position, rl.WHITE)
+enemy_iframes :: proc(i: int) {
+	if !l.enemies[i].is_invincible {
+		l.enemies[i].is_invincible = true
+		l.enemies[i].iframes = l.enemies[i].iframe_duration
+	}
 }
 
 enemy_handler :: proc(delta: f32) {
 	for &enemy in l.enemies {
+		// movement
 		enemy_prev_pos = enemy.position
-		move(&enemy)
+		move_enemy(&enemy)
 		enemy.action_timer += delta
 
 		if enemy.action_timer >= 2.0 {
 			change_direction(&enemy)
 			enemy.action_timer = 0
+		}
+
+		// iframes
+		if enemy.is_invincible {
+			enemy.iframes -= delta
+			fmt.println(enemy.is_invincible)
+		}
+		if enemy.iframes <= 0 {
+			enemy.is_invincible = false
+			enemy.iframes = enemy.iframe_duration
 		}
 
 		enemy_collision(&enemy)
