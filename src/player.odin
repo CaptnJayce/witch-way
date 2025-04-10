@@ -35,7 +35,7 @@ init_player :: proc() {
 }
 
 // wait 1.3 seconds before taking damage again
-iframes :: proc(delta: f32) {
+player_iframes :: proc(delta: f32) {
 	p.can_take_damage = false
 
 	if !p.can_take_damage {
@@ -47,12 +47,11 @@ iframes :: proc(delta: f32) {
 	}
 }
 
-// take in enemy type when more enemies are added
-damage_recieved :: proc() {
+damage_recieved :: proc(damage: f32) {
 	if p.can_take_damage == true {
-		p.health -= e.damage
+		p.health -= damage
 		p.iframe_timer = 0
-		iframes(delta)
+		player_iframes(delta)
 	}
 }
 
@@ -119,7 +118,7 @@ player_collision :: proc() {
 
 	for j, idx in l.enemies {
 		if rl.CheckCollisionRecs(player_rect, l.enemies[idx].size) {
-			damage_recieved()
+			damage_recieved(l.enemies[idx].damage)
 		}
 	}
 }

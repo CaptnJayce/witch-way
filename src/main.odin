@@ -35,24 +35,22 @@ main :: proc() {
 			mp = rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
 			entity_count()
 
-			// player stuff
 			player_handler()
+			enemy_handler(delta)
 
 			spell_handler(delta)
 			wand_handler()
 
-			iframes(delta)
-			toggle_inventory()
+			player_iframes(delta)
 
-			enemy_handler(delta)
+			toggle_inventory()
 
 			camera()
 
-			// draw 
 			draw_grid()
 			draw()
 
-			hitbox(&e)
+			hitbox()
 			rl.ClearBackground(rl.DARKGREEN)
 			level_editor()
 		}

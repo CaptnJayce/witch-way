@@ -25,7 +25,7 @@ debug_menu :: proc() {
 	}
 }
 
-hitbox :: proc(enemy: ^Enemy) {
+hitbox :: proc() {
 	if state == GameState.Game {
 		if draw_debug {
 			for &enemy in l.enemies {
