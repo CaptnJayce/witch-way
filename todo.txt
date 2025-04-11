@@ -109,8 +109,7 @@ Added piercing to spells
 Fixed enemies not spawning at mp (again)
 Fixed spell type None appending to array
 Implemented some basic raygui for debug menu
-
+Merged debug and editor
 
 TODO:
-Merge debug & editor
 Visual effect for different statuses
