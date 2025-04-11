@@ -99,22 +99,24 @@ spell_fire :: proc(spell: ^Spell) {
 		direction = rl.Vector2Normalize(direction)
 	}
 
-	append(
-		&l.projectiles,
-		Spell {
-			spell.type,
-			spell.position,
-			s.size,
-			direction,
-			s.texture,
-			s.source,
-			s.damage,
-			s.speed,
-			s.delay,
-			s.fire_rate,
-			s.pierce,
-		},
-	)
+	if s.type != .None {
+		append(
+			&l.projectiles,
+			Spell {
+				spell.type,
+				spell.position,
+				s.size,
+				direction,
+				s.texture,
+				s.source,
+				s.damage,
+				s.speed,
+				s.delay,
+				s.fire_rate,
+				s.pierce,
+			},
+		)
+	}
 }
 
 timer: f32

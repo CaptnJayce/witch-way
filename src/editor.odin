@@ -10,10 +10,6 @@ LevelEditor :: enum {
 editor := LevelEditor.Krushem
 
 level_editor :: proc() {
-	if rl.IsKeyPressed(.T) {
-		l.editor = !l.editor
-	}
-
 	if l.editor {
 		if rl.IsKeyDown(.LEFT_SHIFT) {
 			if rl.IsMouseButtonPressed(.RIGHT) {
@@ -43,12 +39,15 @@ level_editor :: proc() {
 			if rl.IsKeyPressed(.TWO) {editor = .Rock}
 
 			if rl.IsKeyPressed(.Z) {
+				red_guy.position = mp
 				append(&l.enemies, red_guy)
 			}
 			if rl.IsKeyPressed(.X) {
+				tall_guy.position = mp
 				append(&l.enemies, tall_guy)
 			}
 			if rl.IsKeyPressed(.C) {
+				snake_guy.position = mp
 				append(&l.enemies, snake_guy)
 			}
 
