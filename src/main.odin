@@ -47,7 +47,6 @@ main :: proc() {
 
 			camera()
 
-			draw_grid()
 			draw()
 
 			hitbox()

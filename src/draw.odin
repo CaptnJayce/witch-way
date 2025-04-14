@@ -1,5 +1,6 @@
 package game
 
+import "core:fmt"
 import rl "vendor:raylib"
 
 SW: i32 = 1920
@@ -22,6 +23,9 @@ draw :: proc() {
 	}
 
 	rl.DrawTextureRec(house.texture, house_source, house.xy, rl.WHITE)
+
+	draw_grid()
+
 	draw_player()
 	draw_wand()
 }

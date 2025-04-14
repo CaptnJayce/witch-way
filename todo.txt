@@ -116,6 +116,9 @@ Very advanced super graphics to indicate status effect
 Artwork for player home and ambient plants
 
 TODO:
+
+Adapt farmland grid to the entire world
+
 Artwork:
     - Speed plant (increases player movement speed)
     - Range plant (increases range of spells)
@@ -136,6 +139,7 @@ Draw some environmental stuff
 Optimisations:
     - If off-screen stop drawing
         - Enemy and projectile movement should still be calculated
+    - Draw house in three different parts to organise hitboxes & z index
 
 Will need to make a hitbox/collision editor at some point
 
