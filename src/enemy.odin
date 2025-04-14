@@ -98,6 +98,16 @@ init_enemy :: proc() {
 draw_enemy :: proc(enemy: ^Enemy) {
 	enemy.source = flip_texture(enemy.flipped, enemy.texture, enemy.size)
 	rl.DrawTextureRec(enemy.texture, enemy.source, enemy.position, rl.WHITE)
+
+	if enemy.affect_recieved == 1 {
+		rl.DrawRectangleRec(enemy.size, rl.ORANGE)
+	}
+	if enemy.affect_recieved == 2 {
+		rl.DrawRectangleRec(enemy.size, rl.BLUE)
+	}
+	if enemy.affect_recieved == 3 {
+		rl.DrawRectangleRec(enemy.size, rl.YELLOW)
+	}
 }
 
 move_enemy :: proc(enemy: ^Enemy) {

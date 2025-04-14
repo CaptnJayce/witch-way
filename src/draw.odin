@@ -2,29 +2,10 @@ package game
 
 import rl "vendor:raylib"
 
-SW: i32 = 1280
-SH: i32 = 720
+SW: i32 = 1920
+SH: i32 = 1080
 SWH: i32 = SW / 2
 SHH: i32 = SH / 2
-
-// ensure xy & wh is multiplied by three as i export the sprites with 300% scaling in aseprite
-berry_source := rl.Rectangle {
-	x      = 0,
-	y      = 0,
-	width  = 48,
-	height = 48,
-}
-rock_source := rl.Rectangle {
-	x      = 0,
-	y      = 0,
-	width  = 48,
-	height = 48,
-}
-
-init_sprite :: proc() {
-	k.texture = rl.LoadTexture("textures/sprite_sheet_pickups-export.png")
-	r.texture = rl.LoadTexture("textures/sprite_sheet_rocks-export.png")
-}
 
 draw :: proc() {
 	for berry in l.pickups {
@@ -36,11 +17,11 @@ draw :: proc() {
 	for spell in l.projectiles {
 		rl.DrawTextureRec(spell.texture, spell.source, spell.position, rl.WHITE)
 	}
-
 	for &enemy in l.enemies {
 		draw_enemy(&enemy)
 	}
 
+	rl.DrawTextureRec(house.texture, house_source, house.xy, rl.WHITE)
 	draw_player()
 	draw_wand()
 }

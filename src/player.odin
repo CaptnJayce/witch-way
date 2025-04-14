@@ -1,5 +1,6 @@
 package game
 
+import "core:fmt"
 import rl "vendor:raylib"
 
 Player :: struct {
@@ -92,24 +93,27 @@ player_collision :: proc() {
 		height = p.size.y,
 	}
 
+	player_rect_y := rl.Rectangle {
+		x      = player_prev_pos.x - p.size.x / 2,
+		y      = p.position.y - p.size.y / 2,
+		width  = p.size.x,
+		height = p.size.y,
+	}
+
+	player_rect_x := rl.Rectangle {
+		x      = p.position.x - p.size.x / 2,
+		y      = player_prev_pos.y - p.size.y / 2,
+		width  = p.size.x,
+		height = p.size.y,
+	}
+
 	for j, idx in l.obstacles {
 		if rl.CheckCollisionRecs(player_rect, l.obstacles[idx].size) {
-			player_rect_x := rl.Rectangle {
-				x      = p.position.x - p.size.x / 2,
-				y      = player_prev_pos.y - p.size.y / 2,
-				width  = p.size.x,
-				height = p.size.y,
-			}
+
 			if rl.CheckCollisionRecs(player_rect_x, l.obstacles[idx].size) {
 				p.position.x = player_prev_pos.x
 			}
 
-			player_rect_y := rl.Rectangle {
-				x      = player_prev_pos.x - p.size.x / 2,
-				y      = p.position.y - p.size.y / 2,
-				width  = p.size.x,
-				height = p.size.y,
-			}
 			if rl.CheckCollisionRecs(player_rect_y, l.obstacles[idx].size) {
 				p.position.y = player_prev_pos.y
 			}
@@ -120,6 +124,13 @@ player_collision :: proc() {
 		if rl.CheckCollisionRecs(player_rect, l.enemies[idx].size) {
 			damage_recieved(l.enemies[idx].damage)
 		}
+	}
+
+	if rl.CheckCollisionRecs(player_rect_y, house.size) {
+		p.position.y = player_prev_pos.y
+	}
+	if rl.CheckCollisionRecs(player_rect_x, house.size) {
+		p.position.x = player_prev_pos.x
 	}
 }
 

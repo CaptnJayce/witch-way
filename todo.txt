@@ -111,5 +111,31 @@ Fixed spell type None appending to array
 Implemented some basic raygui for debug menu
 Merged debug and editor
 
+#### day 18
+Very advanced super graphics to indicate status effect
+Artwork for player home and ambient plants
+
 TODO:
-Visual effect for different statuses
+Artwork:
+    - Speed plant (increases player movement speed)
+    - Range plant (increases range of spells)
+    - Bushes and Shrubbery
+    - Player house
+
+Status affect timer
+
+Player status affects 
+    - Some buffs some debuffs
+    - If you walk into your own spell, get hit with the debuff
+    - 
+Draw some environmental stuff
+    - Player House
+    - Randomly spawn objects within a boundry
+    - Randomly spawn enemies within a boundry
+    
+Optimisations:
+    - If off-screen stop drawing
+        - Enemy and projectile movement should still be calculated
+
+Will need to make a hitbox/collision editor at some point
+

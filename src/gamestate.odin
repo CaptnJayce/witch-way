@@ -15,6 +15,7 @@ mp: rl.Vector2
 
 init_all :: proc() {
 	init_sprite()
+	init_objects()
 
 	init_player()
 	init_wand()
