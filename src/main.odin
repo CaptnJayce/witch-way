@@ -25,17 +25,21 @@ main :: proc() {
 		case .Pause:
 			draw_pause_menu()
 			if rl.IsKeyPressed(.S) {
-				save()
+				if current_level == 1 {
+					save_tiles("level1_tiles.bin", current_level)
+				}
 			}
 		case .Game:
 			if rl.IsKeyPressed(.L) {
 				load()
 			}
+			level_handler()
 
 			mp = rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
 			entity_count()
 
 			player_handler()
+			mouse_handler()
 			enemy_handler(delta)
 
 			spell_handler(delta)

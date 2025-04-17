@@ -20,6 +20,18 @@ Player :: struct {
 
 p: Player
 player_prev_pos: rl.Vector2
+mouse_rect: rl.Rectangle = {}
+
+mouse_handler :: proc() {
+	mp := rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
+
+	mouse_rect = {
+		x      = mp.x - 2,
+		y      = mp.y,
+		width  = 4,
+		height = 4,
+	}
+}
 
 init_player :: proc() {
 	p.position = {50, 50}

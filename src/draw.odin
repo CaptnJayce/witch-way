@@ -24,7 +24,8 @@ draw :: proc() {
 
 	rl.DrawTextureRec(house.texture, house_source, house.xy, rl.WHITE)
 
-	draw_grid()
+	rl.DrawRectangleLinesEx(current_bounds^, 2, rl.WHITE) // bounds
+	draw_tilemap()
 
 	draw_player()
 	draw_wand()

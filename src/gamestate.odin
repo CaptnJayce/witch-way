@@ -17,13 +17,16 @@ init_all :: proc() {
 	init_sprite()
 	init_objects()
 
+	init_levels()
+
 	init_player()
 	init_wand()
 	init_inventory()
 
-	init_grid()
-
 	init_enemy()
+
+	init_tilemap(current_level)
+	load_tiles(fp, current_level)
 }
 
 entity_count :: proc() {
