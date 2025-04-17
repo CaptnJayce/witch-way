@@ -115,9 +115,15 @@ Merged debug and editor
 Very advanced super graphics to indicate status effect
 Artwork for player home and ambient plants
 
-TODO:
+#### day 19
+Implemented code from world-grid-test, including:
+    - Editable tilemaps
+    - Framework for multiple levels
+    - Serialising to binary
+    - bit_sets for tile flags
 
-Adapt farmland grid to the entire world
+TODO:
+Level-based rendering to optimize larger grids of tiles
 
 Artwork:
     - Speed plant (increases player movement speed)
