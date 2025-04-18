@@ -26,8 +26,6 @@ save :: proc() {
 	if data, err := json.marshal(save_data, allocator = context.temp_allocator); err == nil {
 		os.write_entire_file("save.json", data)
 	}
-
-	save_tiles(fp, current_level)
 }
 
 save_tiles :: proc(filename: string, current_level_id: int) -> bool {
@@ -108,8 +106,6 @@ load :: proc() {
 			l.obstacles = save_data.rock
 		}
 	}
-
-	load_tiles(fp, current_level)
 }
 
 load_tiles :: proc(filename: string, current_level_id: int) -> bool {

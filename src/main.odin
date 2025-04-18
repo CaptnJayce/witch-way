@@ -26,6 +26,7 @@ main :: proc() {
 			draw_pause_menu()
 			if rl.IsKeyPressed(.S) {
 				if current_level == 1 {
+					save()
 					save_tiles("level1_tiles.bin", current_level)
 				}
 			}
