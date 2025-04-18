@@ -127,12 +127,12 @@ Resized all textures and sprites
 Fixed save() not being called
 Tilemap generation is now seeded
 Tilemap will now init on init load
+Cleanup & implemented tile collisions
+Fixed player not taking damage 
+Normalize diagonal movement
 
 TODO:
 Level-based rendering to optimize larger grids of tiles
-Normalize diagonal movement
-Fix player not taking damage 
-Cleanup & implement tile collisions
 
 Artwork:
     - Speed plant (increases player movement speed)

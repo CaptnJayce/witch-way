@@ -22,7 +22,6 @@ debug_menu :: proc() {
 
 			rl.DrawText(rl.TextFormat("iframes: %t", p.can_take_damage), 10, 20, 20, rl.RAYWHITE)
 
-			rl.GuiSlider(rl.Rectangle{8, 40, 240, 20}, "", "", &p.health, 10, 10000)
 			rl.DrawText(rl.TextFormat("Health: %f", p.health), 10, 40, 20, rl.RAYWHITE)
 
 			rl.GuiSlider(rl.Rectangle{8, 60, 240, 20}, "", "", &s.damage, 1, 10000)

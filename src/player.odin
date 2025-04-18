@@ -1,5 +1,6 @@
 package game
 
+import "core:fmt"
 import rl "vendor:raylib"
 
 Player :: struct {
@@ -71,18 +72,27 @@ player_movement :: proc() {
 	// store pos from a frame before for collisions
 	player_prev_pos = p.position
 
-	if rl.IsKeyDown(.W) {p.position.y -= p.speed * rl.GetFrameTime()}
-	if rl.IsKeyDown(.S) {p.position.y += p.speed * rl.GetFrameTime()}
-	if rl.IsKeyDown(.A) {
+	move_dir := rl.Vector2{}
+
+	if rl.IsKeyDown(.LEFT) || rl.IsKeyDown(.A) {
 		p.flipped = true
 		w.flipped = true
-		p.position.x -= p.speed * rl.GetFrameTime()
+		move_dir.x -= 1
 	}
-	if rl.IsKeyDown(.D) {
+	if rl.IsKeyDown(.RIGHT) || rl.IsKeyDown(.D) {
 		p.flipped = false
 		w.flipped = false
-		p.position.x += p.speed * rl.GetFrameTime()
+		move_dir.x += 1
 	}
+	if rl.IsKeyDown(.UP) || rl.IsKeyDown(.W) do move_dir.y -= 1
+	if rl.IsKeyDown(.DOWN) || rl.IsKeyDown(.S) do move_dir.y += 1
+
+	if move_dir.x != 0 && move_dir.y != 0 {
+		move_dir = rl.Vector2Normalize(move_dir)
+	}
+
+	p.position.x += move_dir.x
+	p.position.y += move_dir.y
 }
 
 player_collision :: proc() {
@@ -135,8 +145,24 @@ player_collision :: proc() {
 	}
 
 	for j, idx in enemies {
-		if rl.CheckCollisionRecs(player_rect, enemies[idx].size) {
+		if rl.CheckCollisionRecs(player_rect, enemies[idx].size) && p.can_take_damage == true {
 			damage_recieved(enemies[idx].damage)
+		}
+	}
+
+	for row in 0 ..< tm.height {
+		for col in 0 ..< tm.width {
+			tile := tm.tiles[row][col]
+
+			if .Collidable in tile.flags && rl.CheckCollisionRecs(player_rect, tile.rect) {
+				if rl.CheckCollisionRecs(player_rect_x, tile.rect) {
+					p.position.x = player_prev_pos.x
+				}
+
+				if rl.CheckCollisionRecs(player_rect_y, tile.rect) {
+					p.position.y = player_prev_pos.y
+				}
+			}
 		}
 	}
 
