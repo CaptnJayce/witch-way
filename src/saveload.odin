@@ -4,23 +4,19 @@ import "core:encoding/json"
 import "core:mem"
 import "core:os"
 
-fp := "level1_tiles.bin"
-
 save :: proc() {
 	SaveData :: struct {
 		player:    type_of(p),
 		inventory: type_of(i),
-		enemy:     type_of(l.enemies),
-		krushem:   type_of(l.pickups),
-		rock:      type_of(l.obstacles),
+		krushem:   type_of(lv_one.pickups),
+		rock:      type_of(lv_one.obstacles),
 	}
 
 	save_data := SaveData {
 		player    = p,
 		inventory = i,
-		enemy     = l.enemies,
-		krushem   = l.pickups,
-		rock      = l.obstacles,
+		krushem   = lv_one.pickups,
+		rock      = lv_one.obstacles,
 	}
 
 	if data, err := json.marshal(save_data, allocator = context.temp_allocator); err == nil {
@@ -88,9 +84,8 @@ load :: proc() {
 	SaveData :: struct {
 		player:    type_of(p),
 		inventory: type_of(i),
-		enemy:     type_of(l.enemies),
-		krushem:   type_of(l.pickups),
-		rock:      type_of(l.obstacles),
+		krushem:   type_of(lv_one.pickups),
+		rock:      type_of(lv_one.obstacles),
 	}
 
 	save_data: SaveData
@@ -101,9 +96,8 @@ load :: proc() {
 
 			i = save_data.inventory
 
-			l.enemies = save_data.enemy
-			l.pickups = save_data.krushem
-			l.obstacles = save_data.rock
+			lv_one.pickups = save_data.krushem
+			lv_one.obstacles = save_data.rock
 		}
 	}
 }

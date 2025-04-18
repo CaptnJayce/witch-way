@@ -125,9 +125,14 @@ Implemented code from world-grid-test, including:
 #### day 20
 Resized all textures and sprites
 Fixed save() not being called
+Tilemap generation is now seeded
+Tilemap will now init on init load
 
 TODO:
 Level-based rendering to optimize larger grids of tiles
+Normalize diagonal movement
+Fix player not taking damage 
+Cleanup & implement tile collisions
 
 Artwork:
     - Speed plant (increases player movement speed)
@@ -152,4 +157,3 @@ Optimisations:
     - Draw house in three different parts to organise hitboxes & z index
 
 Will need to make a hitbox/collision editor at some point
-

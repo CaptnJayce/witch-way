@@ -1,6 +1,5 @@
 package game
 
-import "core:fmt"
 import "core:math/rand"
 import rl "vendor:raylib"
 
@@ -24,7 +23,9 @@ tm: TileMap
 
 tile_grid_columns: f32
 tile_grid_rows: f32
+
 total_tiles: f32
+
 total_length: f32
 total_height: f32
 
@@ -66,7 +67,6 @@ collision_rect := rl.Rectangle{}
 current_x: i32
 current_y: i32
 
-// handles drawing and editing
 draw_tilemap :: proc() {
 	for row in 0 ..< tm.height {
 		for col in 0 ..< tm.width {

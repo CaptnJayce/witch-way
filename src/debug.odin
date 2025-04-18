@@ -8,7 +8,7 @@ LevelEditor :: enum {
 	Rock,
 }
 
-editor := LevelEditor.Krushem
+debugger := LevelEditor.Krushem
 draw_debug := false
 
 debug_menu :: proc() {
@@ -28,8 +28,8 @@ debug_menu :: proc() {
 			rl.GuiSlider(rl.Rectangle{8, 60, 240, 20}, "", "", &s.damage, 1, 10000)
 			rl.DrawText(rl.TextFormat("Damage: %f", s.damage), 10, 60, 20, rl.RAYWHITE)
 
-			if rl.GuiButton(rl.Rectangle{8, 80, 240, 20}, fmt.ctprintf("Editor: %t", l.editor)) {
-				l.editor = !l.editor
+			if rl.GuiButton(rl.Rectangle{8, 80, 240, 20}, fmt.ctprintf("Editor: %t", editor)) {
+				editor = !editor
 			}
 
 			rl.DrawText(rl.TextFormat("Coords: %f", p.position), 10, 100, 20, rl.RAYWHITE)
@@ -43,10 +43,10 @@ debug_menu :: proc() {
 			rl.DrawText(rl.TextFormat("Delta: %f", delta), 10, 160, 20, rl.RAYWHITE)
 
 			if rl.GuiButton(rl.Rectangle{200, 180, 50, 20}, "Clear All") {
-				clear(&l.pickups)
-				clear(&l.obstacles)
-				clear(&l.enemies)
-				clear(&l.projectiles)
+				clear(&lv_one.pickups)
+				clear(&lv_one.obstacles)
+				clear(&enemies)
+				clear(&projectiles)
 			}
 			rl.DrawText(rl.TextFormat("Entities: %d", entity_counter), 10, 180, 20, rl.RAYWHITE)
 		}
@@ -56,15 +56,15 @@ debug_menu :: proc() {
 hitbox :: proc() {
 	if state == GameState.Game {
 		if draw_debug {
-			for &enemy in l.enemies {
+			for &enemy in enemies {
 				rl.DrawRectangleRec(enemy.size, {100, 100, 255, 100})
 			}
 
-			for &spell in l.projectiles {
+			for &spell in projectiles {
 				rl.DrawRectangleRec(spell.size, {100, 100, 255, 100})
 			}
 
-			for &obstacles in l.obstacles {
+			for &obstacles in lv_one.obstacles {
 				rl.DrawRectangleRec(obstacles.size, {100, 100, 255, 100})
 			}
 		}
@@ -72,52 +72,52 @@ hitbox :: proc() {
 }
 
 level_editor :: proc() {
-	if l.editor {
+	if editor {
 		if rl.IsKeyDown(.LEFT_SHIFT) {
 			if rl.IsMouseButtonPressed(.RIGHT) {
-				for p, idx in l.pickups {
-					if rl.CheckCollisionPointRec(mp, l.pickups[idx].size) {
-						unordered_remove(&l.pickups, idx)
+				for p, idx in lv_one.pickups {
+					if rl.CheckCollisionPointRec(mp, lv_one.pickups[idx].size) {
+						unordered_remove(&lv_one.pickups, idx)
 						break
 					}
 				}
 
-				for p, idx in l.obstacles {
-					if rl.CheckCollisionPointRec(mp, l.obstacles[idx].size) {
-						unordered_remove(&l.obstacles, idx)
+				for p, idx in lv_one.obstacles {
+					if rl.CheckCollisionPointRec(mp, lv_one.obstacles[idx].size) {
+						unordered_remove(&lv_one.obstacles, idx)
 						break
 					}
 				}
 
-				for p, idx in l.enemies {
-					if rl.CheckCollisionPointRec(mp, l.enemies[idx].size) {
-						unordered_remove(&l.enemies, idx)
+				for p, idx in enemies {
+					if rl.CheckCollisionPointRec(mp, enemies[idx].size) {
+						unordered_remove(&enemies, idx)
 						break
 					}
 				}
 			}
 
-			if rl.IsKeyPressed(.ONE) {editor = .Krushem}
-			if rl.IsKeyPressed(.TWO) {editor = .Rock}
+			if rl.IsKeyPressed(.ONE) {debugger = .Krushem}
+			if rl.IsKeyPressed(.TWO) {debugger = .Rock}
 
 			if rl.IsKeyPressed(.Z) {
 				red_guy.position = mp
-				append(&l.enemies, red_guy)
+				append(&enemies, red_guy)
 			}
 			if rl.IsKeyPressed(.X) {
 				tall_guy.position = mp
-				append(&l.enemies, tall_guy)
+				append(&enemies, tall_guy)
 			}
 			if rl.IsKeyPressed(.C) {
 				snake_guy.position = mp
-				append(&l.enemies, snake_guy)
+				append(&enemies, snake_guy)
 			}
 
-			if editor == .Krushem && rl.IsMouseButtonPressed(.LEFT) {
-				append(&l.pickups, Krushem{rl.Rectangle{mp.x, mp.y, 16, 16}, k.texture})
+			if debugger == .Krushem && rl.IsMouseButtonPressed(.LEFT) {
+				append(&lv_one.pickups, Krushem{rl.Rectangle{mp.x, mp.y, 16, 16}, k.texture})
 			}
-			if editor == .Rock && rl.IsMouseButtonPressed(.LEFT) {
-				append(&l.obstacles, Rock{rl.Rectangle{mp.x, mp.y, 16, 16}, r.texture})
+			if debugger == .Rock && rl.IsMouseButtonPressed(.LEFT) {
+				append(&lv_one.obstacles, Rock{rl.Rectangle{mp.x, mp.y, 16, 16}, r.texture})
 			}
 		}
 	}

@@ -1,6 +1,5 @@
 package game
 
-import "core:fmt"
 import rl "vendor:raylib"
 
 Player :: struct {
@@ -87,11 +86,14 @@ player_movement :: proc() {
 }
 
 player_collision :: proc() {
-	for j, idx in l.pickups {
-		if rl.Vector2Distance(p.position, {l.pickups[idx].size.x, l.pickups[idx].size.y}) <=
+	for j, idx in lv_one.pickups {
+		if rl.Vector2Distance(
+			   p.position,
+			   {lv_one.pickups[idx].size.x, lv_one.pickups[idx].size.y},
+		   ) <=
 		   p.pickup {
 			if rl.IsKeyPressed(.F) {
-				unordered_remove(&l.pickups, idx)
+				unordered_remove(&lv_one.pickups, idx)
 				i.slots[0].count += 1
 				break
 			}
@@ -119,22 +121,22 @@ player_collision :: proc() {
 		height = p.size.y,
 	}
 
-	for j, idx in l.obstacles {
-		if rl.CheckCollisionRecs(player_rect, l.obstacles[idx].size) {
+	for j, idx in lv_one.obstacles {
+		if rl.CheckCollisionRecs(player_rect, lv_one.obstacles[idx].size) {
 
-			if rl.CheckCollisionRecs(player_rect_x, l.obstacles[idx].size) {
+			if rl.CheckCollisionRecs(player_rect_x, lv_one.obstacles[idx].size) {
 				p.position.x = player_prev_pos.x
 			}
 
-			if rl.CheckCollisionRecs(player_rect_y, l.obstacles[idx].size) {
+			if rl.CheckCollisionRecs(player_rect_y, lv_one.obstacles[idx].size) {
 				p.position.y = player_prev_pos.y
 			}
 		}
 	}
 
-	for j, idx in l.enemies {
-		if rl.CheckCollisionRecs(player_rect, l.enemies[idx].size) {
-			damage_recieved(l.enemies[idx].damage)
+	for j, idx in enemies {
+		if rl.CheckCollisionRecs(player_rect, enemies[idx].size) {
+			damage_recieved(enemies[idx].damage)
 		}
 	}
 

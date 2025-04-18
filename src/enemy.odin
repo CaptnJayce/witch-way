@@ -151,8 +151,8 @@ change_direction :: proc(enemy: ^Enemy) {
 }
 
 enemy_collision :: proc(enemy: ^Enemy) {
-	for j, idx in l.obstacles {
-		if rl.CheckCollisionRecs(enemy.size, l.obstacles[idx].size) {
+	for j, idx in lv_one.obstacles {
+		if rl.CheckCollisionRecs(enemy.size, lv_one.obstacles[idx].size) {
 			enemy.position.x = enemy_prev_pos.x
 			enemy.position.y = enemy_prev_pos.y
 		}
@@ -160,13 +160,13 @@ enemy_collision :: proc(enemy: ^Enemy) {
 
 	// goodness gracious
 	// iterates backwards to avoid panic with unordered_remove
-	for i := len(l.enemies) - 1; i >= 0; i -= 1 {
-		for j := len(l.projectiles) - 1; j >= 0; j -= 1 {
-			if rl.CheckCollisionRecs(l.enemies[i].size, l.projectiles[j].size) {
+	for i := len(enemies) - 1; i >= 0; i -= 1 {
+		for j := len(projectiles) - 1; j >= 0; j -= 1 {
+			if rl.CheckCollisionRecs(enemies[i].size, projectiles[j].size) {
 				damage_enemy(i, j)
 
-				if l.projectiles[j].pierce == 0 {
-					unordered_remove(&l.projectiles, j)
+				if projectiles[j].pierce == 0 {
+					unordered_remove(&projectiles, j)
 				}
 
 				break
@@ -176,14 +176,14 @@ enemy_collision :: proc(enemy: ^Enemy) {
 }
 
 damage_enemy :: proc(i: int, j: int) {
-	if l.enemies[i].is_invincible == false {
-		l.enemies[i].health -= l.projectiles[j].damage
+	if enemies[i].is_invincible == false {
+		enemies[i].health -= projectiles[j].damage
 		enemy_iframes(i)
-		l.projectiles[j].pierce -= 1
+		projectiles[j].pierce -= 1
 	}
 
-	if l.enemies[i].health <= 0 {
-		unordered_remove(&l.enemies, i)
+	if enemies[i].health <= 0 {
+		unordered_remove(&enemies, i)
 	} else {
 		status_handler(i, j)
 	}
@@ -191,14 +191,14 @@ damage_enemy :: proc(i: int, j: int) {
 }
 
 enemy_iframes :: proc(i: int) {
-	if !l.enemies[i].is_invincible {
-		l.enemies[i].is_invincible = true
-		l.enemies[i].iframes = l.enemies[i].iframe_duration
+	if !enemies[i].is_invincible {
+		enemies[i].is_invincible = true
+		enemies[i].iframes = enemies[i].iframe_duration
 	}
 }
 
 enemy_handler :: proc(delta: f32) {
-	for &enemy in l.enemies {
+	for &enemy in enemies {
 		// movement
 		enemy_prev_pos = enemy.position
 		move_enemy(&enemy)

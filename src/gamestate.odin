@@ -25,11 +25,12 @@ init_all :: proc() {
 
 	init_enemy()
 
+	init_tilemap(current_level)
 	load_tiles(fp, current_level)
 }
 
 entity_count :: proc() {
-	entity_counter = len(l.pickups) + len(l.enemies) + len(l.obstacles) + len(l.projectiles)
+	entity_counter = len(lv_one.pickups) + len(enemies) + len(lv_one.obstacles) + len(projectiles)
 }
 
 state_handler :: proc() {

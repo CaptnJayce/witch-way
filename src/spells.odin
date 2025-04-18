@@ -101,7 +101,7 @@ spell_fire :: proc(spell: ^Spell) {
 
 	if s.type != .None {
 		append(
-			&l.projectiles,
+			&projectiles,
 			Spell {
 				spell.type,
 				spell.position,
@@ -129,7 +129,7 @@ spell_handler :: proc(delta: f32) {
 		timer = 0
 	}
 
-	for &spell in l.projectiles {
+	for &spell in projectiles {
 		spell.delay += delta
 
 		spell.position.x += spell.direction.x * spell.speed * delta
@@ -139,21 +139,21 @@ spell_handler :: proc(delta: f32) {
 		spell.size.y += spell.direction.y * spell.speed * delta
 
 		if spell.delay >= 2.0 {
-			ordered_remove(&l.projectiles, 0)
+			ordered_remove(&projectiles, 0)
 		}
 	}
 }
 
 status_handler :: proc(i: int, j: int) {
-	if l.enemies[i].affect_recieved == 0 {
-		if l.projectiles[j].type == .Fireball {
-			l.enemies[i].affect_recieved = 1
+	if enemies[i].affect_recieved == 0 {
+		if projectiles[j].type == .Fireball {
+			enemies[i].affect_recieved = 1
 		}
-		if l.projectiles[j].type == .Waterbolt {
-			l.enemies[i].affect_recieved = 2
+		if projectiles[j].type == .Waterbolt {
+			enemies[i].affect_recieved = 2
 		}
-		if l.projectiles[j].type == .Sparking {
-			l.enemies[i].affect_recieved = 3
+		if projectiles[j].type == .Sparking {
+			enemies[i].affect_recieved = 3
 		}
 	}
 }

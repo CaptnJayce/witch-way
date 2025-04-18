@@ -1,6 +1,5 @@
 package game
 
-import "core:fmt"
 import rl "vendor:raylib"
 
 main :: proc() {
@@ -33,6 +32,7 @@ main :: proc() {
 			if rl.IsKeyPressed(.P) {
 				load()
 			}
+
 			level_handler()
 
 			mp = rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
