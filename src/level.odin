@@ -1,5 +1,6 @@
 package game
 
+import "core:fmt"
 import rl "vendor:raylib"
 
 TILE_SIZE :: 16
@@ -10,6 +11,7 @@ LEVEL_HEIGHT :: 2000
 
 LevelOne :: struct {
 	levelBounds: rl.Rectangle,
+	been_loaded: bool,
 }
 
 lv_one: LevelOne
@@ -28,6 +30,8 @@ l: Level
 current_level: int
 current_bounds: ^rl.Rectangle
 init_levels :: proc() {
+	// future reference
+	// if no save_data then do this, else load save_data
 	current_level = 1
 	current_bounds = &lv_one.levelBounds
 
@@ -40,22 +44,17 @@ init_levels :: proc() {
 }
 
 level_handler :: proc() {
-	level_changed := false
-
 	if rl.IsKeyPressed(.ONE) {
 		current_level = 1
-		level_changed = true
+
+		// tilemap needs to be loaded before changes  
+		init_tilemap(current_level)
+		load_tiles(fp, current_level)
 	}
 
 	switch current_level {
 	case 1:
 		current_bounds = &lv_one.levelBounds
 		fp = "level1_tiles.bin"
-	}
-
-	if level_changed == true {
-		init_tilemap(current_level)
-		load_tiles(fp, current_level)
-		level_changed = false
 	}
 }

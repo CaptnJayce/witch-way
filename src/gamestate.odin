@@ -25,7 +25,6 @@ init_all :: proc() {
 
 	init_enemy()
 
-	init_tilemap(current_level)
 	load_tiles(fp, current_level)
 }
 

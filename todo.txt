@@ -122,6 +122,10 @@ Implemented code from world-grid-test, including:
     - Serialising to binary
     - bit_sets for tile flags
 
+#### day 20
+Resized all textures and sprites
+Fixed save() not being called
+
 TODO:
 Level-based rendering to optimize larger grids of tiles
 

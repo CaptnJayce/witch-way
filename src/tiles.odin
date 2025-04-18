@@ -1,5 +1,6 @@
 package game
 
+import "core:fmt"
 import "core:math/rand"
 import rl "vendor:raylib"
 
@@ -26,7 +27,11 @@ tile_grid_rows: f32
 total_tiles: f32
 total_length: f32
 total_height: f32
+
+seed: u32 = 4444
 init_tilemap :: proc(level_id: int) {
+	rl.SetRandomSeed(seed)
+
 	tm.width = int(current_bounds.width / TILE_SIZE)
 	tm.height = int(current_bounds.height / TILE_SIZE)
 
@@ -39,8 +44,7 @@ init_tilemap :: proc(level_id: int) {
 			tile_x := i32(col * TILE_SIZE)
 			tile_y := i32(row * TILE_SIZE)
 
-			chance_for_stone: [4]int = {0, 1, 2, 3}
-			selected := rand.choice(chance_for_stone[:])
+			selected := rl.GetRandomValue(0, 4)
 
 			if selected == 0 {
 				tm.tiles[row][col] = Tile {

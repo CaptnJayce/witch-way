@@ -4,7 +4,7 @@ import "core:encoding/json"
 import "core:mem"
 import "core:os"
 
-fp := "tiles.bin"
+fp := "level1_tiles.bin"
 
 save :: proc() {
 	SaveData :: struct {
@@ -126,6 +126,7 @@ load_tiles :: proc(filename: string, current_level_id: int) -> bool {
 	tile_size := size_of(u32) * 3 + size_of(u8)
 	expected_size := offset + int(count) * tile_size
 	if len(data) != expected_size {
+		init_tilemap(current_level)
 		return false
 	}
 

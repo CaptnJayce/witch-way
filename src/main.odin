@@ -1,5 +1,6 @@
 package game
 
+import "core:fmt"
 import rl "vendor:raylib"
 
 main :: proc() {
@@ -24,14 +25,12 @@ main :: proc() {
 			draw_death_screen_menu()
 		case .Pause:
 			draw_pause_menu()
-			if rl.IsKeyPressed(.S) {
-				if current_level == 1 {
-					save()
-					save_tiles("level1_tiles.bin", current_level)
-				}
-			}
 		case .Game:
-			if rl.IsKeyPressed(.L) {
+			if rl.IsKeyPressed(.O) {
+				save()
+				save_tiles(fp, current_level)
+			}
+			if rl.IsKeyPressed(.P) {
 				load()
 			}
 			level_handler()
