@@ -15,7 +15,7 @@ Wand :: struct {
 w: Wand
 
 init_wand :: proc() {
-	w.size = {0, 0, 24, 24}
+	w.size = {0, 0, 16, 16}
 	w.texture = rl.LoadTexture("textures/sprite_wand.png")
 	w.flipped = false
 	w.damage = 5

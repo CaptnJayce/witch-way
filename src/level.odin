@@ -44,8 +44,6 @@ level_handler :: proc() {
 
 	if rl.IsKeyPressed(.ONE) {
 		current_level = 1
-		p.size.x = 50
-		p.size.y = 50
 		level_changed = true
 	}
 

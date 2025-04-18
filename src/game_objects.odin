@@ -2,13 +2,11 @@ package game
 
 import rl "vendor:raylib"
 
-// ensure xy & wh is multiplied by export value
-// exported by 300%
 berry_source := rl.Rectangle {
 	x      = 0,
 	y      = 0,
-	width  = 48,
-	height = 48,
+	width  = 16,
+	height = 16,
 }
 Krushem :: struct {
 	size:    rl.Rectangle,
@@ -16,12 +14,11 @@ Krushem :: struct {
 }
 k: Krushem
 
-// exported by 300%
 rock_source := rl.Rectangle {
 	x      = 0,
 	y      = 0,
-	width  = 48,
-	height = 48,
+	width  = 16,
+	height = 16,
 }
 Rock :: struct {
 	size:    rl.Rectangle,
@@ -29,12 +26,11 @@ Rock :: struct {
 }
 r: Rock
 
-// exported by 1000%
 house_source := rl.Rectangle {
 	x      = 0,
 	y      = 0,
-	width  = 320,
-	height = 480,
+	width  = 64,
+	height = 64,
 }
 House :: struct {
 	size:    rl.Rectangle,
@@ -46,8 +42,8 @@ house: House
 grass_source := rl.Rectangle {
 	x      = 0,
 	y      = 0,
-	width  = 24,
-	height = 24,
+	width  = 16,
+	height = 16,
 }
 Grass :: struct {
 	size:    rl.Rectangle,
@@ -56,10 +52,10 @@ Grass :: struct {
 grass: Grass
 
 grass_source_two := rl.Rectangle {
-	x      = 48,
+	x      = 16,
 	y      = 0,
-	width  = 24,
-	height = 24,
+	width  = 16,
+	height = 16,
 }
 GrassTwo :: struct {
 	size:    rl.Rectangle,
@@ -70,8 +66,8 @@ grass_two: GrassTwo
 anemone_source := rl.Rectangle {
 	x      = 72,
 	y      = 0,
-	width  = 24,
-	height = 24,
+	width  = 16,
+	height = 16,
 }
 Anemone :: struct {
 	size:    rl.Rectangle,
@@ -82,8 +78,8 @@ anemone: Anemone
 anemone_source_two := rl.Rectangle {
 	x      = 96,
 	y      = 0,
-	width  = 24,
-	height = 24,
+	width  = 16,
+	height = 16,
 }
 AnemoneTwo :: struct {
 	size:    rl.Rectangle,
@@ -98,8 +94,8 @@ init_objects :: proc() {
 }
 
 init_sprite :: proc() {
-	k.texture = rl.LoadTexture("textures/sprite_sheet_pickups-export.png")
-	r.texture = rl.LoadTexture("textures/sprite_sheet_rocks-export.png")
+	k.texture = rl.LoadTexture("textures/sprite_krushem.png")
+	r.texture = rl.LoadTexture("textures/sprite_rock.png")
 
 	// extras
 	extras_texture := rl.LoadTexture("textures/sprite_sheet_extras.png")

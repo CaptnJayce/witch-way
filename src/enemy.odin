@@ -36,7 +36,7 @@ enemy_prev_pos: rl.Vector2
 
 init_enemy :: proc() {
 	// red_guy.position
-	red_guy.size = {0, 0, 24, 24}
+	red_guy.size = {0, 0, 16, 16}
 	red_guy.source = {0, 0, red_guy.source.width, red_guy.source.height}
 	red_guy.sight = 150.0
 	red_guy.action_timer = 0
@@ -55,7 +55,7 @@ init_enemy :: proc() {
 	red_guy.iframe_duration = 1.0
 
 	// tall_guy.position
-	tall_guy.size = {0, 0, 24, 48}
+	tall_guy.size = {0, 0, 16, 16}
 	tall_guy.source = {0, 0, tall_guy.source.width, tall_guy.source.height}
 	tall_guy.sight = 200.0
 	tall_guy.action_timer = 0
@@ -75,7 +75,7 @@ init_enemy :: proc() {
 	tall_guy.is_invincible = false
 
 	// snake_guy.position
-	snake_guy.size = {0, 0, 48, 24}
+	snake_guy.size = {0, 0, 16, 8}
 	snake_guy.source = {0, 0, snake_guy.source.width, snake_guy.source.height}
 	snake_guy.sight = 200.0
 	snake_guy.action_timer = 0

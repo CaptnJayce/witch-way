@@ -5,7 +5,7 @@ import rl "vendor:raylib"
 c := rl.Camera2D{}
 
 camera :: proc() {
-	c.zoom = 1
+	c.zoom = 3
 	c.offset = {f32(SWH), f32(SHH)}
 	c.target = p.position
 

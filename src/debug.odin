@@ -63,6 +63,10 @@ hitbox :: proc() {
 			for &spell in l.projectiles {
 				rl.DrawRectangleRec(spell.size, {100, 100, 255, 100})
 			}
+
+			for &obstacles in l.obstacles {
+				rl.DrawRectangleRec(obstacles.size, {100, 100, 255, 100})
+			}
 		}
 	}
 }
@@ -110,10 +114,10 @@ level_editor :: proc() {
 			}
 
 			if editor == .Krushem && rl.IsMouseButtonPressed(.LEFT) {
-				append(&l.pickups, Krushem{rl.Rectangle{mp.x, mp.y, 48, 48}, k.texture})
+				append(&l.pickups, Krushem{rl.Rectangle{mp.x, mp.y, 16, 16}, k.texture})
 			}
 			if editor == .Rock && rl.IsMouseButtonPressed(.LEFT) {
-				append(&l.obstacles, Rock{rl.Rectangle{mp.x, mp.y, 48, 48}, r.texture})
+				append(&l.obstacles, Rock{rl.Rectangle{mp.x, mp.y, 16, 16}, r.texture})
 			}
 		}
 	}

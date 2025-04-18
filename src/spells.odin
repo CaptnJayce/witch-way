@@ -60,7 +60,7 @@ spell_change :: proc() {
 	if cs == .Fireball {
 		s.type = .Fireball
 		s.texture = st.fireball
-		s.source = {0, 0, 48, 48}
+		s.source = {0, 0, 16, 16}
 		s.damage = 10.0
 		s.speed = 100.0
 		s.fire_rate = 2.0
@@ -70,7 +70,7 @@ spell_change :: proc() {
 	if cs == .Waterbolt {
 		s.type = .Waterbolt
 		s.texture = st.waterbolt
-		s.source = {0, 0, 24, 24}
+		s.source = {0, 0, 16, 16}
 		s.damage = 5.0
 		s.speed = 200.0
 		s.fire_rate = 1.0
@@ -80,7 +80,7 @@ spell_change :: proc() {
 	if cs == .Sparking {
 		s.type = .Sparking
 		s.texture = st.sparking
-		s.source = {0, 0, 15, 40}
+		s.source = {0, 0, 16, 16}
 		s.damage = 1.0
 		s.speed = 500.0
 		s.fire_rate = 1.5
