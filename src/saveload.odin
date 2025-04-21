@@ -20,7 +20,7 @@ save :: proc() {
 	}
 
 	if data, err := json.marshal(save_data, allocator = context.temp_allocator); err == nil {
-		os.write_entire_file("save.json", data)
+		os.write_entire_file("save_data/save.json", data)
 	}
 }
 
@@ -90,7 +90,7 @@ load :: proc() {
 
 	save_data: SaveData
 
-	if data, ok := os.read_entire_file("save.json", context.temp_allocator); ok {
+	if data, ok := os.read_entire_file("save_data/save.json", context.temp_allocator); ok {
 		if err := json.unmarshal(data, &save_data); err == nil {
 			p = save_data.player
 

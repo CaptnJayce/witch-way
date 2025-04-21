@@ -22,4 +22,4 @@ delta: f32
 
 editor: bool
 
-fp := "level1_tiles.bin"
+fp := "save_data/level1_tiles.bin"

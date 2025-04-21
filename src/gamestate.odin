@@ -34,20 +34,10 @@ entity_count :: proc() {
 }
 
 state_handler :: proc() {
-	if state == GameState.MainMenu && rl.IsKeyPressed(.Q) {
-		rl.CloseWindow() // if main menu, quit game
-	}
-	if state == GameState.Pause && rl.IsKeyPressed(.Q) {
-		state = GameState.MainMenu // if paused, go to main menu
-	}
-
 	if rl.IsKeyPressed(.ESCAPE) && state == .Pause {
-		state = GameState.Game // if paused, switch to game
-	} else if rl.IsKeyPressed(.ESCAPE) && state == .Game {
-		state = GameState.Pause // if game, switch to pause
-	}
-	if rl.IsKeyPressed(.ENTER) && state == .MainMenu {
-		state = GameState.Game // if menu, switch to game
+		state = GameState.Game
+	} else if rl.IsKeyPressed(.ESCAPE) {
+		state = GameState.Pause
 	}
 
 	if p.health <= 0 {

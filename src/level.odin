@@ -46,6 +46,6 @@ level_handler :: proc() {
 	switch current_level {
 	case 1:
 		current_bounds = &lv_one.level_bounds
-		fp = "level1_tiles.bin"
+		fp = "save_data/level1_tiles.bin"
 	}
 }
