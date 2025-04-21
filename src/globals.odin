@@ -25,11 +25,12 @@ delta: f32
 editor: bool
 
 current_save := 0
+save_selected := false
 
 save_data := "save_data/"
 save_slot := "save0/"
 tile_path := "level1_tiles.bin"
-json_path := "save.json"
+json_path := "save_data.json"
 
 tfp := strings.concatenate([]string{save_data, save_slot, tile_path})
 sfp := strings.concatenate([]string{save_data, save_slot, json_path})

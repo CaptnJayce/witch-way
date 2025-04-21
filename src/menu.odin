@@ -1,6 +1,5 @@
 package game
 
-import "core:fmt"
 import "core:os"
 import "core:strings"
 import rl "vendor:raylib"
@@ -11,11 +10,29 @@ draw_main_menu :: proc() {
 	rl.GuiSetStyle(rl.GuiControl.DEFAULT, i32(rl.GuiDefaultProperty.TEXT_SIZE), 20)
 	if rl.GuiButton({f32(SWH) - 150, f32(SHH) - 100, 300, 50}, "Enter / Start") ||
 	   rl.IsKeyPressed(.ENTER) {
-		fmt.println(len(tm.tiles))
 		state = GameState.Game
+
+		if !save_selected {
+			os.make_directory("save_data/save0")
+			save_slot = "save0/"
+			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
+			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
+		}
+
+
 		load()
 		init_tilemap(current_level)
 		load_tiles(tfp, current_level)
+
+		if !os.exists(sfp) {
+			p.position = {-50, -50}
+			p.flipped = false
+			p.speed = 200.0
+			p.max_health = 10
+			p.health = p.max_health
+			p.damage = 5
+			p.pickup = 75.0
+		}
 	}
 
 	if rl.GuiButton({f32(SWH) - 150, f32(SHH), 300, 50}, "L / Load") || rl.IsKeyPressed(.L) {
@@ -40,9 +57,9 @@ draw_pause_menu :: proc() {
 	}
 
 	if rl.GuiButton({f32(SWH) - 125, f32(SHH), 250, 50}, "Q / Quit") || rl.IsKeyPressed(.Q) {
-		fmt.println(len(tm.tiles))
+		save()
+		save_tiles(tfp, current_level)
 		free_current_tiles()
-		fmt.println(len(tm.tiles))
 		state = GameState.MainMenu
 	}
 
@@ -69,6 +86,7 @@ draw_load_save_menu :: proc() {
 			save_slot = "save0/"
 			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
 			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
+			save_selected = true
 		}
 
 		if rl.GuiButton({f32(SWH) - 400, f32(SHH) + 50, 200, 50}, "Delete Save") {
@@ -80,6 +98,7 @@ draw_load_save_menu :: proc() {
 			save_slot = "save0/"
 			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
 			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
+			save_selected = true
 		}
 	}
 
@@ -88,6 +107,7 @@ draw_load_save_menu :: proc() {
 			save_slot = "save1/"
 			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
 			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
+			save_selected = true
 		}
 
 		if rl.GuiButton({f32(SWH) - 400, f32(SHH) + 100, 200, 50}, "Delete Save") {
@@ -99,6 +119,7 @@ draw_load_save_menu :: proc() {
 			save_slot = "save1/"
 			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
 			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
+			save_selected = true
 		}
 	}
 
@@ -107,6 +128,7 @@ draw_load_save_menu :: proc() {
 			save_slot = "save2/"
 			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
 			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
+			save_selected = true
 		}
 
 		if rl.GuiButton({f32(SWH) - 400, f32(SHH) + 150, 200, 50}, "Delete Save") {
@@ -118,6 +140,7 @@ draw_load_save_menu :: proc() {
 			save_slot = "save2/"
 			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
 			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
+			save_selected = true
 		}
 	}
 
@@ -126,6 +149,7 @@ draw_load_save_menu :: proc() {
 			save_slot = "save3/"
 			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
 			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
+			save_selected = true
 		}
 
 		if rl.GuiButton({f32(SWH) - 400, f32(SHH) + 200, 200, 50}, "Delete Save") {
@@ -137,6 +161,7 @@ draw_load_save_menu :: proc() {
 			save_slot = "save3/"
 			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
 			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
+			save_selected = true
 		}
 	}
 

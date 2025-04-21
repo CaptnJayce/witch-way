@@ -1,6 +1,7 @@
 package game
 
 import "core:encoding/json"
+import "core:fmt"
 import "core:mem"
 import "core:os"
 
@@ -112,7 +113,6 @@ load_tiles :: proc(filename: string, current_level_id: int) -> bool {
 	if len(data) < size_of(u32) {
 		return false
 	}
-
 
 	count: u32
 	mem.copy(&count, &data[0], size_of(u32))
