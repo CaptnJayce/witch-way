@@ -117,3 +117,12 @@ edit_tilemap :: proc(row: int, col: int) {
 		tm.tiles[row][col].modified = true
 	}
 }
+
+free_current_tiles :: proc() {
+	for row in 0 ..< tm.height {
+		delete(tm.tiles[row])
+	}
+
+	delete(tm.tiles)
+	tm = TileMap{}
+}

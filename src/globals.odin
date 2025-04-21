@@ -1,5 +1,7 @@
 package game
 
+import "core:strings"
+
 // CONSTANTS //
 SW: i32 = 1920
 SH: i32 = 1080
@@ -22,4 +24,12 @@ delta: f32
 
 editor: bool
 
-fp := "save_data/level1_tiles.bin"
+current_save := 0
+
+save_data := "save_data/"
+save_slot := "save0/"
+tile_path := "level1_tiles.bin"
+json_path := "save.json"
+
+tfp := strings.concatenate([]string{save_data, save_slot, tile_path})
+sfp := strings.concatenate([]string{save_data, save_slot, json_path})

@@ -1,11 +1,14 @@
 package game
 
+import "core:fmt"
 import rl "vendor:raylib"
 
 GameState :: enum {
 	MainMenu,
 	Pause,
 	Game,
+	Save,
+	Load,
 	DeathScreen,
 }
 
@@ -26,7 +29,6 @@ init_all :: proc() {
 	init_enemy()
 
 	init_tilemap(current_level)
-	load_tiles(fp, current_level)
 }
 
 entity_count :: proc() {
@@ -36,7 +38,7 @@ entity_count :: proc() {
 state_handler :: proc() {
 	if rl.IsKeyPressed(.ESCAPE) && state == .Pause {
 		state = GameState.Game
-	} else if rl.IsKeyPressed(.ESCAPE) {
+	} else if rl.IsKeyPressed(.ESCAPE) && state == .Game {
 		state = GameState.Pause
 	}
 

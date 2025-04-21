@@ -40,12 +40,11 @@ level_handler :: proc() {
 
 		// tilemap needs to be loaded before changes  
 		init_tilemap(current_level)
-		load_tiles(fp, current_level)
 	}
 
 	switch current_level {
 	case 1:
 		current_bounds = &lv_one.level_bounds
-		fp = "save_data/level1_tiles.bin"
+		tile_path = "level1_tiles.bin"
 	}
 }

@@ -1,5 +1,6 @@
 package game
 
+import "core:fmt"
 import rl "vendor:raylib"
 
 main :: proc() {
@@ -24,15 +25,11 @@ main :: proc() {
 			draw_death_screen_menu()
 		case .Pause:
 			draw_pause_menu()
+		case .Load:
+			draw_load_save_menu()
+		case .Save:
+			rl.DrawText("uhhh", 300, 300, 20, rl.WHITE)
 		case .Game:
-			if rl.IsKeyPressed(.O) {
-				save()
-				save_tiles(fp, current_level)
-			}
-			if rl.IsKeyPressed(.P) {
-				load()
-			}
-
 			level_handler()
 
 			mp = rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
