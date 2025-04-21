@@ -131,6 +131,11 @@ Cleanup & implemented tile collisions
 Fixed player not taking damage 
 Normalize diagonal movement
 
+#### day 21
+Coded free_current_tiles proc to clear tiles from memory
+Added support for multiple save files (not dynamic)
+Fixed bugs with save/loading 
+
 TODO:
 Level-based rendering to optimize larger grids of tiles
 
