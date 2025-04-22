@@ -16,10 +16,6 @@ draw :: proc() {
 		draw_enemy(&enemy)
 	}
 
-	rl.DrawTextureRec(house.texture, house_source, house.xy, rl.WHITE)
-
-	rl.DrawRectangleLinesEx(current_bounds^, 2, rl.WHITE) // bounds
-
 	draw_tilemap()
 
 	draw_player()

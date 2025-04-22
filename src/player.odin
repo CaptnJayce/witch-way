@@ -20,6 +20,7 @@ Player :: struct {
 
 p: Player
 player_prev_pos: rl.Vector2
+render_rect: rl.Rectangle = {}
 mouse_rect: rl.Rectangle = {}
 
 mouse_handler :: proc() {
@@ -150,17 +151,37 @@ player_collision :: proc() {
 		}
 	}
 
-	for row in 0 ..< tm.height {
-		for col in 0 ..< tm.width {
-			tile := tm.tiles[row][col]
+	player_col := int(p.position.x / TILE_SIZE)
+	player_row := int(p.position.y / TILE_SIZE)
 
-			if .Collidable in tile.flags && rl.CheckCollisionRecs(player_rect, tile.rect) {
-				if rl.CheckCollisionRecs(player_rect_x, tile.rect) {
-					p.position.x = player_prev_pos.x
+	search_radius := 2
+
+	start_col := max(0, player_col - search_radius)
+	end_col := min(tm.width - 1, player_col + search_radius)
+	start_row := max(0, player_row - search_radius)
+	end_row := min(tm.height - 1, player_row + search_radius)
+	// Check only nearby tiles
+	for row in start_row ..= end_row {
+		for col in start_col ..= end_col {
+			index := row * tm.width + col
+			tile := tm.tiles[index]
+
+			if .Collidable in tile.flags {
+				tile_rect := rl.Rectangle {
+					x      = f32(col * TILE_SIZE),
+					y      = f32(row * TILE_SIZE),
+					width  = TILE_SIZE,
+					height = TILE_SIZE,
 				}
 
-				if rl.CheckCollisionRecs(player_rect_y, tile.rect) {
-					p.position.y = player_prev_pos.y
+				if rl.CheckCollisionRecs(player_rect, tile_rect) {
+					if rl.CheckCollisionRecs(player_rect_x, tile_rect) {
+						p.position.x = player_prev_pos.x
+					}
+
+					if rl.CheckCollisionRecs(player_rect_y, tile_rect) {
+						p.position.y = player_prev_pos.y
+					}
 				}
 			}
 		}
@@ -182,4 +203,6 @@ draw_player :: proc() {
 player_handler :: proc() {
 	player_movement()
 	player_collision()
+
+	render_rect = {p.position.x - f32(SWH), p.position.y - f32(SHH), f32(SW), f32(SH)}
 }

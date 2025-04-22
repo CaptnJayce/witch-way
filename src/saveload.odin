@@ -29,7 +29,8 @@ save_tiles :: proc(filename: string, current_level_id: int) -> bool {
 	count: u32 = 0
 	for row in 0 ..< tm.height {
 		for col in 0 ..< tm.width {
-			tile := &tm.tiles[row][col]
+			index := row * tm.width + col
+			tile := tm.tiles[index]
 			if tile.modified && tile.id == current_level_id {
 				count += 1
 			}
@@ -52,7 +53,8 @@ save_tiles :: proc(filename: string, current_level_id: int) -> bool {
 	offset := header_size
 	for row in 0 ..< tm.height {
 		for col in 0 ..< tm.width {
-			tile := &tm.tiles[row][col]
+			index := row * tm.width + col
+			tile := tm.tiles[index]
 			if !tile.modified || tile.id != current_level_id {
 				continue
 			}
@@ -152,9 +154,11 @@ load_tiles :: proc(filename: string, current_level_id: int) -> bool {
 		offset += size_of(u8)
 
 		if int(row) < tm.height && int(col) < tm.width {
-			tm.tiles[row][col].flags = transmute(bit_set[TileFlags;u8])flags
-			tm.tiles[row][col].id = current_level_id
-			tm.tiles[row][col].modified = true
+			index := row * u32(tm.width) + col
+			tile := tm.tiles[index]
+			tm.tiles[index].flags = transmute(bit_set[TileFlags;u8])flags
+			tm.tiles[index].id = current_level_id
+			tm.tiles[index].modified = true
 		}
 	}
 

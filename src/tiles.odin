@@ -10,14 +10,12 @@ TileFlags :: enum {
 }
 Tile :: struct {
 	flags:    bit_set[TileFlags;u8],
-	rect:     rl.Rectangle,
 	modified: bool,
-	row, col: int,
 	id:       int,
 }
 TileMap :: struct {
 	width, height: int,
-	tiles:         [][]Tile,
+	tiles:         []Tile,
 }
 tm: TileMap
 
@@ -30,34 +28,22 @@ total_length: f32
 total_height: f32
 
 seed: u32 = 4444
+
 init_tilemap :: proc(level_id: int) {
 	rl.SetRandomSeed(seed)
 
 	tm.width = int(current_bounds.width / TILE_SIZE)
 	tm.height = int(current_bounds.height / TILE_SIZE)
 
-	tm.tiles = make([][]Tile, tm.height)
+	tm.tiles = make([]Tile, tm.width * tm.height)
 
 	for row in 0 ..< tm.height {
-		tm.tiles[row] = make([]Tile, tm.width)
-
 		for col in 0 ..< tm.width {
-			tile_x := i32(col * TILE_SIZE)
-			tile_y := i32(row * TILE_SIZE)
-
+			index := row * tm.width + col
 			selected := rl.GetRandomValue(0, 4)
 
 			if selected == 0 {
-				tm.tiles[row][col] = Tile {
-					flags = {.Stone, .Collidable},
-					rect = {
-						x = f32(tile_x),
-						y = f32(tile_y),
-						width = TILE_SIZE,
-						height = TILE_SIZE,
-					},
-					id = level_id,
-				}
+				tm.tiles[index].flags = {.Stone, .Collidable}
 			}
 		}
 	}
@@ -68,12 +54,17 @@ current_x: i32
 current_y: i32
 
 draw_tilemap :: proc() {
-	for row in 0 ..< tm.height {
-		for col in 0 ..< tm.width {
+	start_col := max(0, int(render_rect.x / TILE_SIZE) - 1)
+	end_col := min(tm.width, int((render_rect.x + render_rect.width) / TILE_SIZE) + 1)
+	start_row := max(0, int(render_rect.y / TILE_SIZE) - 1)
+	end_row := min(tm.height, int((render_rect.y + render_rect.height) / TILE_SIZE) + 1)
+
+	for row in start_row ..< end_row {
+		for col in start_col ..< end_col {
+			index := row * tm.width + col
+			tile := tm.tiles[index]
 			tile_x := i32(col * TILE_SIZE)
 			tile_y := i32(row * TILE_SIZE)
-
-			tile := tm.tiles[row][col]
 
 			if .Dirt in tile.flags {
 				rl.DrawRectangle(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.BROWN)
@@ -81,11 +72,10 @@ draw_tilemap :: proc() {
 			if .Stone in tile.flags {
 				rl.DrawRectangle(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.GRAY)
 			}
-
-			// rl.DrawRectangleLines(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.WHITE)
 		}
 	}
 
+	// Mouse interaction remains the same but with index calculation
 	mouse_grid_x := int(mouse_rect.x) / TILE_SIZE
 	mouse_grid_y := int(mouse_rect.y) / TILE_SIZE
 
@@ -94,35 +84,31 @@ draw_tilemap :: proc() {
 	   mouse_grid_y >= 0 &&
 	   mouse_grid_y < tm.height {
 
-		highlight_x := i32(mouse_grid_x * TILE_SIZE)
-		highlight_y := i32(mouse_grid_y * TILE_SIZE)
+		if rl.Vector2Distance({mouse_rect.x, mouse_rect.y}, {p.position.x, p.position.y}) < 50 {
+			highlight_x := i32(mouse_grid_x * TILE_SIZE)
+			highlight_y := i32(mouse_grid_y * TILE_SIZE)
 
-		rl.DrawRectangleRec(
-			rl.Rectangle {
-				x = f32(highlight_x),
-				y = f32(highlight_y),
-				width = TILE_SIZE,
-				height = TILE_SIZE,
-			},
-			rl.ColorAlpha(rl.WHITE, 0.5),
-		)
+			rl.DrawRectangleRec(
+				rl.Rectangle {
+					x = f32(highlight_x),
+					y = f32(highlight_y),
+					width = TILE_SIZE,
+					height = TILE_SIZE,
+				},
+				rl.ColorAlpha(rl.WHITE, 0.5),
+			)
 
-		edit_tilemap(mouse_grid_y, mouse_grid_x)
-	}
-}
-
-edit_tilemap :: proc(row: int, col: int) {
-	if rl.IsMouseButtonPressed(.LEFT) && .Stone in tm.tiles[row][col].flags {
-		tm.tiles[row][col].flags = {.Dirt}
-		tm.tiles[row][col].modified = true
+			if rl.IsMouseButtonPressed(.LEFT) {
+				index := mouse_grid_y * tm.width + mouse_grid_x
+				if .Stone in tm.tiles[index].flags {
+					tm.tiles[index].flags = {.Dirt}
+				}
+			}
+		}
 	}
 }
 
 free_current_tiles :: proc() {
-	for row in 0 ..< tm.height {
-		delete(tm.tiles[row])
-	}
-
 	delete(tm.tiles)
 	tm = TileMap{}
 }
