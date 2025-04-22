@@ -136,8 +136,14 @@ Coded free_current_tiles proc to clear tiles from memory
 Added support for multiple save files (not dynamic)
 Fixed bugs with save/loading 
 
+#### day 22
+Optimized Tile struct futher
+    - 2D array to 1D
+    - Removed col, row, calculated at run time instead
+Basic level-based rendering
+
 TODO:
-Level-based rendering to optimize larger grids of tiles
+Reading from tile save currently broken
 
 Artwork:
     - Speed plant (increases player movement speed)
@@ -157,8 +163,6 @@ Draw some environmental stuff
     - Randomly spawn enemies within a boundry
     
 Optimisations:
-    - If off-screen stop drawing
-        - Enemy and projectile movement should still be calculated
     - Draw house in three different parts to organise hitboxes & z index
 
 Will need to make a hitbox/collision editor at some point
