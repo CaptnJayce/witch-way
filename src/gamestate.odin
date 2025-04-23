@@ -32,7 +32,7 @@ init_all :: proc() {
 }
 
 entity_count :: proc() {
-	entity_counter = len(lv_one.pickups) + len(enemies) + len(lv_one.obstacles) + len(projectiles)
+	entity_counter = len(enemies) + len(projectiles)
 }
 
 state_handler :: proc() {

@@ -142,8 +142,24 @@ Optimized Tile struct futher
     - Removed col, row, calculated at run time instead
 Basic level-based rendering
 
+#### day 23
+Fixed save/load (again)
+Optimised UI code for save/load
+Dirt tiles have a 1/10 chance of spawning a prop
+Revised player movement and collision with vel, fric, accel
+Revised enemy movement and collision with vel, fric, accel
+Enemy collides with tiles
+Other small changes
+
 TODO:
-Reading from tile save currently broken
+Seed:
+    - Random seed with each save
+
+Player:
+    - Spell UI 
+
+Enemies:
+    - Collision with tiles
 
 Artwork:
     - Speed plant (increases player movement speed)
@@ -162,7 +178,4 @@ Draw some environmental stuff
     - Randomly spawn objects within a boundry
     - Randomly spawn enemies within a boundry
     
-Optimisations:
-    - Draw house in three different parts to organise hitboxes & z index
-
 Will need to make a hitbox/collision editor at some point

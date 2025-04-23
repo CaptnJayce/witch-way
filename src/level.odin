@@ -11,10 +11,6 @@ projectiles: [dynamic]Spell
 LevelOne :: struct {
 	level_bounds: rl.Rectangle,
 	been_loaded:  bool,
-
-	// level specific, will need to be saved
-	pickups:      [dynamic]Krushem,
-	obstacles:    [dynamic]Rock,
 }
 lv_one: LevelOne
 
@@ -35,13 +31,6 @@ init_levels :: proc() {
 }
 
 level_handler :: proc() {
-	if rl.IsKeyPressed(.ONE) {
-		current_level = 1
-
-		// tilemap needs to be loaded before changes  
-		init_tilemap(current_level)
-	}
-
 	switch current_level {
 	case 1:
 		current_bounds = &lv_one.level_bounds

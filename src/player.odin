@@ -5,6 +5,7 @@ import rl "vendor:raylib"
 
 Player :: struct {
 	position:        rl.Vector2,
+	velocity:        rl.Vector2,
 	size:            rl.Rectangle,
 	texture:         rl.Texture2D,
 	flipped:         bool,
@@ -16,6 +17,8 @@ Player :: struct {
 	iframe_timer:    f32,
 	pickup:          f32,
 	source:          rl.Rectangle,
+	acceleration:    f32,
+	friction:        f32,
 }
 
 p: Player
@@ -40,12 +43,15 @@ init_player :: proc() {
 	p.texture = rl.LoadTexture("textures/sprite_player.png")
 	p.flipped = false
 	p.speed = 200.0
+	p.velocity = {0, 0}
 	p.max_health = 10
 	p.health = p.max_health
 	p.damage = 5
 	p.can_take_damage = true
-	p.pickup = 75.0
+	p.pickup = 40.0
 	p.source = {0, 0, p.size.width, p.size.height}
+	p.acceleration = 1400.0
+	p.friction = 600.0
 }
 
 // wait 1.3 seconds before taking damage again
@@ -70,9 +76,7 @@ damage_recieved :: proc(damage: f32) {
 }
 
 player_movement :: proc() {
-	// store pos from a frame before for collisions
 	player_prev_pos = p.position
-
 	move_dir := rl.Vector2{}
 
 	if rl.IsKeyDown(.LEFT) || rl.IsKeyDown(.A) {
@@ -89,28 +93,33 @@ player_movement :: proc() {
 	if rl.IsKeyDown(.DOWN) || rl.IsKeyDown(.S) do move_dir.y += 1
 
 	if move_dir.x != 0 && move_dir.y != 0 {
-		move_dir = rl.Vector2Normalize(move_dir)
+		move_dir = move_dir / rl.Vector2Length(move_dir)
 	}
 
-	p.position.x += move_dir.x
-	p.position.y += move_dir.y
-}
+	target_velocity := move_dir * p.speed
 
-player_collision :: proc() {
-	for j, idx in lv_one.pickups {
-		if rl.Vector2Distance(
-			   p.position,
-			   {lv_one.pickups[idx].size.x, lv_one.pickups[idx].size.y},
-		   ) <=
-		   p.pickup {
-			if rl.IsKeyPressed(.F) {
-				unordered_remove(&lv_one.pickups, idx)
-				i.slots[0].count += 1
-				break
-			}
+	max_delta := p.acceleration * delta
+	delta_vel := target_velocity - p.velocity
+
+	if rl.Vector2LengthSqr(delta_vel) <= (max_delta * max_delta) {
+		p.velocity = target_velocity
+	} else {
+		p.velocity += (delta_vel / rl.Vector2Length(delta_vel)) * max_delta
+	}
+
+	if move_dir.x == 0 && move_dir.y == 0 {
+		friction_force := p.friction * delta
+		if rl.Vector2LengthSqr(p.velocity) <= (friction_force * friction_force) {
+			p.velocity = {0, 0}
+		} else {
+			p.velocity -= (p.velocity / rl.Vector2Length(p.velocity)) * friction_force
 		}
 	}
 
+	p.position += p.velocity * delta
+}
+
+player_collision :: proc() {
 	player_rect := rl.Rectangle {
 		x      = p.position.x - p.size.x / 2,
 		y      = p.position.y - p.size.y / 2,
@@ -130,19 +139,6 @@ player_collision :: proc() {
 		y      = player_prev_pos.y - p.size.y / 2,
 		width  = p.size.x,
 		height = p.size.y,
-	}
-
-	for j, idx in lv_one.obstacles {
-		if rl.CheckCollisionRecs(player_rect, lv_one.obstacles[idx].size) {
-
-			if rl.CheckCollisionRecs(player_rect_x, lv_one.obstacles[idx].size) {
-				p.position.x = player_prev_pos.x
-			}
-
-			if rl.CheckCollisionRecs(player_rect_y, lv_one.obstacles[idx].size) {
-				p.position.y = player_prev_pos.y
-			}
-		}
 	}
 
 	for j, idx in enemies {
@@ -177,21 +173,16 @@ player_collision :: proc() {
 				if rl.CheckCollisionRecs(player_rect, tile_rect) {
 					if rl.CheckCollisionRecs(player_rect_x, tile_rect) {
 						p.position.x = player_prev_pos.x
+						p.velocity.x = 0
 					}
 
 					if rl.CheckCollisionRecs(player_rect_y, tile_rect) {
 						p.position.y = player_prev_pos.y
+						p.velocity.y = 0
 					}
 				}
 			}
 		}
-	}
-
-	if rl.CheckCollisionRecs(player_rect_y, house.size) {
-		p.position.y = player_prev_pos.y
-	}
-	if rl.CheckCollisionRecs(player_rect_x, house.size) {
-		p.position.x = player_prev_pos.x
 	}
 }
 
@@ -204,5 +195,10 @@ player_handler :: proc() {
 	player_movement()
 	player_collision()
 
-	render_rect = {p.position.x - f32(SWH), p.position.y - f32(SHH), f32(SW), f32(SH)}
+	render_rect = {
+		p.position.x - f32(SWH) / 2,
+		p.position.y - f32(SHH) / 2,
+		f32(SW) / 2,
+		f32(SH) / 2,
+	}
 }

@@ -3,20 +3,14 @@ package game
 import rl "vendor:raylib"
 
 draw :: proc() {
-	for berry in lv_one.pickups {
-		rl.DrawTextureRec(berry.texture, berry_source, {berry.size.x, berry.size.y}, rl.WHITE)
-	}
-	for rock in lv_one.obstacles {
-		rl.DrawTextureRec(rock.texture, rock_source, {rock.size.x, rock.size.y}, rl.WHITE)
-	}
+	draw_tilemap()
+
 	for spell in projectiles {
 		rl.DrawTextureRec(spell.texture, spell.source, spell.position, rl.WHITE)
 	}
 	for &enemy in enemies {
 		draw_enemy(&enemy)
 	}
-
-	draw_tilemap()
 
 	draw_player()
 	draw_wand()

@@ -32,7 +32,7 @@ draw_main_menu :: proc() {
 			p.max_health = 10
 			p.health = p.max_health
 			p.damage = 5
-			p.pickup = 75.0
+			p.pickup = 40.0
 		}
 	}
 

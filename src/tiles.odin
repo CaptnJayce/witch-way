@@ -1,5 +1,6 @@
 package game
 
+import "core:fmt"
 import "core:math/rand"
 import rl "vendor:raylib"
 
@@ -8,6 +9,8 @@ TileFlags :: enum {
 	Modified   = 1,
 	Stone      = 2,
 	Dirt       = 3,
+	Tilled     = 4,
+	Prop       = 5,
 }
 Tile :: struct {
 	flags: bit_set[TileFlags;u8],
@@ -36,13 +39,28 @@ init_tilemap :: proc(level_id: int) {
 
 	tm.tiles = make([]Tile, tm.width * tm.height)
 
+	// initial tiles
 	for row in 0 ..< tm.height {
 		for col in 0 ..< tm.width {
 			index := row * tm.width + col
-			selected := rl.GetRandomValue(0, 4)
+			selected := rl.GetRandomValue(0, 10)
 
 			if selected == 0 {
 				tm.tiles[index].flags = {.Stone, .Collidable}
+			} else {
+				tm.tiles[index].flags = {.Dirt}
+			}
+		}
+	}
+
+	// initial props
+	for row in 0 ..< tm.height {
+		for col in 0 ..< tm.width {
+			index := row * tm.width + col
+			selected := rl.GetRandomValue(0, 10)
+
+			if .Dirt in tm.tiles[index].flags && selected == 0 {
+				tm.tiles[index].flags += {.Prop}
 			}
 		}
 	}
@@ -65,16 +83,31 @@ draw_tilemap :: proc() {
 			tile_x := i32(col * TILE_SIZE)
 			tile_y := i32(row * TILE_SIZE)
 
+			if .Tilled in tile.flags {
+				rl.DrawRectangle(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.DARKBROWN)
+			}
+
 			if .Dirt in tile.flags {
 				rl.DrawRectangle(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.BROWN)
+
+				// use 'seed' to randomly select from sprite sheet
+				if .Prop in tile.flags {
+					rl.DrawRectangle(
+						tile_x + 4,
+						tile_y + 4,
+						TILE_SIZE / 2,
+						TILE_SIZE / 2,
+						rl.GREEN,
+					)
+				}
 			}
+
 			if .Stone in tile.flags {
 				rl.DrawRectangle(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.GRAY)
 			}
 		}
 	}
 
-	// Mouse interaction remains the same but with index calculation
 	mouse_grid_x := int(mouse_rect.x) / TILE_SIZE
 	mouse_grid_y := int(mouse_rect.y) / TILE_SIZE
 
@@ -99,6 +132,10 @@ draw_tilemap :: proc() {
 
 			if rl.IsMouseButtonPressed(.LEFT) {
 				index := mouse_grid_y * tm.width + mouse_grid_x
+
+				if .Dirt in tm.tiles[index].flags {
+					tm.tiles[index].flags = {.Tilled, .Modified}
+				}
 				if .Stone in tm.tiles[index].flags {
 					tm.tiles[index].flags = {.Dirt, .Modified}
 				}

@@ -9,15 +9,11 @@ save :: proc() {
 	SaveData :: struct {
 		player:    type_of(p),
 		inventory: type_of(i),
-		krushem:   type_of(lv_one.pickups),
-		rock:      type_of(lv_one.obstacles),
 	}
 
 	save_data := SaveData {
 		player    = p,
 		inventory = i,
-		krushem   = lv_one.pickups,
-		rock      = lv_one.obstacles,
 	}
 
 	if data, err := json.marshal(save_data, allocator = context.temp_allocator); err == nil {
@@ -70,8 +66,6 @@ load :: proc() {
 	SaveData :: struct {
 		player:    type_of(p),
 		inventory: type_of(i),
-		krushem:   type_of(lv_one.pickups),
-		rock:      type_of(lv_one.obstacles),
 	}
 
 	save_data: SaveData
@@ -81,9 +75,6 @@ load :: proc() {
 			p = save_data.player
 
 			i = save_data.inventory
-
-			lv_one.pickups = save_data.krushem
-			lv_one.obstacles = save_data.rock
 		}
 	}
 }
