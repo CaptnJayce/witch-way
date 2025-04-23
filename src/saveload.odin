@@ -25,15 +25,11 @@ save :: proc() {
 	}
 }
 
-save_tiles :: proc(filename: string, current_level_id: int) -> bool {
+save_tiles :: proc(filename: string) -> bool {
 	count: u32 = 0
-	for row in 0 ..< tm.height {
-		for col in 0 ..< tm.width {
-			index := row * tm.width + col
-			tile := tm.tiles[index]
-			if tile.modified && tile.id == current_level_id {
-				count += 1
-			}
+	for index in 0 ..< tm.width * tm.height {
+		if .Modified in tm.tiles[index].flags {
+			count += 1
 		}
 	}
 
@@ -42,7 +38,7 @@ save_tiles :: proc(filename: string, current_level_id: int) -> bool {
 	}
 
 	header_size := size_of(u32)
-	tile_size := size_of(u32) * 3 + size_of(u8)
+	tile_size := size_of(u32) + size_of(u8)
 	total_size := header_size + int(count) * tile_size
 
 	buffer := make([]u8, total_size)
@@ -51,31 +47,18 @@ save_tiles :: proc(filename: string, current_level_id: int) -> bool {
 	mem.copy(&buffer[0], &count, size_of(u32))
 
 	offset := header_size
-	for row in 0 ..< tm.height {
-		for col in 0 ..< tm.width {
-			index := row * tm.width + col
-			tile := tm.tiles[index]
-			if !tile.modified || tile.id != current_level_id {
-				continue
-			}
+	for index in 0 ..< tm.width * tm.height {
+		if .Modified in tm.tiles[index].flags {
 
-			level_u32 := u32(tile.id)
-			mem.copy(&buffer[offset], &level_u32, size_of(u32))
+			index_u32 := u32(index)
+			mem.copy(&buffer[offset], &index_u32, size_of(u32))
 			offset += size_of(u32)
 
-			row_u32 := u32(row)
-			mem.copy(&buffer[offset], &row_u32, size_of(u32))
-			offset += size_of(u32)
-
-			col_u32 := u32(col)
-			mem.copy(&buffer[offset], &col_u32, size_of(u32))
-			offset += size_of(u32)
-
-			flags := tile.flags
+			flags := tm.tiles[index].flags
 			mem.copy(&buffer[offset], &flags, size_of(u8))
 			offset += size_of(u8)
 
-			tile.modified = false
+			tm.tiles[index].flags -= {.Modified}
 		}
 	}
 
@@ -105,60 +88,35 @@ load :: proc() {
 	}
 }
 
-load_tiles :: proc(filename: string, current_level_id: int) -> bool {
+load_tiles :: proc(filename: string) -> bool {
 	data, ok := os.read_entire_file(filename)
-	if !ok {
-		return false
-	}
+	if !ok do return false
 	defer delete(data)
 
-	if len(data) < size_of(u32) {
-		return false
-	}
+	if len(data) < size_of(u32) do return false
 
 	count: u32
 	mem.copy(&count, &data[0], size_of(u32))
 	offset := size_of(u32)
 
-	tile_size := size_of(u32) * 3 + size_of(u8)
+	tile_size := size_of(u32) + size_of(u8)
 	expected_size := offset + int(count) * tile_size
-	if len(data) != expected_size {
-		init_tilemap(current_level)
-		return false
-	}
+	if len(data) != expected_size do return false
 
-	for i in 0 ..< count {
-		if offset + tile_size > len(data) {
-			return false
-		}
+	for _ in 0 ..< count {
+		if offset + tile_size > len(data) do return false
 
-		level_id: u32
-		mem.copy(&level_id, &data[offset], size_of(u32))
-		offset += size_of(u32)
-
-		if int(level_id) != current_level_id {
-			offset += size_of(u32) * 2 + size_of(u8)
-			continue
-		}
-
-		row: u32
-		mem.copy(&row, &data[offset], size_of(u32))
-		offset += size_of(u32)
-
-		col: u32
-		mem.copy(&col, &data[offset], size_of(u32))
+		index: u32
+		mem.copy(&index, &data[offset], size_of(u32))
 		offset += size_of(u32)
 
 		flags: u8
 		mem.copy(&flags, &data[offset], size_of(u8))
 		offset += size_of(u8)
 
-		if int(row) < tm.height && int(col) < tm.width {
-			index := row * u32(tm.width) + col
-			tile := tm.tiles[index]
+		if int(index) < tm.width * tm.height {
 			tm.tiles[index].flags = transmute(bit_set[TileFlags;u8])flags
-			tm.tiles[index].id = current_level_id
-			tm.tiles[index].modified = true
+			tm.tiles[index].flags += {.Modified}
 		}
 	}
 

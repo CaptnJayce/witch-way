@@ -5,13 +5,12 @@ import rl "vendor:raylib"
 
 TileFlags :: enum {
 	Collidable = 0,
-	Stone      = 1,
-	Dirt       = 2,
+	Modified   = 1,
+	Stone      = 2,
+	Dirt       = 3,
 }
 Tile :: struct {
-	flags:    bit_set[TileFlags;u8],
-	modified: bool,
-	id:       int,
+	flags: bit_set[TileFlags;u8],
 }
 TileMap :: struct {
 	width, height: int,
@@ -101,7 +100,7 @@ draw_tilemap :: proc() {
 			if rl.IsMouseButtonPressed(.LEFT) {
 				index := mouse_grid_y * tm.width + mouse_grid_x
 				if .Stone in tm.tiles[index].flags {
-					tm.tiles[index].flags = {.Dirt}
+					tm.tiles[index].flags = {.Dirt, .Modified}
 				}
 			}
 		}

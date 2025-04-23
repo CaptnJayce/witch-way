@@ -160,7 +160,7 @@ player_collision :: proc() {
 	end_col := min(tm.width - 1, player_col + search_radius)
 	start_row := max(0, player_row - search_radius)
 	end_row := min(tm.height - 1, player_row + search_radius)
-	// Check only nearby tiles
+
 	for row in start_row ..= end_row {
 		for col in start_col ..= end_col {
 			index := row * tm.width + col

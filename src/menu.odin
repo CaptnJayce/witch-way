@@ -22,7 +22,7 @@ draw_main_menu :: proc() {
 
 		load()
 		init_tilemap(current_level)
-		load_tiles(tfp, current_level)
+		load_tiles(tfp)
 
 		if !os.exists(sfp) {
 			p.position = {-50, -50}
@@ -58,18 +58,18 @@ draw_pause_menu :: proc() {
 
 	if rl.GuiButton({f32(SWH) - 125, f32(SHH), 250, 50}, "Q / Quit") || rl.IsKeyPressed(.Q) {
 		save()
-		save_tiles(tfp, current_level)
+		save_tiles(tfp)
 		free_current_tiles()
 		state = GameState.MainMenu
 	}
 
 	if rl.GuiButton({f32(SWH) - 80, f32(SHH) + 50, 80, 50}, "Save") {
 		save()
-		save_tiles(tfp, current_level)
+		save_tiles(tfp)
 	}
 	if rl.GuiButton({f32(SWH), f32(SHH) + 50, 80, 50}, "Load") {
 		load()
-		load_tiles(tfp, current_level)
+		load_tiles(tfp)
 	}
 	rl.ClearBackground(rl.BLACK)
 }
