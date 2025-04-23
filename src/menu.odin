@@ -1,5 +1,6 @@
 package game
 
+import "core:fmt"
 import "core:os"
 import "core:strings"
 import rl "vendor:raylib"
@@ -81,87 +82,39 @@ draw_load_save_menu :: proc() {
 		state = GameState.MainMenu
 	}
 
-	if os.exists("save_data/save0") {
-		if rl.GuiButton({f32(SWH) - 100, f32(SHH) + 50, 200, 50}, "Save 1") {
-			save_slot = "save0/"
+	BUTTON_WIDTH :: 200
+	BUTTON_HEIGHT :: 50
+	BUTTON_SPACING :: 50
+	save_button_x: f32 = f32(SWH) - 100
+	delete_button_x: f32 = f32(SWH) - 400
+	start_y: f32 = f32(SHH) + 50
+
+	for i in 0 ..< 4 {
+		save_name := fmt.tprintf("save%d", i)
+		save_path := fmt.aprintf("save_data/%s", save_name)
+		y_pos := start_y + f32(i) * BUTTON_SPACING
+
+		exists := os.exists(save_path)
+
+		button_text := strings.clone_to_cstring(fmt.tprintf("Save %d", i + 1))
+		if !exists {
+			button_text = strings.clone_to_cstring(fmt.tprintf("New Save %d", i + 1))
+		}
+
+		if rl.GuiButton({save_button_x, y_pos, BUTTON_WIDTH, BUTTON_HEIGHT}, button_text) {
+			if !exists {
+				os.make_directory(save_path)
+			}
+			save_slot = fmt.tprintf("%s/", save_name)
 			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
 			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
 			save_selected = true
 		}
 
-		if rl.GuiButton({f32(SWH) - 400, f32(SHH) + 50, 200, 50}, "Delete Save") {
-			remove_directory_recursive("save_data/save0")
-		}
-	} else {
-		if rl.GuiButton({f32(SWH) - 100, f32(SHH) + 50, 200, 50}, "New Save 1") {
-			os.make_directory("save_data/save0")
-			save_slot = "save0/"
-			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
-			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
-			save_selected = true
-		}
-	}
-
-	if os.exists("save_data/save1") {
-		if rl.GuiButton({f32(SWH) - 100, f32(SHH) + 100, 200, 50}, "Save 2") {
-			save_slot = "save1/"
-			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
-			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
-			save_selected = true
-		}
-
-		if rl.GuiButton({f32(SWH) - 400, f32(SHH) + 100, 200, 50}, "Delete Save") {
-			remove_directory_recursive("save_data/save1")
-		}
-	} else {
-		if rl.GuiButton({f32(SWH) - 100, f32(SHH) + 100, 200, 50}, "New Save 2") {
-			os.make_directory("save_data/save1")
-			save_slot = "save1/"
-			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
-			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
-			save_selected = true
-		}
-	}
-
-	if os.exists("save_data/save2") {
-		if rl.GuiButton({f32(SWH) - 100, f32(SHH) + 150, 200, 50}, "Save 3") {
-			save_slot = "save2/"
-			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
-			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
-			save_selected = true
-		}
-
-		if rl.GuiButton({f32(SWH) - 400, f32(SHH) + 150, 200, 50}, "Delete Save") {
-			remove_directory_recursive("save_data/save2")
-		}
-	} else {
-		if rl.GuiButton({f32(SWH) - 100, f32(SHH) + 150, 200, 50}, "New Save 3") {
-			os.make_directory("save_data/save2")
-			save_slot = "save2/"
-			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
-			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
-			save_selected = true
-		}
-	}
-
-	if os.exists("save_data/save3") {
-		if rl.GuiButton({f32(SWH) - 100, f32(SHH) + 200, 200, 50}, "Save 4") {
-			save_slot = "save3/"
-			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
-			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
-			save_selected = true
-		}
-
-		if rl.GuiButton({f32(SWH) - 400, f32(SHH) + 200, 200, 50}, "Delete Save") {
-			remove_directory_recursive("save_data/save3")
-		}
-	} else {
-		if rl.GuiButton({f32(SWH) - 100, f32(SHH) + 200, 200, 50}, "New Save 4") {
-			os.make_directory("save_data/save3")
-			save_slot = "save3/"
-			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
-			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
-			save_selected = true
+		if exists {
+			if rl.GuiButton({delete_button_x, y_pos, BUTTON_WIDTH, BUTTON_HEIGHT}, "Delete Save") {
+				remove_directory_recursive(save_path)
+			}
 		}
 	}
 
