@@ -152,6 +152,7 @@ Enemy collides with tiles
 Other small changes
 
 #### day 23.5
+Split save file into player & level
 Random seed with each new save
 
 TODO:
