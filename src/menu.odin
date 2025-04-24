@@ -1,5 +1,6 @@
 package game
 
+import "core:encoding/json"
 import "core:fmt"
 import "core:os"
 import "core:strings"
@@ -11,32 +12,6 @@ draw_main_menu :: proc() {
 	rl.GuiSetStyle(rl.GuiControl.DEFAULT, i32(rl.GuiDefaultProperty.TEXT_SIZE), 20)
 	if rl.GuiButton({f32(SWH) - 150, f32(SHH) - 100, 300, 50}, "Enter / Start") ||
 	   rl.IsKeyPressed(.ENTER) {
-		state = GameState.Game
-
-		if !save_selected {
-			os.make_directory("save_data/save0")
-			save_slot = "save0/"
-			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
-			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
-		}
-
-
-		load()
-		init_tilemap(current_level)
-		load_tiles(tfp)
-
-		if !os.exists(sfp) {
-			p.position = {-50, -50}
-			p.flipped = false
-			p.speed = 200.0
-			p.max_health = 10
-			p.health = p.max_health
-			p.damage = 5
-			p.pickup = 40.0
-		}
-	}
-
-	if rl.GuiButton({f32(SWH) - 150, f32(SHH), 300, 50}, "L / Load") || rl.IsKeyPressed(.L) {
 		state = GameState.Load
 	}
 
@@ -69,7 +44,7 @@ draw_pause_menu :: proc() {
 		save_tiles(tfp)
 	}
 	if rl.GuiButton({f32(SWH), f32(SHH) + 50, 80, 50}, "Load") {
-		load()
+		load_level_data()
 		load_tiles(tfp)
 	}
 	rl.ClearBackground(rl.BLACK)
@@ -84,37 +59,84 @@ draw_load_save_menu :: proc() {
 
 	BUTTON_WIDTH :: 200
 	BUTTON_HEIGHT :: 50
-	BUTTON_SPACING :: 50
+	BUTTON_SPACING :: 80
 	save_button_x: f32 = f32(SWH) - 100
+	seed_text_x: f32 = f32(SWH) + 120
 	delete_button_x: f32 = f32(SWH) - 400
 	start_y: f32 = f32(SHH) + 50
 
-	for i in 0 ..< 4 {
+	for i in 0 ..< 5 {
 		save_name := fmt.tprintf("save%d", i)
 		save_path := fmt.aprintf("save_data/%s", save_name)
 		y_pos := start_y + f32(i) * BUTTON_SPACING
 
 		exists := os.exists(save_path)
+		save_seed: i32 = 0
 
-		button_text := strings.clone_to_cstring(fmt.tprintf("Save %d", i + 1))
-		if !exists {
-			button_text = strings.clone_to_cstring(fmt.tprintf("New Save %d", i + 1))
+		if exists {
+			json_path := strings.concatenate([]string{save_path, "/save_data.json"})
+			if os.exists(json_path) {
+				if data, ok := os.read_entire_file(json_path, allocator = context.temp_allocator);
+				   ok {
+					SaveData :: struct {
+						seed: i32,
+					}
+
+					save_data: SaveData
+					if json.unmarshal(data, &save_data) == nil {
+						save_seed = save_data.seed
+					}
+				}
+			}
 		}
 
+		button_text := exists ? fmt.ctprintf("Save %d", i + 1) : fmt.ctprintf("New Save %d", i + 1)
 		if rl.GuiButton({save_button_x, y_pos, BUTTON_WIDTH, BUTTON_HEIGHT}, button_text) {
 			if !exists {
 				os.make_directory(save_path)
+				seed_generator()
+				save_seed = seed
+			} else {
+				seed = save_seed
 			}
+
 			save_slot = fmt.tprintf("%s/", save_name)
-			tfp = strings.concatenate([]string{save_data, save_slot, tile_path})
-			sfp = strings.concatenate([]string{save_data, save_slot, json_path})
+			tfp = strings.concatenate([]string{save_data_path, save_slot, tile_path})
+			sfp = strings.concatenate([]string{save_data_path, save_slot, json_path})
 			save_selected = true
+
+			init_tilemap(current_level)
+			load_tiles(tfp)
+
+			if !os.exists(sfp) {
+				p.position = {-50, -50}
+				p.flipped = false
+				p.speed = 200.0
+				p.max_health = 10
+				p.health = p.max_health
+				p.damage = 5
+				p.pickup = 40.0
+			}
+
+			if !exists {
+				save_level_data()
+			}
+
+			state = GameState.Game
 		}
 
 		if exists {
 			if rl.GuiButton({delete_button_x, y_pos, BUTTON_WIDTH, BUTTON_HEIGHT}, "Delete Save") {
 				remove_directory_recursive(save_path)
 			}
+
+			rl.DrawText(
+				fmt.ctprintf("Seed: %d", save_seed),
+				i32(seed_text_x),
+				i32(y_pos + 10),
+				20,
+				rl.RAYWHITE,
+			)
 		}
 	}
 

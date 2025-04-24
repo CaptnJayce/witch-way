@@ -2,6 +2,7 @@ package game
 
 import "core:fmt"
 import "core:math/rand"
+import "core:time"
 import rl "vendor:raylib"
 
 TileFlags :: enum {
@@ -29,10 +30,13 @@ total_tiles: f32
 total_length: f32
 total_height: f32
 
-seed: u32 = 4444
+seed_generator :: proc() {
+	rl.SetRandomSeed(u32(time.now()._nsec))
+	seed = rl.GetRandomValue(0, 1000000)
+}
 
 init_tilemap :: proc(level_id: int) {
-	rl.SetRandomSeed(seed)
+	rl.SetRandomSeed(u32(seed))
 
 	tm.width = int(current_bounds.width / TILE_SIZE)
 	tm.height = int(current_bounds.height / TILE_SIZE)

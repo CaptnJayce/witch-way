@@ -4,19 +4,38 @@ import "core:encoding/json"
 import "core:fmt"
 import "core:mem"
 import "core:os"
+import "core:strings"
 
 save :: proc() {
-	SaveData :: struct {
+	PlayerData :: struct {
 		player:    type_of(p),
 		inventory: type_of(i),
 	}
 
-	save_data := SaveData {
+	player_data := PlayerData {
 		player    = p,
 		inventory = i,
 	}
 
+	if data, err := json.marshal(player_data, allocator = context.temp_allocator); err == nil {
+		json_path = "player_data.json"
+		sfp = strings.concatenate([]string{save_data_path, save_slot, json_path})
+		os.write_entire_file(sfp, data)
+	}
+}
+
+save_level_data :: proc() {
+	SaveData :: struct {
+		seed: type_of(seed),
+	}
+
+	save_data := SaveData {
+		seed = seed,
+	}
+
 	if data, err := json.marshal(save_data, allocator = context.temp_allocator); err == nil {
+		json_path = "save_data.json"
+		sfp = strings.concatenate([]string{save_data_path, save_slot, json_path})
 		os.write_entire_file(sfp, data)
 	}
 }
@@ -63,18 +82,32 @@ save_tiles :: proc(filename: string) -> bool {
 }
 
 load :: proc() {
-	SaveData :: struct {
+	PlayerData :: struct {
 		player:    type_of(p),
 		inventory: type_of(i),
+	}
+
+	player_data: PlayerData
+
+	if data, ok := os.read_entire_file(sfp, context.temp_allocator); ok {
+		if err := json.unmarshal(data, &player_data); err == nil {
+			p = player_data.player
+
+			i = player_data.inventory
+		}
+	}
+}
+
+load_level_data :: proc() {
+	SaveData :: struct {
+		seed: type_of(seed),
 	}
 
 	save_data: SaveData
 
 	if data, ok := os.read_entire_file(sfp, context.temp_allocator); ok {
 		if err := json.unmarshal(data, &save_data); err == nil {
-			p = save_data.player
-
-			i = save_data.inventory
+			seed = save_data.seed
 		}
 	}
 }
