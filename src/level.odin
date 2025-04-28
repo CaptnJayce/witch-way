@@ -6,7 +6,6 @@ import rl "vendor:raylib"
 // They will persist until level change
 // Static entities, like pickups and obstacles, need to be stored/loaded per level
 enemies: [dynamic]Enemy
-projectiles: [dynamic]Spell
 
 LevelOne :: struct {
 	level_bounds: rl.Rectangle,

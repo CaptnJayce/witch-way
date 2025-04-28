@@ -44,7 +44,7 @@ init_enemy :: proc() {
 	red_guy.sight = 60.0
 	red_guy.action_timer = 0
 
-	red_guy.texture = rl.LoadTexture("textures/sprite_enemy.png")
+	red_guy.texture = rl.LoadTexture("textures/enemies/sprite_enemy.png")
 	// red_guy.flipped
 	red_guy.direction = 0
 
@@ -66,7 +66,7 @@ init_enemy :: proc() {
 	tall_guy.sight = 80.0
 	tall_guy.action_timer = 0
 
-	tall_guy.texture = rl.LoadTexture("textures/sprite_enemy_two.png")
+	tall_guy.texture = rl.LoadTexture("textures/enemies/sprite_enemy_two.png")
 	// tall_guy.flipped
 	tall_guy.direction = 0
 
@@ -89,7 +89,7 @@ init_enemy :: proc() {
 	snake_guy.sight = 80.0
 	snake_guy.action_timer = 0
 
-	snake_guy.texture = rl.LoadTexture("textures/sprite_enemy_three.png")
+	snake_guy.texture = rl.LoadTexture("textures/enemies/sprite_enemy_three.png")
 	// snake_guy.flipped
 	snake_guy.direction = 0
 
@@ -232,32 +232,15 @@ enemy_collision :: proc(enemy: ^Enemy) {
 		}
 	}
 
-	for i := len(enemies) - 1; i >= 0; i -= 1 {
-		for j := len(projectiles) - 1; j >= 0; j -= 1 {
-			if rl.CheckCollisionRecs(enemies[i].size, projectiles[j].size) {
-				damage_enemy(i, j)
-
-				if projectiles[j].pierce == 0 {
-					unordered_remove(&projectiles, j)
-				}
-
-				break
-			}
-		}
-	}
 }
 
 damage_enemy :: proc(i: int, j: int) {
 	if enemies[i].is_invincible == false {
-		enemies[i].health -= projectiles[j].damage
 		enemy_iframes(i)
-		projectiles[j].pierce -= 1
 	}
 
 	if enemies[i].health <= 0 {
 		unordered_remove(&enemies, i)
-	} else {
-		status_handler(i, j)
 	}
 }
 

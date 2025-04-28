@@ -24,15 +24,12 @@ init_all :: proc() {
 
 	init_player()
 	init_wand()
+	init_spells()
 	init_inventory()
 
 	init_enemy()
 
 	init_tilemap(current_level)
-}
-
-entity_count :: proc() {
-	entity_counter = len(enemies) + len(projectiles)
 }
 
 state_handler :: proc() {

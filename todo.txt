@@ -155,11 +155,28 @@ Other small changes
 Split save file into player & level
 Random seed with each new save
 
+#### day 24
+Updated inventory system
+Started rework on spells, implementing json data instead of structs
+New artwork for:
+    - Starting spells
+        - Eye of the Nebula
+        - Nebulaic Bolt
+        - Nebulaic Shield
+Krushems will now draw to tilemap randomly 
+Krushems will now be "added to inventory"
+Inventory now looks like a book (potential resizing needed)
+
 TODO:
+Fix textures not unloading out of player view
+
 Seed:
     - Allow for seed input from user
 
 Player:
+    - Load total pickups from json to inventory
+    - Spell "attunement"
+    - Spell json 
     - Spell UI 
 
 Enemies:
@@ -175,7 +192,7 @@ Status affect timer
 Player status affects 
     - Some buffs some debuffs
     - If you walk into your own spell, get hit with the debuff
-    - 
+
 Draw some environmental stuff
     - Player House
     - Randomly spawn objects within a boundry

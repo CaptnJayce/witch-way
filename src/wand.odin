@@ -16,15 +16,11 @@ w: Wand
 
 init_wand :: proc() {
 	w.size = {0, 0, 16, 16}
-	w.texture = rl.LoadTexture("textures/sprite_wand.png")
+	w.texture = rl.LoadTexture("textures/player/sprite_wand.png")
 	w.flipped = false
 	w.damage = 5
 	w.source = {0, 0, w.size.width, w.size.height}
 	w.selected_spell = 1
-
-	st.fireball = rl.LoadTexture("textures/sprite_fireball.png")
-	st.waterbolt = rl.LoadTexture("textures/sprite_waterbolt.png")
-	st.sparking = rl.LoadTexture("textures/sprite_sparking.png")
 }
 
 draw_wand :: proc() {

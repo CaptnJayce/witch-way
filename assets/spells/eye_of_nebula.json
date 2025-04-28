@@ -1,0 +1,8 @@
+{
+    "name": "Eye of the Nebula",
+    "description": "Seeks out your objective",
+    "cooldown": 300,
+    "visual": {
+        "icon": "textures/spells/icon_eye_of_nebula.png"
+    },
+}

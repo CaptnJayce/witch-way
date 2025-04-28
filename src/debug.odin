@@ -3,12 +3,6 @@ package game
 import "core:fmt"
 import rl "vendor:raylib"
 
-LevelEditor :: enum {
-	Krushem,
-	Rock,
-}
-
-debugger := LevelEditor.Krushem
 draw_debug := false
 
 debug_menu :: proc() {
@@ -24,7 +18,7 @@ debug_menu :: proc() {
 
 			rl.DrawText(rl.TextFormat("Health: %f", p.health), 10, 40, 20, rl.RAYWHITE)
 
-			rl.DrawText(rl.TextFormat("Damage: %f", s.damage), 10, 60, 20, rl.RAYWHITE)
+			//rl.DrawText(rl.TextFormat("Damage: %f", s.damage), 10, 60, 20, rl.RAYWHITE)
 
 			if rl.GuiButton(rl.Rectangle{8, 80, 240, 20}, fmt.ctprintf("Editor: %t", editor)) {
 				editor = !editor
@@ -40,7 +34,6 @@ debug_menu :: proc() {
 
 			if rl.GuiButton(rl.Rectangle{200, 180, 50, 20}, "Clear All") {
 				clear(&enemies)
-				clear(&projectiles)
 			}
 			rl.DrawText(rl.TextFormat("Entities: %d", entity_counter), 10, 180, 20, rl.RAYWHITE)
 		}
@@ -52,10 +45,6 @@ hitbox :: proc() {
 		if draw_debug {
 			for &enemy in enemies {
 				rl.DrawRectangleRec(enemy.size, {100, 100, 255, 100})
-			}
-
-			for &spell in projectiles {
-				rl.DrawRectangleRec(spell.size, {100, 100, 255, 100})
 			}
 		}
 	}

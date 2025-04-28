@@ -61,7 +61,7 @@ init_tilemap :: proc(level_id: int) {
 	for row in 0 ..< tm.height {
 		for col in 0 ..< tm.width {
 			index := row * tm.width + col
-			selected := rl.GetRandomValue(0, 10)
+			selected := rl.GetRandomValue(0, 100)
 
 			if .Dirt in tm.tiles[index].flags && selected == 0 {
 				tm.tiles[index].flags += {.Prop}
@@ -96,13 +96,7 @@ draw_tilemap :: proc() {
 
 				// use 'seed' to randomly select from sprite sheet
 				if .Prop in tile.flags {
-					rl.DrawRectangle(
-						tile_x + 4,
-						tile_y + 4,
-						TILE_SIZE / 2,
-						TILE_SIZE / 2,
-						rl.GREEN,
-					)
+					rl.DrawTexture(k.texture, tile_x, tile_y, rl.WHITE)
 				}
 			}
 
@@ -137,8 +131,13 @@ draw_tilemap :: proc() {
 			if rl.IsMouseButtonPressed(.LEFT) {
 				index := mouse_grid_y * tm.width + mouse_grid_x
 
-				if .Dirt in tm.tiles[index].flags {
+				// very half assed state machine
+				if .Dirt in tm.tiles[index].flags && .Prop in tm.tiles[index].flags == false {
 					tm.tiles[index].flags = {.Tilled, .Modified}
+				}
+				if .Prop in tm.tiles[index].flags {
+					tm.tiles[index].flags = {.Dirt, .Modified}
+					i.slots[0].count += 1
 				}
 				if .Stone in tm.tiles[index].flags {
 					tm.tiles[index].flags = {.Dirt, .Modified}

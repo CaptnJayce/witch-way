@@ -33,13 +33,11 @@ main :: proc() {
 			level_handler()
 
 			mp = rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
-			entity_count()
 
 			player_handler()
 			mouse_handler()
 			enemy_handler(delta)
 
-			spell_handler(delta)
 			wand_handler()
 
 			player_iframes(delta)
@@ -58,7 +56,7 @@ main :: proc() {
 		camera_end()
 
 		// ui
-		draw_inventory()
 		debug_menu()
+		draw_inventory()
 	}
 }

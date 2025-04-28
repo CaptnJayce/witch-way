@@ -2,7 +2,7 @@ package game
 
 import rl "vendor:raylib"
 
-berry_source := rl.Rectangle {
+krushem_source := rl.Rectangle {
 	x      = 0,
 	y      = 0,
 	width  = 16,
@@ -13,18 +13,6 @@ Krushem :: struct {
 	texture: rl.Texture2D,
 }
 k: Krushem
-
-rock_source := rl.Rectangle {
-	x      = 0,
-	y      = 0,
-	width  = 16,
-	height = 16,
-}
-Rock :: struct {
-	size:    rl.Rectangle,
-	texture: rl.Texture2D,
-}
-r: Rock
 
 house_source := rl.Rectangle {
 	x      = 0,
@@ -87,18 +75,34 @@ AnemoneTwo :: struct {
 }
 anemone_two: Anemone
 
+attunement_source := rl.Rectangle {
+	x      = 0,
+	y      = 0,
+	width  = 16,
+	height = 16,
+}
+AttunementPoint :: struct {
+	texture: rl.Texture2D,
+	radius:  rl.Vector2,
+}
+attunement_p: AttunementPoint
+
+
 init_objects :: proc() {
+	k.texture = rl.LoadTexture("textures/props/sprite_krushem.png")
+	k.size = rl.Rectangle{0, 0, 16, 16}
+
 	house.size = {100, -300, house_source.width - 200, house_source.height - 340}
 	house.texture = rl.LoadTexture("textures/sprite_player_home.png")
 	house.xy = {0, -500}
+
+	attunement_p.texture = rl.LoadTexture("textures/structures/attunement_point.png")
+	attunement_p.radius = {0, 0}
 }
 
 init_sprite :: proc() {
-	k.texture = rl.LoadTexture("textures/sprite_krushem.png")
-	r.texture = rl.LoadTexture("textures/sprite_rock.png")
-
 	// extras
-	extras_texture := rl.LoadTexture("textures/sprite_sheet_extras.png")
+	extras_texture := rl.LoadTexture("textures/props/sprite_sheet_extras.png")
 
 	grass.texture = extras_texture
 	grass_two.texture = extras_texture
