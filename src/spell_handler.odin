@@ -20,8 +20,7 @@ show_spell_menu := false
 show_spell_drawer := false
 highlight_attunement := false
 enable_attunement := false
-init_spells :: proc() {
-}
+equipped_spells: [dynamic]any
 
 draw_spell_menu :: proc() {
 	if rl.Vector2Distance(p.position, attunement_p.radius) < 35 {

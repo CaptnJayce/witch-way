@@ -157,7 +157,7 @@ draw_spells_page :: proc() {
 			case .NebulaEye:
 				if item_stack.count <= 0 {
 					rl.DrawTextureEx(
-						i_nebula.eye,
+						n_eye.texture,
 						{f32(draw_x) + 15, f32(draw_y) + 15},
 						0,
 						3,
@@ -165,7 +165,7 @@ draw_spells_page :: proc() {
 					)
 				} else {
 					rl.DrawTextureEx(
-						i_nebula.eye,
+						n_eye.texture,
 						{f32(draw_x) + 15, f32(draw_y) + 15},
 						0,
 						3,
@@ -176,7 +176,7 @@ draw_spells_page :: proc() {
 			case .NebulaBolt:
 				if item_stack.count <= 0 {
 					rl.DrawTextureEx(
-						i_nebula.bolt,
+						n_bolt.texture,
 						{f32(draw_x), f32(draw_y) + 15},
 						0,
 						3,
@@ -184,7 +184,7 @@ draw_spells_page :: proc() {
 					)
 				} else {
 					rl.DrawTextureEx(
-						i_nebula.bolt,
+						n_bolt.texture,
 						{f32(draw_x), f32(draw_y) + 15},
 						0,
 						3,
@@ -195,7 +195,7 @@ draw_spells_page :: proc() {
 			case .NebulaShield:
 				if item_stack.count <= 0 {
 					rl.DrawTextureEx(
-						i_nebula.shield,
+						n_shield.texture,
 						{f32(draw_x) + 15, f32(draw_y)},
 						0,
 						3,
@@ -203,7 +203,7 @@ draw_spells_page :: proc() {
 					)
 				} else {
 					rl.DrawTextureEx(
-						i_nebula.shield,
+						n_shield.texture,
 						{f32(draw_x) + 15, f32(draw_y)},
 						0,
 						3,

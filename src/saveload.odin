@@ -146,18 +146,3 @@ load_tiles :: proc(filename: string) -> bool {
 
 	return true
 }
-
-// unfinished
-load_spell :: proc(path: string) -> (spell: SpellDefinition, ok: bool) {
-	data, read_ok := os.read_entire_file(path)
-	if !ok {
-		return
-	}
-	defer delete(data)
-
-	if err := json.unmarshal(data, &spell); err != nil {
-		return spell, false
-	}
-
-	return spell, true
-}

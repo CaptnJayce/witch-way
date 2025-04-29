@@ -22,6 +22,7 @@ Player :: struct {
 }
 
 p: Player
+
 player_prev_pos: rl.Vector2
 render_rect: rl.Rectangle = {}
 mouse_rect: rl.Rectangle = {}
