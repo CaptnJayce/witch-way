@@ -2,12 +2,6 @@ package game
 
 import rl "vendor:raylib"
 
-krushem_source := rl.Rectangle {
-	x      = 0,
-	y      = 0,
-	width  = 16,
-	height = 16,
-}
 Krushem :: struct {
 	size:    rl.Rectangle,
 	texture: rl.Texture2D,
@@ -87,21 +81,16 @@ AttunementPoint :: struct {
 }
 attunement_p: AttunementPoint
 
-
-init_objects :: proc() {
-	k.texture = rl.LoadTexture("textures/props/sprite_krushem.png")
-	k.size = rl.Rectangle{0, 0, 16, 16}
-
-	house.size = {100, -300, house_source.width - 200, house_source.height - 340}
-	house.texture = rl.LoadTexture("textures/sprite_player_home.png")
-	house.xy = {0, -500}
-
-	attunement_p.texture = rl.LoadTexture("textures/structures/attunement_point.png")
-	attunement_p.radius = {0, 0}
+NebulaSpellIcons :: struct {
+	eye:    rl.Texture2D,
+	bolt:   rl.Texture2D,
+	shield: rl.Texture2D,
 }
+i_nebula: NebulaSpellIcons
 
 init_sprite :: proc() {
-	// extras
+	k.texture = rl.LoadTexture("textures/props/sprite_krushem.png")
+
 	extras_texture := rl.LoadTexture("textures/props/sprite_sheet_extras.png")
 
 	grass.texture = extras_texture
@@ -109,4 +98,11 @@ init_sprite :: proc() {
 
 	anemone.texture = extras_texture
 	anemone_two.texture = extras_texture
+
+	attunement_p.texture = rl.LoadTexture("textures/structures/attunement_point.png")
+	attunement_p.radius = {0, 0}
+
+	i_nebula.eye = rl.LoadTexture("textures/spells/icon_eye_of_nebula.png")
+	i_nebula.bolt = rl.LoadTexture("textures/spells/icon_nebula_bolt.png")
+	i_nebula.shield = rl.LoadTexture("textures/spells/icon_nebula_shield.png")
 }
