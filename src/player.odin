@@ -19,6 +19,7 @@ Player :: struct {
 	source:          rl.Rectangle,
 	acceleration:    f32,
 	friction:        f32,
+	equipped_spells: [dynamic]any,
 }
 
 p: Player
@@ -80,18 +81,18 @@ player_movement :: proc() {
 	player_prev_pos = p.position
 	move_dir := rl.Vector2{}
 
-	if rl.IsKeyDown(.LEFT) || rl.IsKeyDown(.A) {
+	if rl.IsKeyDown(.A) {
 		p.flipped = true
 		w.flipped = true
 		move_dir.x -= 1
 	}
-	if rl.IsKeyDown(.RIGHT) || rl.IsKeyDown(.D) {
+	if rl.IsKeyDown(.D) {
 		p.flipped = false
 		w.flipped = false
 		move_dir.x += 1
 	}
-	if rl.IsKeyDown(.UP) || rl.IsKeyDown(.W) do move_dir.y -= 1
-	if rl.IsKeyDown(.DOWN) || rl.IsKeyDown(.S) do move_dir.y += 1
+	if rl.IsKeyDown(.W) do move_dir.y -= 1
+	if rl.IsKeyDown(.S) do move_dir.y += 1
 
 	if move_dir.x != 0 && move_dir.y != 0 {
 		move_dir = move_dir / rl.Vector2Length(move_dir)
@@ -121,6 +122,27 @@ player_movement :: proc() {
 }
 
 player_collision :: proc() {
+	if rl.Vector2Distance(p.position, attunement_p.radius) < 35 {
+		highlight_attunement = true
+		enable_attunement = true
+
+		rl.DrawText(
+			"E to Attune",
+			i32(attunement_source.x) - 20,
+			i32(attunement_source.y) - 10,
+			10,
+			rl.WHITE,
+		)
+
+		if rl.IsKeyPressed(.E) {
+			unlock_spell("first_attunement")
+		}
+	} else {
+		highlight_attunement = false
+		enable_attunement = false
+		a_toggled = false
+	}
+
 	player_rect := rl.Rectangle {
 		x      = p.position.x - p.size.x / 2,
 		y      = p.position.y - p.size.y / 2,

@@ -24,7 +24,9 @@ init_all :: proc() {
 	init_player()
 	init_wand()
 	init_spells()
+
 	init_inventory()
+	init_spell_inventory()
 
 	init_enemy()
 

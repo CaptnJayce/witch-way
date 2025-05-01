@@ -3,6 +3,16 @@ package game
 import "core:fmt"
 import rl "vendor:raylib"
 
+SLOT_SIZE :: 48
+INVENTORY_COLUMNS :: 4
+INVENTORY_ROWS :: 6
+TOTAL_SLOTS :: INVENTORY_ROWS * INVENTORY_COLUMNS
+
+SLOT_SIZE_TWO :: 140
+INVENTORY_COLUMNS_TWO :: 13
+INVENTORY_ROWS_TWO :: 7
+TOTAL_SLOTS_TWO :: INVENTORY_ROWS_TWO * INVENTORY_COLUMNS_TWO
+
 ItemType :: enum {
 	None,
 
@@ -18,56 +28,68 @@ ItemStack :: struct {
 	item:  ItemType,
 	count: int,
 }
+
 Inventory :: struct {
 	slots:     [TOTAL_SLOTS]ItemStack,
-	slots_two: [TOTAL_SLOTS_TWO]ItemStack,
 	page_zero: rl.Texture2D,
 	page_one:  rl.Texture2D,
 	page_two:  rl.Texture2D,
+}
+
+SpellInventory :: struct {
+	slots: [TOTAL_SLOTS_TWO]ItemStack,
 }
 
 Page :: enum {
 	Main,
 	Pickups,
 	Hunts,
-	Spells,
 }
 
 current_page := Page.Main
 i: Inventory
-toggled := false
+si: SpellInventory
 
 init_inventory :: proc() {
 	i.page_zero = rl.LoadTexture("textures/player/sprite_inventory_page_0.png")
 	i.page_one = rl.LoadTexture("textures/player/sprite_inventory_page_1.png")
-	i.page_two = rl.LoadTexture("textures/player/sprite_inventory_page_2.png")
 
 	// Pickup slots
 	i.slots[0] = ItemStack{.Krushem, 0}
-
-	// Spell slots
-	i.slots_two[0] = ItemStack{.NebulaEye, 0}
-	i.slots_two[1] = ItemStack{.NebulaBolt, 0}
-	i.slots_two[2] = ItemStack{.NebulaShield, 0}
 }
 
+init_spell_inventory :: proc() {
+	si.slots[0] = ItemStack{.NebulaEye, 0}
+	si.slots[1] = ItemStack{.NebulaBolt, 0}
+	si.slots[2] = ItemStack{.NebulaShield, 0}
+}
+
+toggled := false
+a_toggled := false
 toggle_inventory :: proc() {
-	if rl.IsKeyPressed(.E) {
+	if rl.IsKeyPressed(.W) || rl.IsKeyPressed(.A) || rl.IsKeyPressed(.S) || rl.IsKeyPressed(.D) {
+		toggled = false
+		a_toggled = false
+	}
+
+	if rl.IsKeyPressed(.E) && enable_attunement == false {
 		toggled = !toggled
+	}
+
+	if rl.IsKeyPressed(.E) && enable_attunement == true {
+		a_toggled = !a_toggled
 	}
 }
 
 draw_inventory :: proc() {
-	if rl.IsKeyPressed(.ONE) {
-		current_page = .Main
+	if toggled {
+		if rl.IsKeyPressed(.ONE) {
+			current_page = .Main
+		}
+		if rl.IsKeyPressed(.TWO) {
+			current_page = .Pickups
+		}
 	}
-	if rl.IsKeyPressed(.TWO) {
-		current_page = .Pickups
-	}
-	if rl.IsKeyPressed(.THREE) {
-		current_page = .Spells
-	}
-
 
 	if toggled {
 		switch current_page {
@@ -75,9 +97,8 @@ draw_inventory :: proc() {
 			draw_main_page()
 		case .Pickups:
 			draw_pickups_page()
-		case .Spells:
-			draw_spells_page()
 		case .Hunts:
+
 		}
 	}
 }
@@ -102,23 +123,9 @@ draw_pickups_page :: proc() {
 		if item_stack.item != .None {
 			#partial switch item_stack.item {
 			case .Krushem:
-				if item_stack.count <= 0 {
-					rl.DrawTextureEx(
-						k.texture,
-						{f32(draw_x + 11), f32(draw_y + 11)},
-						0,
-						3,
-						{40, 40, 40, 200},
-					)
-				} else {
-					rl.DrawTextureEx(
-						k.texture,
-						{f32(draw_x + 11), f32(draw_y + 11)},
-						0,
-						3,
-						rl.WHITE,
-					)
-				}
+				pos := rl.Vector2{f32(draw_x) + 11, f32(draw_y) + 11}
+				color := item_stack.count > 0 ? rl.WHITE : {40, 40, 40, 200}
+				rl.DrawTextureEx(k.texture, pos, 0, 3, color)
 
 				rl.DrawText(
 					rl.TextFormat("%d", item_stack.count),
@@ -139,85 +146,51 @@ draw_pickups_page :: proc() {
 	}
 }
 
-draw_spells_page :: proc() {
-	rl.DrawTextureRec(i.page_two, {0, 0, 640, 480}, {f32(SWH - 320), f32(SHH - 240)}, rl.WHITE)
+draw_attunement :: proc() {
+	if a_toggled {
+		gap: i32 = 50
 
-	total_length: i32 = INVENTORY_COLUMNS_TWO * SLOT_SIZE_LARGE
-	total_height: i32 = INVENTORY_ROWS_TWO * SLOT_SIZE_LARGE
-	offset_x: i32 = 680
-	offset_y: i32 = 330
+		rl.DrawRectangleLines(gap, gap, SW - (gap * 2), SH - (gap * 2), rl.WHITE)
 
-	draw_x: i32 = offset_x
-	draw_y: i32 = offset_y
+		total_length: i32 = SW - gap
+		total_height: i32 = SH - gap
+		offset_x: i32 = gap
+		offset_y: i32 = gap
 
-	for idx in 0 ..< TOTAL_SLOTS_TWO {
-		item_stack := i.slots_two[idx]
-		if item_stack.item != .None {
-			#partial switch item_stack.item {
-			case .NebulaEye:
-				if item_stack.count <= 0 {
-					rl.DrawTextureEx(
-						n_eye.texture,
-						{f32(draw_x) + 15, f32(draw_y) + 15},
-						0,
-						3,
-						{40, 40, 40, 200},
-					)
-				} else {
-					rl.DrawTextureEx(
-						n_eye.texture,
-						{f32(draw_x) + 15, f32(draw_y) + 15},
-						0,
-						3,
-						rl.WHITE,
-					)
+		draw_x: i32 = offset_x
+		draw_y: i32 = offset_y
+
+		for idx in 0 ..< TOTAL_SLOTS_TWO {
+			rl.DrawRectangleLines(draw_x, draw_y, SLOT_SIZE_TWO, SLOT_SIZE_TWO, rl.WHITE)
+
+			item_stack := si.slots[idx]
+			if item_stack.item != .None {
+				#partial switch item_stack.item {
+				case .NebulaEye:
+					pos := rl.Vector2{f32(draw_x) + 5, f32(draw_y) + 5}
+					color := nebulaEye.unlocked ? rl.WHITE : {40, 40, 40, 200}
+					rl.DrawTextureEx(nebulaEye.icon, pos, 0, 4, color)
+
+				case .NebulaBolt:
+					pos := rl.Vector2{f32(draw_x) + 5, f32(draw_y) + 5}
+					color := nebulaBolt.unlocked ? rl.WHITE : {40, 40, 40, 200}
+					rl.DrawTextureEx(nebulaBolt.icon, pos, 0, 4, color)
+
+				case .NebulaShield:
+					pos := rl.Vector2{f32(draw_x) + 5, f32(draw_y) + 5}
+					color := nebulaShield.unlocked ? rl.WHITE : {40, 40, 40, 200}
+					rl.DrawTextureEx(nebulaShield.icon, pos, 0, 4, color)
 				}
+			}
 
-			case .NebulaBolt:
-				if item_stack.count <= 0 {
-					rl.DrawTextureEx(
-						n_bolt.texture,
-						{f32(draw_x), f32(draw_y) + 15},
-						0,
-						3,
-						{40, 40, 40, 200},
-					)
-				} else {
-					rl.DrawTextureEx(
-						n_bolt.texture,
-						{f32(draw_x), f32(draw_y) + 15},
-						0,
-						3,
-						rl.WHITE,
-					)
-				}
+			draw_x += SLOT_SIZE_TWO
 
-			case .NebulaShield:
-				if item_stack.count <= 0 {
-					rl.DrawTextureEx(
-						n_shield.texture,
-						{f32(draw_x) + 15, f32(draw_y)},
-						0,
-						3,
-						{40, 40, 40, 200},
-					)
-				} else {
-					rl.DrawTextureEx(
-						n_shield.texture,
-						{f32(draw_x) + 15, f32(draw_y)},
-						0,
-						3,
-						rl.WHITE,
-					)
-				}
+			if draw_x == (offset_x + (INVENTORY_COLUMNS_TWO * SLOT_SIZE_TWO)) {
+				draw_x = offset_x
+				draw_y += SLOT_SIZE_TWO
 			}
 		}
 
-		draw_x += SLOT_SIZE_LARGE
-
-		if draw_x == (offset_x + (INVENTORY_COLUMNS_TWO * SLOT_SIZE_LARGE)) {
-			draw_x = offset_x
-			draw_y += SLOT_SIZE_LARGE
-		}
+		rl.ClearBackground({30, 28, 30, 255})
 	}
 }

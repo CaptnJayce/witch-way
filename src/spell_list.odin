@@ -1,59 +1,102 @@
 package game
 
+import "core:fmt"
 import rl "vendor:raylib"
 
-// Nebula Spells
-NebulaEye :: struct {
-	pos:     rl.Rectangle,
-	rot:     rl.Vector2,
-	texture: rl.Texture2D,
-	dur:     f32,
-	range:   f32,
+SpellType :: enum {
+	None,
+	NebulaEye,
+	NebulaBolt,
+	NebulaShield,
 }
-n_eye: NebulaEye
 
-NebulaBolt :: struct {
-	pos:     rl.Rectangle,
-	rot:     rl.Vector2,
-	texture: rl.Texture2D,
-	dur:     f32,
-	dmg:     f32,
-	status:  string,
-}
-n_bolt: NebulaBolt
+SpellData :: struct {
+	// info
+	name:          string,
+	desc:          string,
+	icon:          rl.Texture2D,
+	unlocked:      bool,
 
-NebulaShield :: struct {
-	pos:     rl.Rectangle,
-	rot:     rl.Vector2,
-	texture: rl.Texture2D,
-	dur:     f32,
-	def:     f32,
-}
-n_shield: NebulaShield
+	// costs
+	cooldown:      f32,
 
-init_spell_textures :: proc() {
-	n_eye.texture = rl.LoadTexture("textures/spells/icon_eye_of_nebula.png")
-	n_bolt.texture = rl.LoadTexture("textures/spells/icon_nebula_bolt.png")
-	n_shield.texture = rl.LoadTexture("textures/spells/icon_nebula_shield.png")
+	// properties
+	source:        rl.Rectangle,
+	dir:           rl.Vector2,
+	pj_speed:      f32,
+	pj_size:       f32,
+	lifetime:      f32,
+	pierce:        int,
+
+	// offensive 
+	dmg:           f32,
+	dot:           f32,
+
+	// defensive
+	dmg_reduction: f32,
+	dot_reduction: f32,
+	healing:       f32,
+
+	// effects
+	slow:          f32,
+	stun:          f32,
+	shatter:       f32,
+
+	// visual
+	pj_colour:     rl.Color,
 }
+
+spell_data: [SpellType]SpellData = {
+	.None = {},
+	.NebulaEye = {
+		name = "Eye of The Nebula",
+		desc = "A flare that seeks out your objectives",
+		unlocked = false,
+		cooldown = 300,
+		pj_speed = 10,
+		pj_size = 20,
+		lifetime = 2400000000,
+		pj_colour = rl.Color{80, 100, 80, 255},
+	},
+	.NebulaBolt = {
+		name = "Nebula Bolt",
+		desc = "A bolt of crystal which shatters on impact",
+		unlocked = false,
+		cooldown = 1.5,
+		source = {0, 0, 100, 100},
+		pj_speed = 50,
+		pj_size = 15,
+		lifetime = 4,
+		dmg = 5,
+		shatter = 20,
+		pj_colour = rl.Color{80, 100, 80, 255},
+	},
+	.NebulaShield = {
+		name = "Nebula Shield",
+		desc = "A rudimentary defensive spell, negates a minor amount of damage",
+		unlocked = false,
+		source = {0, 0, 100, 100},
+		cooldown = 12,
+		lifetime = 2400000000,
+		dmg_reduction = 10,
+		dot_reduction = 5,
+		shatter = 10,
+		pj_colour = rl.Color{80, 100, 80, 255},
+	},
+}
+
+nebulaEye := spell_data[.NebulaEye]
+nebulaBolt := spell_data[.NebulaBolt]
+nebulaShield := spell_data[.NebulaShield]
 
 init_spells :: proc() {
-	init_spell_textures()
+	nebulaEye.icon = rl.LoadTexture("textures/spells/icon_eye_of_nebula.png")
+	nebulaBolt.icon = rl.LoadTexture("textures/spells/icon_nebula_bolt.png")
+	nebulaShield.icon = rl.LoadTexture("textures/spells/icon_nebula_shield.png")
 
-	// default starting spells
-	if len(equipped_spells) == 0 {
-		append(&equipped_spells, n_eye)
-		append(&equipped_spells, n_bolt)
-		append(&equipped_spells, n_shield)
+	if len(p.equipped_spells) == 0 {
+		append(&p.equipped_spells, nebulaEye)
+		append(&p.equipped_spells, nebulaBolt)
+		append(&p.equipped_spells, nebulaShield)
 	}
-
-	n_eye.dur = 9999
-	n_eye.range = 9999
-
-	n_bolt.dur = 1.5
-	n_bolt.dmg = 5
-	n_bolt.status = "Crystallium"
-
-	n_shield.dur = 12
-	n_shield.def = 3
 }

@@ -40,6 +40,8 @@ main :: proc() {
 
 			wand_handler()
 
+			spell_select()
+
 			player_iframes(delta)
 
 			toggle_inventory()
@@ -58,5 +60,6 @@ main :: proc() {
 		// ui
 		debug_menu()
 		draw_inventory()
+		draw_attunement()
 	}
 }
