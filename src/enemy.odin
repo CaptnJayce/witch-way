@@ -188,7 +188,7 @@ enemy_collision :: proc(enemy: ^Enemy) {
 		height = enemy.size.height,
 	}
 
-	enemy_prev_pos := enemy.position - enemy.velocity * rl.GetFrameTime()
+	enemy_prev_pos := enemy.position - enemy.velocity * delta
 
 	enemy_rect_x := rl.Rectangle {
 		x      = enemy.position.x,
@@ -232,6 +232,19 @@ enemy_collision :: proc(enemy: ^Enemy) {
 		}
 	}
 
+	for i := len(enemies) - 1; i >= 0; i -= 1 {
+		for j := len(projectiles) - 1; j >= 0; j -= 1 {
+			if rl.CheckCollisionRecs(enemies[i].size, projectiles[j].source) {
+				damage_enemy(i, j)
+
+				if projectiles[j].pierce == 0 {
+					unordered_remove(&projectiles, j)
+				}
+
+				break
+			}
+		}
+	}
 }
 
 damage_enemy :: proc(i: int, j: int) {

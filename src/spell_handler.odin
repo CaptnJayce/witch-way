@@ -50,22 +50,24 @@ cast_spell :: proc() {
 }
 
 update_spell :: proc() {
-	// TODO : Update spell position and collision
-	// TODO : Free spell outside of level bounds
-	// TODO : Rotate draw
-	for &proj in projectiles {
-		if len(projectiles) != 0 {
-			if proj.type == "Projectile" {
-				proj.source.x += proj.dir.x * proj.speed * delta
-				proj.source.y += proj.dir.y * proj.speed * delta
-			}
-			if proj.type == "Utility" {
-			}
-			if proj.type == "Buff" {
-			}
-			if proj.type == "Debuff" {
+	i := 0
+	for i < len(projectiles) {
+		proj := &projectiles[i]
+
+		if proj.type == "Projectile" {
+			proj.source.x += proj.dir.x * proj.speed * rl.GetFrameTime()
+			proj.source.y += proj.dir.y * proj.speed * rl.GetFrameTime()
+
+			if proj.source.x < 0 ||
+			   proj.source.x > f32(LEVEL_WIDTH) ||
+			   proj.source.y < 0 ||
+			   proj.source.y > f32(LEVEL_HEIGHT) {
+				unordered_remove(&projectiles, i)
+				continue
 			}
 		}
+
+		i += 1
 	}
 }
 
