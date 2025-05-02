@@ -39,9 +39,8 @@ SpellData :: struct {
 	healing:       f32,
 
 	// effects
-	slow:          f32,
-	stun:          f32,
-	shatter:       f32,
+	status:        string, // use string to apply in apply_status
+	status_val:    f32,
 
 	// visual
 	pj_colour:     rl.Color,
@@ -68,7 +67,8 @@ spell_data: [SpellType]SpellData = {
 		speed = 100,
 		lifetime = 4,
 		dmg = 5,
-		shatter = 20,
+		status = "Shatter",
+		status_val = 10,
 		pj_colour = rl.Color{80, 100, 80, 255},
 	},
 	.NebulaShield = {
@@ -80,7 +80,6 @@ spell_data: [SpellType]SpellData = {
 		lifetime = 2400000000,
 		dmg_reduction = 10,
 		dot_reduction = 5,
-		shatter = 10,
 		pj_colour = rl.Color{80, 100, 80, 255},
 	},
 }

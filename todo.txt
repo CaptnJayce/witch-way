@@ -167,6 +167,17 @@ Krushems will now draw to tilemap randomly
 Krushems will now be "added to inventory"
 Inventory now looks like a book (potential resizing needed)
 
+#### day 25
+Implemented spell helper procedures
+    - draw
+    - update
+    - cast
+    - select
+Implemented spell unlocking
+Added new UI for spell menu
+Attunement works but still needs proper implementation 
+Added framework for spell menu wheel thing
+
 TODO:
 Fix textures not unloading out of player view
 
@@ -175,9 +186,6 @@ Seed:
 
 Player:
     - Load total pickups from json to inventory
-    - Spell "attunement"
-    - Spell json 
-    - Spell UI 
 
 Enemies:
 

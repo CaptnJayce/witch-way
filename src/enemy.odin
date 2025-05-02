@@ -23,8 +23,8 @@ Enemy :: struct {
 	acceleration:    f32,
 	health:          f32,
 	damage:          f32,
-	affect_attack:   int,
-	affect_recieved: int,
+	affect_attack:   string,
+	affect_recieved: string,
 
 	// iframes
 	iframes:         f32,
@@ -54,8 +54,6 @@ init_enemy :: proc() {
 	red_guy.acceleration = 200.0
 	red_guy.health = 40.0
 	red_guy.damage = 5.0
-	red_guy.affect_attack = 0
-	red_guy.affect_recieved = 0
 
 	// red_guy.iframes
 	red_guy.iframe_duration = 1.0
@@ -76,8 +74,6 @@ init_enemy :: proc() {
 	tall_guy.acceleration = 150.0
 	tall_guy.health = 60.0
 	tall_guy.damage = 10.0
-	tall_guy.affect_attack = 0
-	tall_guy.affect_recieved = 0
 
 	// tall_guy.iframes
 	tall_guy.iframe_duration = 1.0
@@ -99,8 +95,6 @@ init_enemy :: proc() {
 	snake_guy.acceleration = 250.0
 	snake_guy.health = 80.0
 	snake_guy.damage = 10.0
-	snake_guy.affect_attack = 0
-	snake_guy.affect_recieved = 0
 
 	// snake_guy.iframes
 	snake_guy.iframe_duration = 1.0
@@ -111,14 +105,8 @@ draw_enemy :: proc(enemy: ^Enemy) {
 	enemy.source = flip_texture(enemy.flipped, enemy.texture, enemy.size)
 	rl.DrawTextureRec(enemy.texture, enemy.source, enemy.position, rl.WHITE)
 
-	if enemy.affect_recieved == 1 {
-		rl.DrawRectangleRec(enemy.size, rl.ORANGE)
-	}
-	if enemy.affect_recieved == 2 {
-		rl.DrawRectangleRec(enemy.size, rl.BLUE)
-	}
-	if enemy.affect_recieved == 3 {
-		rl.DrawRectangleRec(enemy.size, rl.YELLOW)
+	if enemy.affect_recieved == "Shattering" {
+		rl.DrawRectangleRec(enemy.size, rl.PINK)
 	}
 }
 
@@ -126,7 +114,7 @@ move_enemy :: proc(enemy: ^Enemy) {
 	dt := rl.GetFrameTime()
 	dist_to_player := rl.Vector2Distance(p.position, {enemy.size.x, enemy.size.y})
 
-	if enemy.affect_recieved != 3 {
+	if enemy.affect_recieved != "" {
 		if dist_to_player <= enemy.sight {
 			direction := rl.Vector2Normalize(p.position - enemy.position)
 			enemy.velocity.x += direction.x * enemy.acceleration * dt
@@ -250,6 +238,8 @@ enemy_collision :: proc(enemy: ^Enemy) {
 damage_enemy :: proc(i: int, j: int) {
 	if enemies[i].is_invincible == false {
 		enemies[i].health -= projectiles[j].dmg
+
+		apply_status(projectiles[j].status, projectiles[j].status_val, i)
 		enemy_iframes(i)
 		projectiles[j].pierce -= 1
 	}
@@ -261,6 +251,16 @@ damage_enemy :: proc(i: int, j: int) {
 	if enemies[i].health <= 0 {
 		unordered_remove(&enemies, i)
 	}
+}
+
+apply_status :: proc(status: string, status_val: f32, i: int) {
+	if status == "Shatter" {
+		enemies[i].affect_recieved = "Shatter"
+	}
+}
+
+update_status :: proc() {
+	// TODO : Status contdown & make the status actually do something to the enemy 
 }
 
 enemy_iframes :: proc(i: int) {
