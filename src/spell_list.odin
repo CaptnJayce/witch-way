@@ -24,6 +24,7 @@ SpellData :: struct {
 	// properties
 	source:        rl.Rectangle,
 	dir:           rl.Vector2,
+	rot:           f32,
 	speed:         f32,
 	lifetime:      f32,
 	pierce:        int,

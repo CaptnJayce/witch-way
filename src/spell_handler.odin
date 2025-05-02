@@ -2,6 +2,7 @@ package game
 
 import "core:encoding/json"
 import "core:fmt"
+import "core:math"
 import "core:os"
 import rl "vendor:raylib"
 
@@ -38,24 +39,25 @@ cast_spell :: proc() {
 			spell_data[cSpell].dir = direction
 			append(&projectiles, spell_data[cSpell])
 		case cSpell == .NebulaBolt:
-			spell_data[cSpell].source = {sp_x, sp_y, 10, 20}
+			spell_data[cSpell].source = {sp_x, sp_y, 20, 10}
 			spell_data[cSpell].dir = direction
 			append(&projectiles, spell_data[cSpell])
 		case cSpell == .NebulaShield:
 			spell_data[cSpell].source = {sp_x, sp_y, 25, 30}
 			spell_data[cSpell].dir = direction
-			append(&projectiles, spell_data[cSpell])
-		}
+			append(&projectiles, spell_data[cSpell])}
 	}
 }
 
 update_spell :: proc() {
 	// TODO : Update spell position and collision
+	// TODO : Free spell outside of level bounds
+	// TODO : Rotate draw
 	for &proj in projectiles {
 		if len(projectiles) != 0 {
 			if proj.type == "Projectile" {
-				proj.source.x += proj.dir.x * proj.speed * rl.GetFrameTime()
-				proj.source.y += proj.dir.y * proj.speed * rl.GetFrameTime()
+				proj.source.x += proj.dir.x * proj.speed * delta
+				proj.source.y += proj.dir.y * proj.speed * delta
 			}
 			if proj.type == "Utility" {
 			}
@@ -68,15 +70,21 @@ update_spell :: proc() {
 }
 
 draw_spell :: proc() {
-	// TODO : Draw spell
 	for &proj in projectiles {
 		if len(projectiles) != 0 {
 			if proj.type == "Projectile" {
-				rl.DrawRectangleV(
-					{proj.source.x, proj.source.y},
-					{proj.source.width, proj.source.height},
-					rl.DARKPURPLE,
-				)
+				rot := math.atan2(proj.dir.y, proj.dir.x)
+
+				rect := rl.Rectangle {
+					x      = proj.source.x,
+					y      = proj.source.y,
+					width  = proj.source.width,
+					height = proj.source.height,
+				}
+
+				origin := rl.Vector2{proj.source.width / 2, proj.source.height / 2}
+
+				rl.DrawRectanglePro(rect, origin, rot * rl.RAD2DEG, rl.DARKPURPLE)
 			}
 			if proj.type == "Utility" {
 			}
