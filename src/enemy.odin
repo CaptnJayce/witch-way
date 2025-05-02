@@ -249,6 +249,12 @@ enemy_collision :: proc(enemy: ^Enemy) {
 
 damage_enemy :: proc(i: int, j: int) {
 	if enemies[i].is_invincible == false {
+		enemies[i].health -= projectiles[j].dmg
+		enemy_iframes(i)
+		projectiles[j].pierce -= 1
+	}
+
+	if enemies[i].is_invincible == false {
 		enemy_iframes(i)
 	}
 
