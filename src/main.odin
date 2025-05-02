@@ -40,7 +40,10 @@ main :: proc() {
 
 			wand_handler()
 
-			spell_select()
+			// spell stuff
+			select_spell()
+			cast_spell()
+			update_spell()
 
 			player_iframes(delta)
 

@@ -17,6 +17,7 @@ draw :: proc() {
 
 	draw_player()
 	draw_wand()
+	draw_spell()
 	draw_spell_menu()
 }
 

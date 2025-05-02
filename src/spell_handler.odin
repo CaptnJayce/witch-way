@@ -11,34 +11,10 @@ show_spell_drawer := false
 highlight_attunement := false
 enable_attunement := false
 
-CurrentSpellData :: struct {
-	name:          string,
-	desc:          string,
-	icon:          rl.Texture2D,
-	unlocked:      bool,
-	cooldown:      f32,
-	source:        rl.Rectangle,
-	dir:           rl.Vector2,
-	pj_speed:      f32,
-	pj_size:       f32,
-	lifetime:      f32,
-	pierce:        int,
-	dmg:           f32,
-	dot:           f32,
-	dmg_reduction: f32,
-	dot_reduction: f32,
-	healing:       f32,
-	slow:          f32,
-	stun:          f32,
-	shatter:       f32,
-	pj_colour:     rl.Color,
-}
-
 cSpell: SpellType
-cSpellData: CurrentSpellData
-projectiles: [dynamic]CurrentSpellData
+projectiles: [dynamic]SpellData
 
-spell_select :: proc() {
+select_spell :: proc() {
 	switch {
 	case rl.IsKeyPressed(.ONE):
 		cSpell = .NebulaEye
@@ -46,6 +22,69 @@ spell_select :: proc() {
 		cSpell = .NebulaBolt
 	case rl.IsKeyPressed(.THREE):
 		cSpell = .NebulaShield
+	}
+}
+
+cast_spell :: proc() {
+	sp_x := p.position.x
+	sp_y := p.position.y
+
+	if rl.IsMouseButtonPressed(.LEFT) {
+		direction := rl.Vector2Normalize(mp - p.position)
+
+		switch {
+		case cSpell == .NebulaEye:
+			spell_data[cSpell].source = {sp_x, sp_y, 60, 60}
+			spell_data[cSpell].dir = direction
+			append(&projectiles, spell_data[cSpell])
+		case cSpell == .NebulaBolt:
+			spell_data[cSpell].source = {sp_x, sp_y, 10, 20}
+			spell_data[cSpell].dir = direction
+			append(&projectiles, spell_data[cSpell])
+		case cSpell == .NebulaShield:
+			spell_data[cSpell].source = {sp_x, sp_y, 25, 30}
+			spell_data[cSpell].dir = direction
+			append(&projectiles, spell_data[cSpell])
+		}
+	}
+}
+
+update_spell :: proc() {
+	// TODO : Update spell position and collision
+	for &proj in projectiles {
+		if len(projectiles) != 0 {
+			if proj.type == "Projectile" {
+				proj.source.x += proj.dir.x * proj.speed * rl.GetFrameTime()
+				proj.source.y += proj.dir.y * proj.speed * rl.GetFrameTime()
+			}
+			if proj.type == "Utility" {
+			}
+			if proj.type == "Buff" {
+			}
+			if proj.type == "Debuff" {
+			}
+		}
+	}
+}
+
+draw_spell :: proc() {
+	// TODO : Draw spell
+	for &proj in projectiles {
+		if len(projectiles) != 0 {
+			if proj.type == "Projectile" {
+				rl.DrawRectangleV(
+					{proj.source.x, proj.source.y},
+					{proj.source.width, proj.source.height},
+					rl.DARKPURPLE,
+				)
+			}
+			if proj.type == "Utility" {
+			}
+			if proj.type == "Buff" {
+			}
+			if proj.type == "Debuff" {
+			}
+		}
 	}
 }
 

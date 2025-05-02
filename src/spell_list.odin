@@ -15,6 +15,7 @@ SpellData :: struct {
 	name:          string,
 	desc:          string,
 	icon:          rl.Texture2D,
+	type:          string,
 	unlocked:      bool,
 
 	// costs
@@ -23,8 +24,7 @@ SpellData :: struct {
 	// properties
 	source:        rl.Rectangle,
 	dir:           rl.Vector2,
-	pj_speed:      f32,
-	pj_size:       f32,
+	speed:         f32,
 	lifetime:      f32,
 	pierce:        int,
 
@@ -51,21 +51,20 @@ spell_data: [SpellType]SpellData = {
 	.NebulaEye = {
 		name = "Eye of The Nebula",
 		desc = "A flare that seeks out your objectives",
+		type = "Utility",
 		unlocked = false,
 		cooldown = 300,
-		pj_speed = 10,
-		pj_size = 20,
+		speed = 5,
 		lifetime = 2400000000,
 		pj_colour = rl.Color{80, 100, 80, 255},
 	},
 	.NebulaBolt = {
 		name = "Nebula Bolt",
 		desc = "A bolt of crystal which shatters on impact",
+		type = "Projectile",
 		unlocked = false,
 		cooldown = 1.5,
-		source = {0, 0, 100, 100},
-		pj_speed = 50,
-		pj_size = 15,
+		speed = 100,
 		lifetime = 4,
 		dmg = 5,
 		shatter = 20,
@@ -74,8 +73,8 @@ spell_data: [SpellType]SpellData = {
 	.NebulaShield = {
 		name = "Nebula Shield",
 		desc = "A rudimentary defensive spell, negates a minor amount of damage",
+		type = "Buff",
 		unlocked = false,
-		source = {0, 0, 100, 100},
 		cooldown = 12,
 		lifetime = 2400000000,
 		dmg_reduction = 10,
