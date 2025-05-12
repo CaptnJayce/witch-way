@@ -53,7 +53,7 @@ save_tiles :: proc(filename: string) -> bool {
 	}
 
 	header_size := size_of(u32)
-	tile_size := size_of(u32) + size_of(u8)
+	tile_size := size_of(u32) + size_of(u16)
 	total_size := header_size + int(count) * tile_size
 
 	buffer := make([]u8, total_size)
@@ -70,8 +70,8 @@ save_tiles :: proc(filename: string) -> bool {
 			offset += size_of(u32)
 
 			flags := tm.tiles[index].flags
-			mem.copy(&buffer[offset], &flags, size_of(u8))
-			offset += size_of(u8)
+			mem.copy(&buffer[offset], &flags, size_of(u16))
+			offset += size_of(u16)
 
 			tm.tiles[index].flags -= {.Modified}
 		}
@@ -123,7 +123,7 @@ load_tiles :: proc(filename: string) -> bool {
 	mem.copy(&count, &data[0], size_of(u32))
 	offset := size_of(u32)
 
-	tile_size := size_of(u32) + size_of(u8)
+	tile_size := size_of(u32) + size_of(u16)
 	expected_size := offset + int(count) * tile_size
 	if len(data) != expected_size do return false
 
@@ -134,12 +134,12 @@ load_tiles :: proc(filename: string) -> bool {
 		mem.copy(&index, &data[offset], size_of(u32))
 		offset += size_of(u32)
 
-		flags: u8
-		mem.copy(&flags, &data[offset], size_of(u8))
-		offset += size_of(u8)
+		flags: u16
+		mem.copy(&flags, &data[offset], size_of(u16))
+		offset += size_of(u16)
 
 		if int(index) < tm.tile_width * tm.tile_height {
-			tm.tiles[index].flags = transmute(bit_set[TileFlags;u8])flags
+			tm.tiles[index].flags = transmute(bit_set[TileFlags;u16])flags
 			tm.tiles[index].flags += {.Modified}
 		}
 	}

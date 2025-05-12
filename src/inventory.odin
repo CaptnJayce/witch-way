@@ -52,8 +52,8 @@ i: Inventory
 si: SpellInventory
 
 init_inventory :: proc() {
-	i.page_zero = rl.LoadTexture("textures/player/sprite_inventory_page_0.png")
-	i.page_one = rl.LoadTexture("textures/player/sprite_inventory_page_1.png")
+	i.page_zero = rl.LoadTexture("textures/player/inventory_0.png")
+	i.page_one = rl.LoadTexture("textures/player/inventory_1.png")
 
 	// Pickup slots
 	i.slots[0] = ItemStack{.Krushem, 0}

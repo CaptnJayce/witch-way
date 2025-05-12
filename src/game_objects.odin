@@ -2,7 +2,16 @@ package game
 
 import rl "vendor:raylib"
 
-// PLANTS
+// TILES
+TextureAtlas :: struct {
+	texture:  rl.Texture,
+	variants: []rl.Rectangle,
+}
+Grass :: struct {
+	atlas: TextureAtlas,
+}
+g: Grass
+
 Krushem :: struct {
 	texture: rl.Texture2D,
 }
@@ -12,34 +21,9 @@ Heartium :: struct {
 }
 h: Heartium
 
-// SPRITESHEETS
-Spritesheets :: struct {
-	txt_grass: rl.Texture2D,
-}
-sheet: Spritesheets
-
-SHEET_WIDTH :: 48
-SHEET_HEIGHT :: 48
-cols := SHEET_WIDTH / TILE_SIZE
-rows := SHEET_HEIGHT / TILE_SIZE
-
-
-tl_grass := rl.Rectangle{0, 0, f32(TILE_SIZE), f32(TILE_SIZE)}
-tm_grass := rl.Rectangle{TILE_SIZE, 0, f32(TILE_SIZE), f32(TILE_SIZE)}
-tr_grass := rl.Rectangle{TILE_SIZE * 2, 0, f32(TILE_SIZE), f32(TILE_SIZE)}
-
-ml_grass := rl.Rectangle{0, TILE_SIZE, f32(TILE_SIZE), f32(TILE_SIZE)}
-mm_grass := rl.Rectangle{TILE_SIZE, TILE_SIZE, f32(TILE_SIZE), f32(TILE_SIZE)}
-mr_grass := rl.Rectangle{TILE_SIZE * 2, TILE_SIZE, f32(TILE_SIZE), f32(TILE_SIZE)}
-
-bl_grass := rl.Rectangle{0, TILE_SIZE * 2, f32(TILE_SIZE), f32(TILE_SIZE)}
-bm_grass := rl.Rectangle{TILE_SIZE, TILE_SIZE * 2, f32(TILE_SIZE), f32(TILE_SIZE)}
-br_grass := rl.Rectangle{TILE_SIZE * 2, TILE_SIZE * 2, f32(TILE_SIZE), f32(TILE_SIZE)}
-
 Rock :: struct {
 	texture: rl.Texture2D,
 }
-
 NebulaSpellIcons :: struct {
 	eye:    rl.Texture2D,
 	bolt:   rl.Texture2D,
@@ -48,14 +32,22 @@ NebulaSpellIcons :: struct {
 i_nebula: NebulaSpellIcons
 
 init_sprite :: proc() {
-	sheet.txt_grass = rl.LoadTexture("textures/spritesheets/spritesheet_grass.png")
+	g.atlas.texture = rl.LoadTexture("textures/tiles/grass_tile_atlas.png")
+	g.atlas.variants = make([]rl.Rectangle, GRASS_VARIANTS)
 
-	k.texture = rl.LoadTexture("textures/props/sprite_krushem.png")
-	h.texture = rl.LoadTexture("textures/props/sprite_heartium.png")
+	for i in 0 ..< GRASS_VARIANTS {
+		g.atlas.variants[i] = rl.Rectangle {
+			x      = 0,
+			y      = f32(i * TILE_SIZE),
+			width  = TILE_SIZE,
+			height = TILE_SIZE,
+		}
+	}
 
-	extras_texture := rl.LoadTexture("textures/props/sprite_sheet_extras.png")
+	k.texture = rl.LoadTexture("textures/props/krushem.png")
+	h.texture = rl.LoadTexture("textures/props/heartium.png")
 
-	i_nebula.eye = rl.LoadTexture("textures/spells/icon_eye_of_nebula.png")
-	i_nebula.bolt = rl.LoadTexture("textures/spells/icon_nebula_bolt.png")
-	i_nebula.shield = rl.LoadTexture("textures/spells/icon_nebula_shield.png")
+	i_nebula.eye = rl.LoadTexture("textures/spells/nebula_eye.png")
+	i_nebula.bolt = rl.LoadTexture("textures/spells/nebula_bolt.png")
+	i_nebula.shield = rl.LoadTexture("textures/spells/nebula_shield.png")
 }

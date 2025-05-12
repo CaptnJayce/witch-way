@@ -42,7 +42,7 @@ mouse_handler :: proc() {
 init_player :: proc() {
 	p.position = {0, 0}
 	p.size = {16, 32, 16, 32}
-	p.texture = rl.LoadTexture("textures/player/sprite_player.png")
+	p.texture = rl.LoadTexture("textures/player/player.png")
 	p.flipped = false
 	p.speed = 100.0
 	p.velocity = {0, 0}

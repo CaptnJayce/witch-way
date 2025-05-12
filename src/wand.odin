@@ -16,7 +16,7 @@ w: Wand
 
 init_wand :: proc() {
 	w.size = {0, 0, 16, 16}
-	w.texture = rl.LoadTexture("textures/player/sprite_wand.png")
+	w.texture = rl.LoadTexture("textures/player/wand.png")
 	w.flipped = false
 	w.damage = 5
 	w.source = {0, 0, w.size.width, w.size.height}

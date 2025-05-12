@@ -178,6 +178,12 @@ Added new UI for spell menu
 Attunement works but still needs proper implementation 
 Added framework for spell menu wheel thing
 
+#### day 26
+Trimmed a lot of unused assets
+Added texture atlas for grass
+Renamed all sprites
+New plant
+
 TODO:
 Fix textures not unloading out of player view
 

@@ -1,6 +1,7 @@
 package game
 
 import "core:strings"
+import rl "vendor:raylib"
 
 // CONSTANTS //
 SW: i32 = 1920
@@ -13,6 +14,12 @@ LEVEL_WIDTH :: 29600
 LEVEL_HEIGHT :: 29600
 
 MAX_PROJECTILES :: 100
+
+// TILES //
+TILE_SIZE :: 16
+GRASS_VARIANTS :: 3
+grass_atlas: rl.Texture
+grass_src_rects: [GRASS_VARIANTS]rl.Rectangle
 
 // global vars //
 delta: f32

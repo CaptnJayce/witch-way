@@ -52,7 +52,7 @@ main :: proc() {
 			draw()
 
 			hitbox()
-			rl.ClearBackground(rl.DARKGREEN)
+			rl.ClearBackground(rl.WHITE)
 			level_editor()
 		}
 

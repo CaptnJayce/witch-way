@@ -5,20 +5,20 @@ import "core:math/rand"
 import "core:time"
 import rl "vendor:raylib"
 
-TILE_SIZE :: 16
-
 TileFlags :: enum {
 	Collidable = 0,
 	Modified   = 1,
 	Stone      = 2,
 	Dirt       = 3,
 	Grass      = 4,
-	Tilled     = 5,
-	Krushem    = 6,
-	Heartium   = 7,
+	GrassTwo   = 5,
+	GrassThree = 6,
+	Tilled     = 7,
+	Krushem    = 8,
+	Heartium   = 9,
 }
 Tile :: struct {
-	flags: bit_set[TileFlags;u8],
+	flags: bit_set[TileFlags;u16],
 }
 TileMap :: struct {
 	world_width, world_height: int,
@@ -54,7 +54,17 @@ init_tilemap :: proc() {
 		for col in 0 ..< tm.tile_width {
 			index := row * tm.tile_width + col
 
-			tm.tiles[index].flags = {.Grass}
+			selected := rl.GetRandomValue(0, 2)
+
+			if selected == 0 {
+				tm.tiles[index].flags = {.Grass}
+			}
+			if selected == 1 {
+				tm.tiles[index].flags = {.GrassTwo}
+			}
+			if selected == 2 {
+				tm.tiles[index].flags = {.GrassThree}
+			}
 		}
 	}
 
@@ -63,7 +73,6 @@ init_tilemap :: proc() {
 			index := row * tm.tile_width + col
 			selected := rl.GetRandomValue(0, 1000)
 
-			// Grass base
 			if .Grass in tm.tiles[index].flags && (selected >= 51 && selected <= 100) {
 				tm.tiles[index].flags += {.Grass}
 			}
@@ -71,17 +80,6 @@ init_tilemap :: proc() {
 				tm.tiles[index].flags += {.Krushem}
 			}
 			if .Grass in tm.tiles[index].flags && selected == 998 {
-				tm.tiles[index].flags += {.Heartium}
-			}
-
-			// Dirt base
-			if .Dirt in tm.tiles[index].flags && (selected >= 0 && selected <= 50) {
-				tm.tiles[index].flags += {.Stone, .Collidable}
-			}
-			if .Dirt in tm.tiles[index].flags && selected == 999 {
-				tm.tiles[index].flags += {.Krushem}
-			}
-			if .Dirt in tm.tiles[index].flags && selected == 998 {
 				tm.tiles[index].flags += {.Heartium}
 			}
 		}
@@ -112,8 +110,34 @@ draw_tilemap :: proc() {
 			tile_y := i32(row * TILE_SIZE - tm.world_height / 2)
 
 			if .Grass in tile.flags {
-				// will need to be batch drawn
-				// rl.DrawTextureRec(sheet.txt_grass, mm_grass, {f32(tile_x), f32(tile_y)}, rl.WHITE)
+				rl.DrawTexturePro(
+					g.atlas.texture,
+					g.atlas.variants[0],
+					{f32(tile_x), f32(tile_y), TILE_SIZE, TILE_SIZE},
+					{0, 0},
+					0,
+					rl.WHITE,
+				)
+			}
+			if .GrassTwo in tile.flags {
+				rl.DrawTexturePro(
+					g.atlas.texture,
+					g.atlas.variants[1],
+					{f32(tile_x), f32(tile_y), TILE_SIZE, TILE_SIZE},
+					{0, 0},
+					0,
+					rl.WHITE,
+				)
+			}
+			if .GrassThree in tile.flags {
+				rl.DrawTexturePro(
+					g.atlas.texture,
+					g.atlas.variants[2],
+					{f32(tile_x), f32(tile_y), TILE_SIZE, TILE_SIZE},
+					{0, 0},
+					0,
+					rl.WHITE,
+				)
 			}
 			if .Dirt in tile.flags {
 				rl.DrawRectangle(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.BROWN)

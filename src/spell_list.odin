@@ -89,9 +89,9 @@ nebulaBolt := spell_data[.NebulaBolt]
 nebulaShield := spell_data[.NebulaShield]
 
 init_spells :: proc() {
-	nebulaEye.icon = rl.LoadTexture("textures/spells/icon_eye_of_nebula.png")
-	nebulaBolt.icon = rl.LoadTexture("textures/spells/icon_nebula_bolt.png")
-	nebulaShield.icon = rl.LoadTexture("textures/spells/icon_nebula_shield.png")
+	nebulaEye.icon = rl.LoadTexture("textures/spells/nebula_eye.png")
+	nebulaBolt.icon = rl.LoadTexture("textures/spells/nebula_bolt.png")
+	nebulaShield.icon = rl.LoadTexture("textures/spells/nebula_shield.png")
 
 	if len(p.equipped_spells) == 0 {
 		append(&p.equipped_spells, nebulaEye)
