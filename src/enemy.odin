@@ -165,9 +165,9 @@ enemy_collision :: proc(enemy: ^Enemy) {
 	search_radius := 2
 
 	start_col := max(0, enemy_col - search_radius)
-	end_col := min(tm.width - 1, enemy_col + search_radius)
+	end_col := min(tm.tile_width - 1, enemy_col + search_radius)
 	start_row := max(0, enemy_row - search_radius)
-	end_row := min(tm.height - 1, enemy_row + search_radius)
+	end_row := min(tm.tile_height - 1, enemy_row + search_radius)
 
 	enemy_rect := rl.Rectangle {
 		x      = enemy.position.x,
@@ -194,7 +194,7 @@ enemy_collision :: proc(enemy: ^Enemy) {
 
 	for row in start_row ..= end_row {
 		for col in start_col ..= end_col {
-			index := row * tm.width + col
+			index := row * tm.tile_width + col
 			tile := tm.tiles[index]
 
 			if .Collidable in tile.flags {

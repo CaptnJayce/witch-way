@@ -105,17 +105,11 @@ draw_load_save_menu :: proc() {
 			sfp = strings.concatenate([]string{save_data_path, save_slot, json_path})
 			save_selected = true
 
-			init_tilemap(current_level)
+			init_tilemap()
 			load_tiles(tfp)
 
 			if !os.exists(sfp) {
-				p.position = {-50, -50}
-				p.flipped = false
-				p.speed = 200.0
-				p.max_health = 10
-				p.health = p.max_health
-				p.damage = 5
-				p.pickup = 40.0
+				init_player()
 			}
 
 			if !exists {

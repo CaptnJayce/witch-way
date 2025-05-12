@@ -30,8 +30,6 @@ main :: proc() {
 		case .Save:
 			rl.DrawText("uhhh", 300, 300, 20, rl.WHITE)
 		case .Game:
-			level_handler()
-
 			mp = rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
 
 			player_handler()

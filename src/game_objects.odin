@@ -2,84 +2,43 @@ package game
 
 import rl "vendor:raylib"
 
+// PLANTS
 Krushem :: struct {
-	size:    rl.Rectangle,
 	texture: rl.Texture2D,
 }
 k: Krushem
-
-house_source := rl.Rectangle {
-	x      = 0,
-	y      = 0,
-	width  = 64,
-	height = 64,
-}
-House :: struct {
-	size:    rl.Rectangle,
-	texture: rl.Texture2D,
-	xy:      rl.Vector2,
-}
-house: House
-
-grass_source := rl.Rectangle {
-	x      = 0,
-	y      = 0,
-	width  = 16,
-	height = 16,
-}
-Grass :: struct {
-	size:    rl.Rectangle,
+Heartium :: struct {
 	texture: rl.Texture2D,
 }
-grass: Grass
+h: Heartium
 
-grass_source_two := rl.Rectangle {
-	x      = 16,
-	y      = 0,
-	width  = 16,
-	height = 16,
+// SPRITESHEETS
+Spritesheets :: struct {
+	txt_grass: rl.Texture2D,
 }
-GrassTwo :: struct {
-	size:    rl.Rectangle,
+sheet: Spritesheets
+
+SHEET_WIDTH :: 48
+SHEET_HEIGHT :: 48
+cols := SHEET_WIDTH / TILE_SIZE
+rows := SHEET_HEIGHT / TILE_SIZE
+
+
+tl_grass := rl.Rectangle{0, 0, f32(TILE_SIZE), f32(TILE_SIZE)}
+tm_grass := rl.Rectangle{TILE_SIZE, 0, f32(TILE_SIZE), f32(TILE_SIZE)}
+tr_grass := rl.Rectangle{TILE_SIZE * 2, 0, f32(TILE_SIZE), f32(TILE_SIZE)}
+
+ml_grass := rl.Rectangle{0, TILE_SIZE, f32(TILE_SIZE), f32(TILE_SIZE)}
+mm_grass := rl.Rectangle{TILE_SIZE, TILE_SIZE, f32(TILE_SIZE), f32(TILE_SIZE)}
+mr_grass := rl.Rectangle{TILE_SIZE * 2, TILE_SIZE, f32(TILE_SIZE), f32(TILE_SIZE)}
+
+bl_grass := rl.Rectangle{0, TILE_SIZE * 2, f32(TILE_SIZE), f32(TILE_SIZE)}
+bm_grass := rl.Rectangle{TILE_SIZE, TILE_SIZE * 2, f32(TILE_SIZE), f32(TILE_SIZE)}
+br_grass := rl.Rectangle{TILE_SIZE * 2, TILE_SIZE * 2, f32(TILE_SIZE), f32(TILE_SIZE)}
+
+Rock :: struct {
 	texture: rl.Texture2D,
 }
-grass_two: GrassTwo
-
-anemone_source := rl.Rectangle {
-	x      = 72,
-	y      = 0,
-	width  = 16,
-	height = 16,
-}
-Anemone :: struct {
-	size:    rl.Rectangle,
-	texture: rl.Texture2D,
-}
-anemone: Anemone
-
-anemone_source_two := rl.Rectangle {
-	x      = 96,
-	y      = 0,
-	width  = 16,
-	height = 16,
-}
-AnemoneTwo :: struct {
-	size:    rl.Rectangle,
-	texture: rl.Texture2D,
-}
-anemone_two: Anemone
-
-attunement_source := rl.Rectangle {
-	x      = 0,
-	y      = 0,
-	width  = 16,
-	height = 16,
-}
-AttunementPoint :: struct {
-	texture: rl.Texture2D,
-	radius:  rl.Vector2,
-}
-attunement_p: AttunementPoint
 
 NebulaSpellIcons :: struct {
 	eye:    rl.Texture2D,
@@ -89,18 +48,12 @@ NebulaSpellIcons :: struct {
 i_nebula: NebulaSpellIcons
 
 init_sprite :: proc() {
+	sheet.txt_grass = rl.LoadTexture("textures/spritesheets/spritesheet_grass.png")
+
 	k.texture = rl.LoadTexture("textures/props/sprite_krushem.png")
+	h.texture = rl.LoadTexture("textures/props/sprite_heartium.png")
 
 	extras_texture := rl.LoadTexture("textures/props/sprite_sheet_extras.png")
-
-	grass.texture = extras_texture
-	grass_two.texture = extras_texture
-
-	anemone.texture = extras_texture
-	anemone_two.texture = extras_texture
-
-	attunement_p.texture = rl.LoadTexture("textures/structures/attunement_point.png")
-	attunement_p.radius = {0, 0}
 
 	i_nebula.eye = rl.LoadTexture("textures/spells/icon_eye_of_nebula.png")
 	i_nebula.bolt = rl.LoadTexture("textures/spells/icon_nebula_bolt.png")

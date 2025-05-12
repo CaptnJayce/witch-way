@@ -19,7 +19,7 @@ mp: rl.Vector2
 init_all :: proc() {
 	init_sprite()
 
-	init_levels()
+	init_world()
 
 	init_player()
 	init_wand()
@@ -30,7 +30,7 @@ init_all :: proc() {
 
 	init_enemy()
 
-	init_tilemap(current_level)
+	init_tilemap()
 }
 
 state_handler :: proc() {

@@ -7,32 +7,12 @@ import rl "vendor:raylib"
 // Static entities, like pickups and obstacles, need to be stored/loaded per level
 enemies: [dynamic]Enemy
 
-LevelOne :: struct {
-	level_bounds: rl.Rectangle,
-	been_loaded:  bool,
-}
-lv_one: LevelOne
-
-current_level: int
-current_bounds: ^rl.Rectangle
-init_levels :: proc() {
-	// future reference
-	// if no save_data then do this, else load save_data
-	current_level = 1
-	current_bounds = &lv_one.level_bounds
-
-	lv_one.level_bounds = {
+current_bounds: rl.Rectangle
+init_world :: proc() {
+	current_bounds = {
 		x      = 0,
 		y      = 0,
 		width  = LEVEL_WIDTH,
 		height = LEVEL_HEIGHT,
-	}
-}
-
-level_handler :: proc() {
-	switch current_level {
-	case 1:
-		current_bounds = &lv_one.level_bounds
-		tile_path = "level1_tiles.bin"
 	}
 }

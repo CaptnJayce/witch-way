@@ -57,14 +57,6 @@ update_spell :: proc() {
 		if proj.type == "Projectile" {
 			proj.source.x += proj.dir.x * proj.speed * rl.GetFrameTime()
 			proj.source.y += proj.dir.y * proj.speed * rl.GetFrameTime()
-
-			if proj.source.x < 0 ||
-			   proj.source.x > f32(LEVEL_WIDTH) ||
-			   proj.source.y < 0 ||
-			   proj.source.y > f32(LEVEL_HEIGHT) {
-				unordered_remove(&projectiles, i)
-				continue
-			}
 		}
 
 		i += 1

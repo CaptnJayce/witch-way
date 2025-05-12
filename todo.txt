@@ -187,8 +187,6 @@ Seed:
 Player:
     - Load total pickups from json to inventory
 
-Enemies:
-
 Artwork:
     - Speed plant (increases player movement speed)
     - Range plant (increases range of spells)

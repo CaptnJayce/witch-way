@@ -42,7 +42,7 @@ save_level_data :: proc() {
 
 save_tiles :: proc(filename: string) -> bool {
 	count: u32 = 0
-	for index in 0 ..< tm.width * tm.height {
+	for index in 0 ..< tm.tile_width * tm.tile_height {
 		if .Modified in tm.tiles[index].flags {
 			count += 1
 		}
@@ -62,7 +62,7 @@ save_tiles :: proc(filename: string) -> bool {
 	mem.copy(&buffer[0], &count, size_of(u32))
 
 	offset := header_size
-	for index in 0 ..< tm.width * tm.height {
+	for index in 0 ..< tm.tile_width * tm.tile_height {
 		if .Modified in tm.tiles[index].flags {
 
 			index_u32 := u32(index)
@@ -138,7 +138,7 @@ load_tiles :: proc(filename: string) -> bool {
 		mem.copy(&flags, &data[offset], size_of(u8))
 		offset += size_of(u8)
 
-		if int(index) < tm.width * tm.height {
+		if int(index) < tm.tile_width * tm.tile_height {
 			tm.tiles[index].flags = transmute(bit_set[TileFlags;u8])flags
 			tm.tiles[index].flags += {.Modified}
 		}

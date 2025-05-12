@@ -40,11 +40,11 @@ mouse_handler :: proc() {
 }
 
 init_player :: proc() {
-	p.position = {-50, -50}
+	p.position = {0, 0}
 	p.size = {16, 32, 16, 32}
 	p.texture = rl.LoadTexture("textures/player/sprite_player.png")
 	p.flipped = false
-	p.speed = 200.0
+	p.speed = 100.0
 	p.velocity = {0, 0}
 	p.max_health = 10
 	p.health = p.max_health
@@ -122,6 +122,7 @@ player_movement :: proc() {
 }
 
 player_collision :: proc() {
+	/*
 	if rl.Vector2Distance(p.position, attunement_p.radius) < 35 {
 		highlight_attunement = true
 		enable_attunement = true
@@ -142,6 +143,7 @@ player_collision :: proc() {
 		enable_attunement = false
 		a_toggled = false
 	}
+    */
 
 	player_rect := rl.Rectangle {
 		x      = p.position.x - p.size.x / 2,
@@ -176,13 +178,13 @@ player_collision :: proc() {
 	search_radius := 2
 
 	start_col := max(0, player_col - search_radius)
-	end_col := min(tm.width - 1, player_col + search_radius)
+	end_col := min(tm.tile_width - 1, player_col + search_radius)
 	start_row := max(0, player_row - search_radius)
-	end_row := min(tm.height - 1, player_row + search_radius)
+	end_row := min(tm.tile_height - 1, player_row + search_radius)
 
 	for row in start_row ..= end_row {
 		for col in start_col ..= end_col {
-			index := row * tm.width + col
+			index := row * tm.tile_width + col
 			tile := tm.tiles[index]
 
 			if .Collidable in tile.flags {
@@ -216,12 +218,12 @@ draw_player :: proc() {
 
 player_handler :: proc() {
 	player_movement()
-	player_collision()
+	//player_collision()
 
 	render_rect = {
-		p.position.x - f32(SWH) / 2,
-		p.position.y - f32(SHH) / 2,
-		f32(SW) / 2,
-		f32(SH) / 2,
+		p.position.x - f32(SWH) / 3,
+		p.position.y - f32(SHH) / 3,
+		f32(SW) / 3,
+		f32(SH) / 3,
 	}
 }

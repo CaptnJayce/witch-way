@@ -9,16 +9,17 @@ draw :: proc() {
 		draw_enemy(&enemy)
 	}
 
+	/*
 	if highlight_attunement {
 		rl.DrawTextureV(attunement_p.texture, {0, 0}, rl.BLUE)
 	} else {
 		rl.DrawTextureV(attunement_p.texture, {0, 0}, rl.WHITE)
 	}
+    */
 
 	draw_player()
 	draw_wand()
 	draw_spell()
-	draw_spell_menu()
 }
 
 flip_texture :: proc(flip: bool, texture: rl.Texture2D, size: rl.Rectangle) -> rl.Rectangle {

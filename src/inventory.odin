@@ -18,6 +18,7 @@ ItemType :: enum {
 
 	// Pickups
 	Krushem,
+	Heartium,
 
 	// Spells
 	NebulaEye,
@@ -56,6 +57,7 @@ init_inventory :: proc() {
 
 	// Pickup slots
 	i.slots[0] = ItemStack{.Krushem, 0}
+	i.slots[1] = ItemStack{.Heartium, 0}
 }
 
 init_spell_inventory :: proc() {
@@ -130,6 +132,18 @@ draw_pickups_page :: proc() {
 				rl.DrawText(
 					rl.TextFormat("%d", item_stack.count),
 					draw_x + 12,
+					draw_y + 42,
+					20,
+					rl.BLACK,
+				)
+			case .Heartium:
+				pos := rl.Vector2{f32(draw_x) + 23, f32(draw_y) + 11}
+				color := item_stack.count > 0 ? rl.WHITE : {40, 40, 40, 200}
+				rl.DrawTextureEx(h.texture, pos, 0, 3, color)
+
+				rl.DrawText(
+					rl.TextFormat("%d", item_stack.count),
+					draw_x + 24,
 					draw_y + 42,
 					20,
 					rl.BLACK,

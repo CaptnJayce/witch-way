@@ -24,7 +24,7 @@ debug_menu :: proc() {
 				editor = !editor
 			}
 
-			rl.DrawText(rl.TextFormat("Coords: %f", p.position), 10, 100, 20, rl.RAYWHITE)
+			rl.DrawText(rl.TextFormat("Coords: %f", p.position / 10), 10, 100, 20, rl.RAYWHITE)
 
 			rl.DrawText(rl.TextFormat("Speed: %f", p.speed), 10, 120, 20, rl.RAYWHITE)
 
