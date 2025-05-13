@@ -12,6 +12,15 @@ Grass :: struct {
 }
 g: Grass
 
+TextureAtlasDirt :: struct {
+	texture: rl.Texture,
+	// add variants later
+}
+Dirt :: struct {
+	atlas: TextureAtlasDirt,
+}
+d: Dirt
+
 Krushem :: struct {
 	texture: rl.Texture2D,
 }
@@ -32,6 +41,8 @@ NebulaSpellIcons :: struct {
 i_nebula: NebulaSpellIcons
 
 init_sprite :: proc() {
+	d.atlas.texture = rl.LoadTexture("textures/tiles/dirt_tile_temp.png")
+
 	g.atlas.texture = rl.LoadTexture("textures/tiles/grass_tile_atlas.png")
 	g.atlas.variants = make([]rl.Rectangle, GRASS_VARIANTS)
 

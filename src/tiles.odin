@@ -54,7 +54,15 @@ init_tilemap :: proc() {
 		for col in 0 ..< tm.tile_width {
 			index := row * tm.tile_width + col
 			tm.tiles[index].flags = {.Grass}
-			tm.tiles[index].variant = u8(rl.GetRandomValue(0, i32(len(g.atlas.variants) - 1)))
+
+			selected := rl.GetRandomValue(0, 100)
+
+			if selected <= 1 && selected >= 0 {
+				tm.tiles[index].variant = u8(rl.GetRandomValue(3, i32(len(g.atlas.variants) - 1)))
+			}
+			if selected > 1 {
+				tm.tiles[index].variant = u8(rl.GetRandomValue(0, 2))
+			}
 		}
 	}
 
@@ -107,7 +115,7 @@ draw_tilemap :: proc() {
 				)
 			}
 			if .Dirt in tile.flags {
-				rl.DrawRectangle(tile_x, tile_y, TILE_SIZE, TILE_SIZE, rl.BROWN)
+				rl.DrawTexture(d.atlas.texture, tile_x, tile_y, rl.WHITE) // make TexturePro later
 			}
 			if .Krushem in tile.flags {
 				rl.DrawTexture(k.texture, tile_x, tile_y, rl.WHITE)
