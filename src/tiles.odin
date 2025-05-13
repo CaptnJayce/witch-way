@@ -11,27 +11,27 @@ TileFlags :: enum {
 	Stone      = 2,
 	Dirt       = 3,
 	Grass      = 4,
-	GrassTwo   = 5,
-	GrassThree = 6,
-	Tilled     = 7,
-	Krushem    = 8,
-	Heartium   = 9,
+	Tilled     = 5,
+	Krushem    = 6,
+	Heartium   = 7,
 }
+
 Tile :: struct {
-	flags: bit_set[TileFlags;u16],
+	flags:   bit_set[TileFlags;u16],
+	variant: u8,
 }
+
 TileMap :: struct {
 	world_width, world_height: int,
 	tile_width, tile_height:   int,
 	tiles:                     []Tile,
 }
+
 tm: TileMap
 
 tile_grid_columns: f32
 tile_grid_rows: f32
-
 total_tiles: f32
-
 total_length: f32
 total_height: f32
 
@@ -53,18 +53,8 @@ init_tilemap :: proc() {
 	for row in 0 ..< tm.tile_height {
 		for col in 0 ..< tm.tile_width {
 			index := row * tm.tile_width + col
-
-			selected := rl.GetRandomValue(0, 2)
-
-			if selected == 0 {
-				tm.tiles[index].flags = {.Grass}
-			}
-			if selected == 1 {
-				tm.tiles[index].flags = {.GrassTwo}
-			}
-			if selected == 2 {
-				tm.tiles[index].flags = {.GrassThree}
-			}
+			tm.tiles[index].flags = {.Grass}
+			tm.tiles[index].variant = u8(rl.GetRandomValue(0, i32(len(g.atlas.variants) - 1)))
 		}
 	}
 
@@ -73,13 +63,10 @@ init_tilemap :: proc() {
 			index := row * tm.tile_width + col
 			selected := rl.GetRandomValue(0, 1000)
 
-			if .Grass in tm.tiles[index].flags && (selected >= 51 && selected <= 100) {
-				tm.tiles[index].flags += {.Grass}
-			}
-			if .Grass in tm.tiles[index].flags && selected == 999 {
+			if selected == 999 {
 				tm.tiles[index].flags += {.Krushem}
 			}
-			if .Grass in tm.tiles[index].flags && selected == 998 {
+			if selected == 998 {
 				tm.tiles[index].flags += {.Heartium}
 			}
 		}
@@ -112,27 +99,7 @@ draw_tilemap :: proc() {
 			if .Grass in tile.flags {
 				rl.DrawTexturePro(
 					g.atlas.texture,
-					g.atlas.variants[0],
-					{f32(tile_x), f32(tile_y), TILE_SIZE, TILE_SIZE},
-					{0, 0},
-					0,
-					rl.WHITE,
-				)
-			}
-			if .GrassTwo in tile.flags {
-				rl.DrawTexturePro(
-					g.atlas.texture,
-					g.atlas.variants[1],
-					{f32(tile_x), f32(tile_y), TILE_SIZE, TILE_SIZE},
-					{0, 0},
-					0,
-					rl.WHITE,
-				)
-			}
-			if .GrassThree in tile.flags {
-				rl.DrawTexturePro(
-					g.atlas.texture,
-					g.atlas.variants[2],
+					g.atlas.variants[tile.variant],
 					{f32(tile_x), f32(tile_y), TILE_SIZE, TILE_SIZE},
 					{0, 0},
 					0,
@@ -183,11 +150,11 @@ draw_tilemap :: proc() {
 				index := mouse_tile_y * tm.tile_width + mouse_tile_x
 
 				if .Krushem in tm.tiles[index].flags {
-					tm.tiles[index].flags = {.Modified}
+					tm.tiles[index].flags = {.Dirt, .Modified}
 					i.slots[0].count += 1
 				}
 				if .Heartium in tm.tiles[index].flags {
-					tm.tiles[index].flags = {.Modified}
+					tm.tiles[index].flags = {.Dirt, .Modified}
 					i.slots[1].count += 1
 				}
 				if .Stone in tm.tiles[index].flags {

@@ -17,7 +17,7 @@ MAX_PROJECTILES :: 100
 
 // TILES //
 TILE_SIZE :: 16
-GRASS_VARIANTS :: 3
+GRASS_VARIANTS :: 4
 grass_atlas: rl.Texture
 grass_src_rects: [GRASS_VARIANTS]rl.Rectangle
 
