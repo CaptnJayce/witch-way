@@ -71,10 +71,10 @@ init_tilemap :: proc() {
 			index := row * tm.tile_width + col
 			selected := rl.GetRandomValue(0, 1000)
 
-			if selected == 999 {
+			if selected == 999 || selected == 998 {
 				tm.tiles[index].flags += {.Krushem}
 			}
-			if selected == 998 {
+			if selected == 997 {
 				tm.tiles[index].flags += {.Heartium}
 			}
 		}
@@ -113,6 +113,7 @@ draw_tilemap :: proc() {
 					0,
 					rl.WHITE,
 				)
+				// rl.DrawText(rl.TextFormat("%d", tile.variant), tile_x, tile_y, 20, rl.RAYWHITE)
 			}
 			if .Dirt in tile.flags {
 				rl.DrawTexture(d.atlas.texture, tile_x, tile_y, rl.WHITE) // make TexturePro later
