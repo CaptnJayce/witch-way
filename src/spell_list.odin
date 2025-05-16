@@ -15,6 +15,7 @@ SpellData :: struct {
 	name:          string,
 	desc:          string,
 	icon:          rl.Texture2D,
+	txt:           rl.Texture2D,
 	type:          string,
 	unlocked:      bool,
 
@@ -26,6 +27,7 @@ SpellData :: struct {
 	dir:           rl.Vector2,
 	rot:           f32,
 	speed:         f32,
+	time:          f32,
 	lifetime:      f32,
 	pierce:        int,
 
@@ -54,7 +56,7 @@ spell_data: [SpellType]SpellData = {
 		type = "Utility",
 		unlocked = false,
 		cooldown = 300,
-		speed = 5,
+		speed = 5.0,
 		lifetime = 2400000000,
 		pj_colour = rl.Color{80, 100, 80, 255},
 	},
@@ -63,9 +65,10 @@ spell_data: [SpellType]SpellData = {
 		desc = "A bolt of crystal which shatters on impact",
 		type = "Projectile",
 		unlocked = false,
-		cooldown = 1.5,
+		cooldown = 1.2,
 		speed = 100,
-		lifetime = 4,
+		lifetime = 2.0,
+		pierce = 0,
 		dmg = 5,
 		status = "Shatter",
 		status_val = 10,
@@ -77,7 +80,7 @@ spell_data: [SpellType]SpellData = {
 		type = "Buff",
 		unlocked = false,
 		cooldown = 12,
-		lifetime = 2400000000,
+		lifetime = 2400000000.0,
 		dmg_reduction = 10,
 		dot_reduction = 5,
 		pj_colour = rl.Color{80, 100, 80, 255},
@@ -89,9 +92,12 @@ nebulaBolt := spell_data[.NebulaBolt]
 nebulaShield := spell_data[.NebulaShield]
 
 init_spells :: proc() {
-	nebulaEye.icon = rl.LoadTexture("textures/spells/nebula_eye.png")
-	nebulaBolt.icon = rl.LoadTexture("textures/spells/nebula_bolt.png")
-	nebulaShield.icon = rl.LoadTexture("textures/spells/nebula_shield.png")
+	nebulaEye.icon = rl.LoadTexture("textures/spells/nebula_eye_icon.png")
+
+	nebulaBolt.icon = rl.LoadTexture("textures/spells/nebula_bolt_icon.png")
+	nebulaBolt.txt = rl.LoadTexture("textures/spells/nebula_bolt.png")
+
+	nebulaShield.icon = rl.LoadTexture("textures/spells/nebula_shield_icon.png")
 
 	if len(p.equipped_spells) == 0 {
 		append(&p.equipped_spells, nebulaEye)

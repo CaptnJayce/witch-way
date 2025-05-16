@@ -32,12 +32,19 @@ Enemy :: struct {
 	is_invincible:   bool,
 }
 
+magic_man: Enemy
 red_guy: Enemy
 tall_guy: Enemy
 snake_guy: Enemy
 enemy_prev_pos: rl.Vector2
 
 init_enemy :: proc() {
+	magic_man.size = {0, 0, 16, 22}
+	magic_man.source = {0, 0, magic_man.source.width, magic_man.source.height}
+	magic_man.texture = rl.LoadTexture("textures/enemies/training_dummy.png")
+	magic_man.health = 2147483647
+	append(&enemies, magic_man)
+
 	// red_guy.position
 	red_guy.size = {0, 0, 16, 16}
 	red_guy.source = {0, 0, red_guy.source.width, red_guy.source.height}
@@ -225,7 +232,7 @@ enemy_collision :: proc(enemy: ^Enemy) {
 			if rl.CheckCollisionRecs(enemies[i].size, projectiles[j].source) {
 				damage_enemy(i, j)
 
-				if projectiles[j].pierce == 0 {
+				if projectiles[j].pierce <= 0 {
 					unordered_remove(&projectiles, j)
 				}
 

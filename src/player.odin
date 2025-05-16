@@ -135,9 +135,6 @@ player_collision :: proc() {
 			rl.WHITE,
 		)
 
-		if rl.IsKeyPressed(.E) {
-			unlock_spell("first_attunement")
-		}
 	} else {
 		highlight_attunement = false
 		enable_attunement = false
@@ -217,6 +214,9 @@ draw_player :: proc() {
 }
 
 player_handler :: proc() {
+	if rl.IsKeyPressed(.E) {
+		unlock_spell("first_attunement")
+	}
 	player_movement()
 	//player_collision()
 

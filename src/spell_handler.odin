@@ -13,6 +13,7 @@ highlight_attunement := false
 enable_attunement := false
 
 cSpell: SpellType
+cooldown: f32
 projectiles: [dynamic]SpellData
 
 select_spell :: proc() {
@@ -30,7 +31,13 @@ cast_spell :: proc() {
 	sp_x := p.position.x
 	sp_y := p.position.y
 
-	if rl.IsMouseButtonPressed(.LEFT) {
+	i: f32 = 0
+	for i < cooldown {
+		cooldown -= rl.GetFrameTime()
+		i += 1
+	}
+
+	if rl.IsMouseButtonPressed(.LEFT) && cooldown <= 0 {
 		direction := rl.Vector2Normalize(mp - p.position)
 
 		switch {
@@ -39,13 +46,17 @@ cast_spell :: proc() {
 			spell_data[cSpell].dir = direction
 			append(&projectiles, spell_data[cSpell])
 		case cSpell == .NebulaBolt:
-			spell_data[cSpell].source = {sp_x, sp_y, 20, 10}
+			spell_data[cSpell].source = {sp_x, sp_y, 16, 4}
 			spell_data[cSpell].dir = direction
+			spell_data[cSpell].txt = nebulaBolt.txt
 			append(&projectiles, spell_data[cSpell])
 		case cSpell == .NebulaShield:
 			spell_data[cSpell].source = {sp_x, sp_y, 25, 30}
 			spell_data[cSpell].dir = direction
-			append(&projectiles, spell_data[cSpell])}
+			append(&projectiles, spell_data[cSpell])
+		}
+
+		cooldown = spell_data[cSpell].cooldown
 	}
 }
 
@@ -57,6 +68,11 @@ update_spell :: proc() {
 		if proj.type == "Projectile" {
 			proj.source.x += proj.dir.x * proj.speed * rl.GetFrameTime()
 			proj.source.y += proj.dir.y * proj.speed * rl.GetFrameTime()
+		}
+
+		projectiles[i].time += rl.GetFrameTime()
+		if proj.time >= proj.lifetime {
+			unordered_remove(&projectiles, i)
 		}
 
 		i += 1
@@ -76,9 +92,10 @@ draw_spell :: proc() {
 					height = proj.source.height,
 				}
 
-				origin := rl.Vector2{proj.source.width / 2, proj.source.height / 2}
+				origin := rl.Vector2{proj.source.width / 4, proj.source.height / 4}
 
-				rl.DrawRectanglePro(rect, origin, rot * rl.RAD2DEG, rl.DARKPURPLE)
+				rl.DrawTextureEx(proj.txt, {rect.x, rect.y}, rot * rl.RAD2DEG, 1, rl.WHITE)
+				// rl.DrawRectanglePro(rect, origin, rot * rl.RAD2DEG, rl.DARKPURPLE)
 			}
 			if proj.type == "Utility" {
 			}
