@@ -30,6 +30,7 @@ main :: proc() {
 		case .Save:
 			rl.DrawText("uhhh", 300, 300, 20, rl.WHITE)
 		case .Game:
+			game_time += rl.GetFrameTime()
 			mp = rl.GetScreenToWorld2D(rl.GetMousePosition(), c)
 
 			player_handler()

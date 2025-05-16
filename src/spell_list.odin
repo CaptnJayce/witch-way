@@ -21,6 +21,8 @@ SpellData :: struct {
 
 	// costs
 	cooldown:      f32,
+	last_cast:     f32,
+	on_cooldown:   bool,
 
 	// properties
 	source:        rl.Rectangle,
@@ -55,7 +57,7 @@ spell_data: [SpellType]SpellData = {
 		desc = "A flare that seeks out your objectives",
 		type = "Utility",
 		unlocked = false,
-		cooldown = 300,
+		cooldown = 1,
 		speed = 5.0,
 		lifetime = 2400000000,
 		pj_colour = rl.Color{80, 100, 80, 255},
@@ -92,7 +94,8 @@ nebulaBolt := spell_data[.NebulaBolt]
 nebulaShield := spell_data[.NebulaShield]
 
 init_spells :: proc() {
-	nebulaEye.icon = rl.LoadTexture("textures/spells/nebula_eye_icon.png")
+	nebulaEye.icon = rl.LoadTexture("textures/spells/nebula_eye.png")
+	nebulaEye.txt = nebulaEye.icon
 
 	nebulaBolt.icon = rl.LoadTexture("textures/spells/nebula_bolt_icon.png")
 	nebulaBolt.txt = rl.LoadTexture("textures/spells/nebula_bolt.png")

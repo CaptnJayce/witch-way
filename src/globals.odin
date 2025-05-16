@@ -26,6 +26,8 @@ delta: f32
 
 editor: bool
 
+game_time: f32 = 0.0
+
 current_save := 0
 save_selected := false
 

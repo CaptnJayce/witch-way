@@ -13,7 +13,6 @@ highlight_attunement := false
 enable_attunement := false
 
 cSpell: SpellType
-cooldown: f32
 projectiles: [dynamic]SpellData
 
 select_spell :: proc() {
@@ -31,32 +30,36 @@ cast_spell :: proc() {
 	sp_x := p.position.x
 	sp_y := p.position.y
 
-	i: f32 = 0
-	for i < cooldown {
-		cooldown -= rl.GetFrameTime()
-		i += 1
-	}
-
-	if rl.IsMouseButtonPressed(.LEFT) && cooldown <= 0 {
+	if rl.IsMouseButtonPressed(.LEFT) {
 		direction := rl.Vector2Normalize(mp - p.position)
 
-		switch {
-		case cSpell == .NebulaEye:
-			spell_data[cSpell].source = {sp_x, sp_y, 60, 60}
-			spell_data[cSpell].dir = direction
-			append(&projectiles, spell_data[cSpell])
-		case cSpell == .NebulaBolt:
-			spell_data[cSpell].source = {sp_x, sp_y, 16, 4}
-			spell_data[cSpell].dir = direction
-			spell_data[cSpell].txt = nebulaBolt.txt
-			append(&projectiles, spell_data[cSpell])
-		case cSpell == .NebulaShield:
-			spell_data[cSpell].source = {sp_x, sp_y, 25, 30}
-			spell_data[cSpell].dir = direction
-			append(&projectiles, spell_data[cSpell])
-		}
+		spell := &spell_data[cSpell]
 
-		cooldown = spell_data[cSpell].cooldown
+		if game_time - spell.last_cast < spell.cooldown {
+			fmt.println("spell is on cooldown")
+			return
+		}
+		fmt.println("casting", spell)
+
+		spell.last_cast = game_time
+
+		#partial switch cSpell {
+		case .NebulaEye:
+			spell.source = {sp_x, sp_y, 60, 60}
+			spell.dir = direction
+			spell.txt = nebulaEye.txt
+			append(&projectiles, spell^)
+		case .NebulaBolt:
+			spell.source = {sp_x, sp_y, 16, 4}
+			spell.dir = direction
+			spell.txt = nebulaBolt.txt
+			append(&projectiles, spell^)
+		case .NebulaShield:
+			spell.source = {sp_x, sp_y, 25, 30}
+			spell.dir = direction
+			spell.txt = nebulaShield.txt
+			append(&projectiles, spell^)
+		}
 	}
 }
 
@@ -82,22 +85,23 @@ update_spell :: proc() {
 draw_spell :: proc() {
 	for &proj in projectiles {
 		if len(projectiles) != 0 {
+			rect := rl.Rectangle {
+				x      = proj.source.x,
+				y      = proj.source.y,
+				width  = proj.source.width,
+				height = proj.source.height,
+			}
+
 			if proj.type == "Projectile" {
 				rot := math.atan2(proj.dir.y, proj.dir.x)
-
-				rect := rl.Rectangle {
-					x      = proj.source.x,
-					y      = proj.source.y,
-					width  = proj.source.width,
-					height = proj.source.height,
-				}
-
 				origin := rl.Vector2{proj.source.width / 4, proj.source.height / 4}
 
 				rl.DrawTextureEx(proj.txt, {rect.x, rect.y}, rot * rl.RAD2DEG, 1, rl.WHITE)
-				// rl.DrawRectanglePro(rect, origin, rot * rl.RAD2DEG, rl.DARKPURPLE)
 			}
 			if proj.type == "Utility" {
+				origin := rl.Vector2{proj.source.width / 4, proj.source.height / 4}
+
+				rl.DrawTextureEx(proj.txt, {rect.x, rect.y}, 0, 1, rl.WHITE)
 			}
 			if proj.type == "Buff" {
 			}
